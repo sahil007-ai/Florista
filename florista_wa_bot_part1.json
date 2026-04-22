@@ -1,0 +1,405 @@
+{
+  "name": "Florista – WhatsApp Wholesale Bot",
+  "nodes": [
+    {
+      "id": "sticky-legend",
+      "name": "📋 ENV VARS REQUIRED",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-400, -300],
+      "parameters": {
+        "content": "## 🌸 Florista WhatsApp Bot — Environment Variables\n\nSet these in **n8n Settings → Variables** before activating:\n\n| Variable | Description |\n|---|---|\n| `WA_PHONE_NUMBER_ID` | Meta WhatsApp Phone Number ID |\n| `WA_ACCESS_TOKEN` | Meta permanent access token |\n| `CATALOGUE_PDF_URL` | Public URL of the catalogue PDF |\n| `SALES_WEBHOOK_URL` | Sales team alert endpoint |\n| `OPT_IN_WEBHOOK_URL` | Broadcast list storage endpoint |\n| `CALLBACK_WEBHOOK_URL` | Call scheduling endpoint |\n| `REVIEW_WEBHOOK_URL` | Post-event review tag endpoint |\n| `SESSION_API_URL` | Session store GET/POST endpoint |\n| `TIER1_TEXT` | Tier 1 pricing message (100–499 pcs) |\n| `TIER2_TEXT` | Tier 2 pricing message (500–999 pcs) |\n| `TIER3_TEXT` | Tier 3 pricing message (1000+ pcs) |\n\n**WA Webhook URL:** `POST /webhook/florista-wa-bot`\n**Order Confirm URL:** `POST /webhook/florista-order-confirm`",
+        "height": 400,
+        "width": 600,
+        "color": 5
+      }
+    },
+    {
+      "id": "sticky-uc1",
+      "name": "UC1 – Lead Qualification",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [300, -300],
+      "parameters": {
+        "content": "## UC1 – Lead Qualification\nSends two buttons on first contact.\nRoutes Decorator → opt-in → main menu.\nRoutes Personal Use → rejection + tag.",
+        "height": 150,
+        "width": 400,
+        "color": 3
+      }
+    },
+    {
+      "id": "sticky-uc4",
+      "name": "UC4 – Main Menu",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [1100, -300],
+      "parameters": {
+        "content": "## UC4 – Main Menu\n5-option list message:\n- Get a Quote → UC8+2\n- Download Catalogue → UC3\n- Shipping Info → static reply\n- Color Options → static reply\n- Talk to a Human → UC9",
+        "height": 150,
+        "width": 400,
+        "color": 3
+      }
+    },
+    {
+      "id": "node-webhook-main",
+      "name": "Receive WA Message",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-100, 0],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "florista-wa-bot",
+        "responseMode": "onReceived",
+        "responseData": "allEntries",
+        "options": {}
+      },
+      "webhookId": "florista-wa-bot"
+    },
+    {
+      "id": "node-set-extract",
+      "name": "Extract Message Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [140, 0],
+      "parameters": {
+        "mode": "manual",
+        "duplicateItem": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f1",
+              "name": "from",
+              "value": "={{ $json.entry[0].changes[0].value.messages[0].from }}",
+              "type": "string"
+            },
+            {
+              "id": "f2",
+              "name": "msgType",
+              "value": "={{ $json.entry[0].changes[0].value.messages[0].type }}",
+              "type": "string"
+            },
+            {
+              "id": "f3",
+              "name": "buttonId",
+              "value": "={{ $json.entry[0].changes[0].value.messages[0]?.interactive?.button_reply?.id ?? $json.entry[0].changes[0].value.messages[0]?.interactive?.list_reply?.id ?? '' }}",
+              "type": "string"
+            },
+            {
+              "id": "f4",
+              "name": "textBody",
+              "value": "={{ ($json.entry[0].changes[0].value.messages[0]?.text?.body ?? '').toUpperCase() }}",
+              "type": "string"
+            },
+            {
+              "id": "f5",
+              "name": "userName",
+              "value": "={{ $json.entry[0].changes[0].value.contacts?.[0]?.profile?.name ?? 'Valued Customer' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "node-check-session",
+      "name": "Check Active Session",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [380, 0],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $vars.SESSION_API_URL }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "phone", "value": "={{ $json.from }}" }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": { "responseFormat": "json", "fullResponse": false }
+          },
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "node-if-session",
+      "name": "Has Active Session?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [620, 0],
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.resumeUrl ?? '' }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "notEquals" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "node-resume-session",
+      "name": "Resume Paused Execution",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [860, -120],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.resumeUrl }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { from: $('Extract Message Fields').item.json.from, textBody: $('Extract Message Fields').item.json.textBody, buttonId: $('Extract Message Fields').item.json.buttonId, msgType: $('Extract Message Fields').item.json.msgType, userName: $('Extract Message Fields').item.json.userName } }}",
+        "options": { "allowUnauthorizedCerts": true }
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "node-switch-main",
+      "name": "Route By Button ID",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [860, 120],
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.buttonId }}",
+        "rules": {
+          "rules": [
+            { "value2": "lead_decorator" },
+            { "value2": "lead_personal" },
+            { "value2": "opt_yes" },
+            { "value2": "opt_no" },
+            { "value2": "menu_quote" },
+            { "value2": "menu_catalogue" },
+            { "value2": "menu_shipping" },
+            { "value2": "menu_colors" },
+            { "value2": "menu_human" },
+            { "value2": "tier_100" },
+            { "value2": "tier_500" },
+            { "value2": "tier_1000" },
+            { "value2": "followup_yes" },
+            { "value2": "followup_no" },
+            { "value2": "callback_morn" },
+            { "value2": "callback_aft" },
+            { "value2": "callback_eve" }
+          ]
+        },
+        "fallbackOutput": 17
+      }
+    },
+    {
+      "id": "node-wa-leadqual",
+      "name": "WA – Send Lead Qualification",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1100, 380],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $('Extract Message Fields').item.json.from, type: 'interactive', interactive: { type: 'button', body: { text: 'Welcome to *Florista Flowers* 🌸\\n\\nWe manufacture premium organza flowers wholesale from Nagpur.\\n\\nBefore we proceed, how do you plan to use our products?' }, action: { buttons: [ { type: 'reply', reply: { id: 'lead_decorator', title: 'Decorator / Wholesaler' } }, { type: 'reply', reply: { id: 'lead_personal', title: 'Personal Use' } } ] } } } }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "node-wa-personal-reject",
+      "name": "WA – Personal Use Rejection",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1100, -200],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $('Extract Message Fields').item.json.from, type: 'text', text: { body: 'Thank you for reaching out to Florista! 🌸\\n\\nWe are a *wholesale-only manufacturer* with a minimum order quantity (MOQ) requirement. Unfortunately, we do not cater to individual or personal purchases.\\n\\nFor retail purchases, we recommend visiting a local event decor store near you.\\n\\nThank you for your understanding, and best of luck with your event! 😊' } } }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "node-http-retail-tag",
+      "name": "Sales – Tag retail_rejected",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1340, -200],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $vars.SALES_WEBHOOK_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { event: 'retail_rejected', phone: $('Extract Message Fields').item.json.from, name: $('Extract Message Fields').item.json.userName, timestamp: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "node-wa-optin",
+      "name": "WA – Ask Broadcast Opt-In",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1100, 80],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $('Extract Message Fields').item.json.from, type: 'interactive', interactive: { type: 'button', body: { text: 'Great to have you here, ' + $('Extract Message Fields').item.json.userName + '! 🌸\\n\\nWould you like to receive updates on *new stock arrivals and seasonal collections*?' }, action: { buttons: [ { type: 'reply', reply: { id: 'opt_yes', title: 'Yes, keep me posted' } }, { type: 'reply', reply: { id: 'opt_no', title: 'No thanks' } } ] } } } }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "node-http-store-optin",
+      "name": "Opt-In – Store Phone Number",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1100, 220],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $vars.OPT_IN_WEBHOOK_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { event: 'broadcast_opt_in', phone: $('Extract Message Fields').item.json.from, name: $('Extract Message Fields').item.json.userName, timestamp: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "node-wa-mainmenu",
+      "name": "WA – Send Main Menu",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1340, 140],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $('Extract Message Fields').item.json.from, type: 'interactive', interactive: { type: 'list', body: { text: '🌸 *Florista Wholesale Menu*\\n\\nHow can we help you today? Please select an option below:' }, action: { button: 'View Options', sections: [ { title: 'What would you like to do?', rows: [ { id: 'menu_quote', title: '📋 Get a Quote', description: 'Request bulk pricing for your event' }, { id: 'menu_catalogue', title: '📄 Download Catalogue', description: 'Receive our full product PDF on WhatsApp' }, { id: 'menu_shipping', title: '🚚 Shipping Info', description: 'Delivery coverage and timelines' }, { id: 'menu_colors', title: '🎨 Color Options', description: 'Available shades and custom colors' }, { id: 'menu_human', title: '📞 Talk to a Human', description: 'Schedule a callback with our team' } ] } ] } } } }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "node-wa-shipping",
+      "name": "WA – Shipping Info (Static)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1100, 520],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $('Extract Message Fields').item.json.from, type: 'text', text: { body: '🚚 *Florista Shipping Information*\\n\\n📦 *Coverage:* PAN India delivery available\\n\\n⏱ *Timelines:*\\n• Standard stock items: Dispatched in 1–3 working days\\n• Custom / large bulk orders: 7–14 working days\\n• Delivery after dispatch: 4–7 working days (varies by location)\\n\\n📐 *Shipping Calculation:* Volumetric weight is used (our flowers are large but lightweight). Exact shipping cost is shared before order confirmation.\\n\\n🏭 *Origin:* All orders ship from our Nagpur factory.\\n\\nReply *MENU* or tap the menu again to continue.' } } }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "node-wa-colors",
+      "name": "WA – Color Options (Static)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1100, 660],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $('Extract Message Fields').item.json.from, type: 'text', text: { body: '🎨 *Florista Color & Customization Options*\\n\\n✅ *Standard Stock Colors (12 Pastel Shades):*\\nWhite • Ivory • Blush Pink • Baby Pink • Rose • Peach • Lavender • Lilac • Sky Blue • Mint Green • Lemon Yellow • Coral\\n\\n🎨 *Custom Colors:* Available for bulk orders above MOQ. Additional lead time of 7–14 days applies.\\n\\n📏 *Custom Sizes:* Available for select products on request. Please share your requirements for a custom quote.\\n\\n💡 For 1000+ pieces, we offer custom color matching to your event theme!\\n\\nReply *MENU* or tap the menu again to continue.' } } }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Receive WA Message": {
+      "main": [[{ "node": "Extract Message Fields", "type": "main", "index": 0 }]]
+    },
+    "Extract Message Fields": {
+      "main": [[{ "node": "Check Active Session", "type": "main", "index": 0 }]]
+    },
+    "Check Active Session": {
+      "main": [[{ "node": "Has Active Session?", "type": "main", "index": 0 }]]
+    },
+    "Has Active Session?": {
+      "main": [
+        [{ "node": "Resume Paused Execution", "type": "main", "index": 0 }],
+        [{ "node": "Route By Button ID", "type": "main", "index": 0 }]
+      ]
+    },
+    "Route By Button ID": {
+      "main": [
+        [{ "node": "WA – Ask Broadcast Opt-In", "type": "main", "index": 0 }],
+        [{ "node": "WA – Personal Use Rejection", "type": "main", "index": 0 }],
+        [{ "node": "Opt-In – Store Phone Number", "type": "main", "index": 0 }],
+        [{ "node": "WA – Send Main Menu", "type": "main", "index": 0 }],
+        [],
+        [],
+        [{ "node": "WA – Shipping Info (Static)", "type": "main", "index": 0 }],
+        [{ "node": "WA – Color Options (Static)", "type": "main", "index": 0 }],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [{ "node": "WA – Send Lead Qualification", "type": "main", "index": 0 }]
+      ]
+    },
+    "WA – Personal Use Rejection": {
+      "main": [[{ "node": "Sales – Tag retail_rejected", "type": "main", "index": 0 }]]
+    },
+    "Opt-In – Store Phone Number": {
+      "main": [[{ "node": "WA – Send Main Menu", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "Florista" }, { "name": "WhatsApp Bot" }]
+}
