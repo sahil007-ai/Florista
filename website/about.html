@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Florista | Handcrafted Decor Flowers Manufacturer</title>
+    <meta name="description" content="Florista is a direct-from-factory manufacturer of handcrafted organza and fabric flowers based in Nagpur. Quality, creativity, and massive production capacity.">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            margin-bottom: 80px;
+            align-items: center;
+        }
+        .about-content h2 { font-size: 2.2rem; margin-bottom: 20px; }
+        .about-content p { font-size: 1.05rem; color: var(--color-gray); margin-bottom: 18px; line-height: 1.75; }
+        .features-list { margin-top: 28px; list-style: none; }
+        .features-list li {
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .features-list i { color: var(--color-primary-dark); font-size: 1.1rem; width: 24px; text-align: center; }
+        .factory-photos { margin-bottom: 80px; }
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 40px;
+        }
+        .photo-grid img {
+            width: 100%; height: 220px;
+            object-fit: cover;
+            border-radius: 14px;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        .photo-grid img:hover { transform: scale(1.04); box-shadow: 0 16px 40px rgba(80,30,60,0.15); }
+        @media (max-width: 768px) {
+            .about-grid { grid-template-columns: 1fr; }
+            .photo-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 480px) { .photo-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container">
+            <a href="index.html" class="logo">Florista<span>.</span></a>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="products.html" class="nav-link">Products</a>
+                <a href="wholesale.html" class="nav-link">Wholesale & Logistics</a>
+                <a href="about.html" class="nav-link">About Us</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </nav>
+            <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <div class="container">
+                <h1>About Us</h1>
+                <p>Direct from the factory. Handcrafted with precision.</p>
+            </div>
+        </div>
+
+        <div class="container">
+            
+            <div class="about-grid">
+                <div class="about-content">
+                    <h2>Your Story</h2>
+                    <p>We are a dedicated manufacturer based in Nagpur, specializing in handcrafted organza and fabric decor flowers. We do not resell; we innovate, design, and produce directly from our facility.</p>
+                    <p>We serve event decorators, retailers, and wholesalers across India, providing them with reliable, high-volume production without sacrificing the intricate, handmade quality that makes our flowers stand out.</p>
+                    
+                    <ul class="features-list">
+                        <li><i class="fas fa-industry"></i> Direct from factory — no middleman pricing</li>
+                        <li><i class="fas fa-flask"></i> Own R&D — creating new designs regularly</li>
+                        <li><i class="fas fa-leaf"></i> Durable, washable, and foldable for safe transport</li>
+                        <li><i class="fas fa-shipping-fast"></i> Consistent bulk supply with reliable lead times</li>
+                    </ul>
+                </div>
+                <div class="about-image">
+                    <img src="images/product_organza_butterfly_1.png" alt="Handcrafted Organza Decor" style="border-radius: 20px; box-shadow: var(--glass-shadow); max-width: 100%; height: auto;">
+                </div>
+            </div>
+
+            <section class="factory-photos reveal">
+                <div class="section-title">
+                    <div class="section-label">Our Products</div>
+                    <h2>Made With Pride</h2>
+                    <p>A glimpse of the craftsmanship and variety that makes Florista stand out.</p>
+                </div>
+                <div class="photo-grid">
+                    <img src="images/product_organza_24_inch_premium_1.png" alt="24 inch premium organza flower" loading="lazy">
+                    <img src="images/product_premium_fabric_1.png" alt="Premium fabric flower" loading="lazy">
+                    <img src="images/product_cinderella_flowers_1.png" alt="Cinderella flowers" loading="lazy">
+                    <img src="images/product_blooming_dales_1.png" alt="Blooming dales" loading="lazy">
+                    <img src="images/product_aura_flower_1.png" alt="Aura flower" loading="lazy">
+                    <img src="images/product_printed_fabric_1.png" alt="Printed fabric flower" loading="lazy">
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <a href="index.html" class="logo" style="margin-bottom:14px;display:block;">Florista<span>.</span></a>
+                    <p>Bulk Decor Manufacturer.<br>Premium Quality at Factory Prices.<br>Nagpur, Maharashtra.</p>
+                    <div class="footer-social">
+                        <a href="https://wa.me/917588447595" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.instagram.com/thefloristaflowerss/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="tel:+917588447595" aria-label="Call"><i class="fas fa-phone"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Products</h4>
+                    <ul class="footer-links">
+                        <li><a href="products.html#organza">Organza Flowers</a></li>
+                        <li><a href="products.html#premium">Premium &amp; Specialty</a></li>
+                        <li><a href="products.html#theme">Theme &amp; Events</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="wholesale.html">Wholesale Policy</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Get In Touch</h4>
+                    <p style="margin-bottom:10px;"><i class="fab fa-whatsapp" style="color:#25D366;margin-right:8px;"></i>+91 75884 47595</p>
+                    <p><i class="fas fa-map-marker-alt" style="color:var(--color-primary);margin-right:8px;"></i>Nagpur, Maharashtra</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 The Florista Flowers. All rights reserved. Handcrafted in Nagpur.</p>
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/917588447595" class="floating-whatsapp" target="_blank" aria-label="Chat on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+    <button class="back-to-top" aria-label="Back to top"><i class="fas fa-chevron-up"></i></button>
+    <script src="js/main.js"></script>
+</body>
+</html>

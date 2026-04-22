@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Florista – Bulk Organza Flower Manufacturer | Nagpur | PAN India</title>
+    <meta name="description" content="Florista is a premium manufacturer of handcrafted organza and fabric flowers for event decorators and wholesalers. PAN India volumetric shipping from Nagpur.">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Manufacturer",
+      "name": "The Florista Flowers",
+      "description": "Premium Quality at Factory Prices. Bulk Decor Manufacturer in Nagpur.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Nagpur",
+        "addressRegion": "Maharashtra",
+        "addressCountry": "IN"
+      },
+      "telephone": "+917588447595",
+      "url": "https://www.theflorista.in"
+    }
+    </script>
+    <style>
+        /* ── Hero ── */
+        .hero {
+            min-height: calc(100vh - 78px);
+            display: flex;
+            align-items: center;
+            padding: 60px 0;
+        }
+        .hero .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 60px;
+        }
+        .hero-content { flex: 1; }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--color-primary-light);
+            border: 1px solid rgba(201,126,160,0.25);
+            color: var(--color-primary-dark);
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            padding: 6px 16px;
+            border-radius: 50px;
+            margin-bottom: 24px;
+        }
+        .hero-content h1 {
+            font-size: clamp(2.4rem, 4vw, 3.6rem);
+            margin-bottom: 20px;
+            line-height: 1.15;
+            color: var(--color-dark);
+        }
+        .hero-content h1 span { color: var(--color-primary-dark); font-style: italic; }
+        .hero-content p {
+            font-size: 1.1rem;
+            color: var(--color-gray);
+            margin-bottom: 36px;
+            max-width: 480px;
+            line-height: 1.7;
+        }
+        .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+        .hero-image { flex: 1; position: relative; }
+        .hero-image img {
+            border-radius: 24px;
+            box-shadow: 0 24px 60px rgba(80, 30, 60, 0.15);
+            width: 100%;
+            height: 520px;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+        .hero-image:hover img { transform: scale(1.02); }
+        .hero-image-badge {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+        .hero-image-badge i { color: var(--color-primary-dark); font-size: 1.4rem; }
+        .hero-image-badge strong { display: block; font-size: 0.95rem; }
+        .hero-image-badge span { font-size: 0.8rem; color: var(--color-gray); }
+
+        /* ── Trust Strip ── */
+        .trust-strip {
+            background: var(--color-white);
+            padding: 44px 0;
+            border-top: 1px solid rgba(201,126,160,0.1);
+            border-bottom: 1px solid rgba(201,126,160,0.1);
+        }
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        .trust-item {
+            text-align: center;
+            padding: 24px 20px;
+            border-radius: 16px;
+            transition: var(--transition);
+        }
+        .trust-item:hover { background: var(--color-primary-light); transform: translateY(-4px); }
+        .trust-icon {
+            width: 60px; height: 60px;
+            background: var(--color-primary-light);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 16px;
+            transition: var(--transition);
+        }
+        .trust-item:hover .trust-icon { background: var(--color-primary-dark); }
+        .trust-icon i { font-size: 1.5rem; color: var(--color-primary-dark); transition: var(--transition); }
+        .trust-item:hover .trust-icon i { color: white; }
+        .trust-item h3 { font-size: 1.05rem; font-family: var(--font-sans); font-weight: 600; margin-bottom: 6px; }
+        .trust-item p { font-size: 0.9rem; color: var(--color-gray); }
+
+        /* ── Products Preview ── */
+        .products-preview { padding: 90px 0; }
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 28px;
+            margin-top: 50px;
+        }
+
+        /* ── CTA Section ── */
+        .cta-section {
+            background: linear-gradient(135deg, var(--color-dark) 0%, #2d1b25 100%);
+            border-radius: 28px;
+            padding: 80px 60px;
+            text-align: center;
+            margin-bottom: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -60px; right: -60px;
+            width: 280px; height: 280px;
+            background: radial-gradient(circle, rgba(201,126,160,0.25), transparent 70%);
+        }
+        .cta-section::after {
+            content: '';
+            position: absolute;
+            bottom: -60px; left: -60px;
+            width: 240px; height: 240px;
+            background: radial-gradient(circle, rgba(37,211,102,0.12), transparent 70%);
+        }
+        .cta-section h2 { font-size: 2.4rem; color: white; position: relative; z-index: 1; }
+        .cta-section p { color: rgba(255,255,255,0.72); font-size: 1.05rem; margin-bottom: 36px; position: relative; z-index: 1; }
+        .cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .hero .container { flex-direction: column; text-align: center; }
+            .hero-content p { max-width: 100%; }
+            .hero-cta { justify-content: center; }
+            .hero-image { width: 100%; }
+            .hero-image img { height: 380px; }
+            .trust-grid { grid-template-columns: 1fr; }
+            .cta-section { padding: 60px 28px; }
+        }
+        @media (max-width: 480px) {
+            .hero { min-height: auto; padding: 40px 0; }
+            .hero-image img { height: 280px; }
+            .cta-section h2 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container">
+            <a href="index.html" class="logo">Florista<span>.</span></a>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="products.html" class="nav-link">Products</a>
+                <a href="wholesale.html" class="nav-link">Wholesale &amp; Logistics</a>
+                <a href="about.html" class="nav-link">About Us</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </nav>
+            <button class="mobile-menu-btn" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-badge reveal">
+                        <i class="fas fa-star"></i> Direct from Nagpur Factory
+                    </div>
+                    <h1 class="reveal reveal-delay-1">
+                        Premium Organza Flowers at <span>Factory Prices</span>
+                    </h1>
+                    <p class="reveal reveal-delay-2">
+                        Bulk decor manufacturer specialising in handcrafted, giant event flowers up to 60 inches. Crafted with durable, high-quality fabric. PAN India delivery.
+                    </p>
+                    <div class="hero-cta reveal reveal-delay-3">
+                        <a href="https://wa.me/917588447595?text=Hi%20Florista%2C%20I%20want%20to%20enquire%20about%20wholesale%20pricing%20for%20your%20flowers." class="btn btn-whatsapp" target="_blank">
+                            <i class="fab fa-whatsapp"></i> Enquire for Wholesale
+                        </a>
+                        <a href="products.html" class="btn btn-outline">View Catalogue</a>
+                    </div>
+                </div>
+                <div class="hero-image reveal reveal-delay-2">
+                    <img src="images/product_organza_60_inch_1.png" alt="Giant 60-inch Organza Event Flower by Florista, Nagpur" loading="eager">
+                    <div class="hero-image-badge">
+                        <i class="fas fa-certificate"></i>
+                        <div>
+                            <strong>Handcrafted Quality</strong>
+                            <span>Not AI's Guesswork</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trust Signals -->
+        <section class="trust-strip">
+            <div class="container trust-grid">
+                <div class="trust-item reveal">
+                    <div class="trust-icon"><i class="fas fa-truck-fast"></i></div>
+                    <h3>PAN India Shipping</h3>
+                    <p>Volumetric shipping calculated at factory. Safe, efficient delivery across India.</p>
+                </div>
+                <div class="trust-item reveal reveal-delay-1">
+                    <div class="trust-icon"><i class="fas fa-palette"></i></div>
+                    <h3>12 Colors + Custom</h3>
+                    <p>Available in 12 pastel shades. Custom bulk colours available on request.</p>
+                </div>
+                <div class="trust-item reveal reveal-delay-2">
+                    <div class="trust-icon"><i class="fas fa-industry"></i></div>
+                    <h3>Direct from Factory</h3>
+                    <p>No middlemen. Our Nagpur unit ships wholesale orders directly to your door.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Product Highlights -->
+        <section class="products-preview">
+            <div class="container">
+                <div class="section-title reveal">
+                    <div class="section-label">Best Sellers</div>
+                    <h2>Our Most-Loved Designs</h2>
+                    <p>Handcrafted masterpieces perfect for wedding backdrops, stage decor, and large events.</p>
+                </div>
+                <div class="products-grid">
+                    <div class="glass-card product-card reveal">
+                        <img src="images/product_organza_60_inch_1.png" alt="60-inch Giant Flora organza flower">
+                        <div class="product-info">
+                            <h3>60&quot; Giant Flora</h3>
+                            <p>Our largest masterpiece for grand stage decor.</p>
+                            <div class="price">Rs. 2,500</div>
+                            <a href="products.html#organza" class="btn btn-outline" style="width:100%;margin-top:8px;">View Details</a>
+                        </div>
+                    </div>
+                    <div class="glass-card product-card reveal reveal-delay-1">
+                        <img src="images/product_glowing_flower_1.png" alt="Glowing Flower 3ft">
+                        <div class="product-info">
+                            <h3>Glowing Flower (3ft)</h3>
+                            <p>Illuminated elegant decor for premium events.</p>
+                            <div class="price">Rs. 2,300</div>
+                            <a href="products.html#premium" class="btn btn-outline" style="width:100%;margin-top:8px;">View Details</a>
+                        </div>
+                    </div>
+                    <div class="glass-card product-card reveal reveal-delay-2">
+                        <img src="images/product_organza_butterfly_1.png" alt="Organza Butterfly decor">
+                        <div class="product-info">
+                            <h3>Organza Butterfly</h3>
+                            <p>Available in 12 pastel shades. Perfect for theme events.</p>
+                            <div class="price">From Rs. 450</div>
+                            <a href="products.html#theme" class="btn btn-outline" style="width:100%;margin-top:8px;">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align:center;margin-top:44px;" class="reveal">
+                    <a href="products.html" class="btn btn-primary">View All Products</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="container">
+            <div class="cta-section reveal">
+                <h2>Ready to stock up? Let's talk.</h2>
+                <p>Review our wholesale guidelines or reach out directly for bulk pricing.</p>
+                <div class="cta-btns">
+                    <a href="https://wa.me/917588447595" class="btn btn-whatsapp" target="_blank">
+                        <i class="fab fa-whatsapp"></i> +91 75884 47595
+                    </a>
+                    <a href="wholesale.html" class="btn btn-outline" style="color:white;border-color:rgba(255,255,255,0.4);">View Wholesale Policy</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <a href="index.html" class="logo" style="margin-bottom:14px;display:block;">Florista<span>.</span></a>
+                    <p>Bulk Decor Manufacturer.<br>Premium Quality at Factory Prices.<br>Nagpur, Maharashtra.</p>
+                    <div class="footer-social">
+                        <a href="https://wa.me/917588447595" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.instagram.com/thefloristaflowerss/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="tel:+917588447595" aria-label="Call"><i class="fas fa-phone"></i></a>
+                        <a href="contact.html" aria-label="Email"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Products</h4>
+                    <ul class="footer-links">
+                        <li><a href="products.html#organza">Organza Flowers</a></li>
+                        <li><a href="products.html#premium">Premium &amp; Specialty</a></li>
+                        <li><a href="products.html#theme">Theme &amp; Events</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="wholesale.html">Wholesale Policy</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Get In Touch</h4>
+                    <p style="margin-bottom:10px;"><i class="fab fa-whatsapp" style="color:#25D366;margin-right:8px;"></i>+91 75884 47595</p>
+                    <p><i class="fas fa-map-marker-alt" style="color:var(--color-primary);margin-right:8px;"></i>Nagpur, Maharashtra</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 The Florista Flowers. All rights reserved. Handcrafted in Nagpur.</p>
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/917588447595?text=Hi%20Florista%2C%20I%20want%20to%20enquire%20about%20wholesale%20pricing." class="floating-whatsapp" target="_blank" aria-label="Chat on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+    <button class="back-to-top" aria-label="Back to top"><i class="fas fa-chevron-up"></i></button>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

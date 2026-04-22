@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wholesale Organza & Fabric Flowers Catalogue | Florista Nagpur</title>
+    <meta name="description" content="Complete B2B digital catalogue of premium organza flowers, giant backdrop flowers, and theme party decorations at factory prices. PAN India delivery from Nagpur.">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ── Products Page Layout ── */
+        .catalogue-layout {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 40px;
+            align-items: start;
+            padding: 0 0 80px;
+        }
+
+        /* ── Sticky Sidebar ── */
+        .cat-sidebar {
+            position: sticky;
+            top: 98px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(14px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 24px 16px;
+            box-shadow: var(--glass-shadow);
+        }
+        .cat-sidebar h3 {
+            font-family: var(--font-sans);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--color-gray);
+            padding: 0 12px 14px;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            margin-bottom: 12px;
+        }
+        .cat-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--color-gray);
+            transition: var(--transition);
+            cursor: pointer;
+            text-decoration: none;
+            margin-bottom: 4px;
+        }
+        .cat-nav-link i { width: 18px; text-align: center; font-size: 0.85rem; }
+        .cat-nav-link:hover, .cat-nav-link.active {
+            background: var(--color-primary-light);
+            color: var(--color-primary-dark);
+        }
+        .cat-nav-link .count {
+            margin-left: auto;
+            background: var(--color-primary-light);
+            color: var(--color-primary-dark);
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 50px;
+        }
+        .cat-nav-link.active .count { background: var(--color-primary-dark); color: white; }
+
+        .sidebar-cta {
+            margin-top: 20px;
+            padding: 16px 14px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+            border-radius: 14px;
+            text-align: center;
+        }
+        .sidebar-cta p { font-size: 0.82rem; color: var(--color-dark); margin-bottom: 10px; font-weight: 500; }
+        .sidebar-cta a { display: block; }
+
+        /* ── Category Section ── */
+        .category-section { margin-bottom: 70px; scroll-margin-top: 110px; }
+        .category-heading {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 28px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid rgba(201,126,160,0.18);
+        }
+        .category-heading .cat-icon {
+            width: 44px; height: 44px;
+            background: var(--color-primary-light);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--color-primary-dark);
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .category-heading h2 {
+            font-size: 1.6rem;
+            margin: 0;
+            font-family: var(--font-serif);
+        }
+        .category-heading .cat-count {
+            margin-left: auto;
+            font-size: 0.82rem;
+            color: var(--color-gray);
+            font-family: var(--font-sans);
+            font-weight: 500;
+        }
+
+        /* ── Products Grid ── */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 24px;
+        }
+
+        /* ── Product Card ── */
+        .product-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(14px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--glass-shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .product-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 24px 60px rgba(80,30,60,0.13);
+            border-color: rgba(201,126,160,0.35);
+        }
+
+        /* Main image */
+        .card-img-wrap {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            overflow: hidden;
+            background: rgba(245,213,228,0.12);
+            cursor: zoom-in;
+        }
+        .card-img-wrap img.main-img {
+            width: 100%; height: 100%;
+            object-fit: contain;
+            transition: transform 0.45s ease, opacity 0.2s ease;
+            padding: 8px;
+        }
+        .product-card:hover .card-img-wrap img.main-img { transform: scale(1.05); }
+        .zoom-hint {
+            position: absolute;
+            bottom: 10px; right: 10px;
+            background: rgba(255,255,255,0.85);
+            border-radius: 8px;
+            padding: 4px 8px;
+            font-size: 0.72rem;
+            color: var(--color-gray);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(6px);
+            display: flex; align-items: center; gap: 4px;
+        }
+        .product-card:hover .zoom-hint { opacity: 1; }
+
+        /* Variant count badge */
+        .variant-badge {
+            position: absolute;
+            top: 12px; left: 12px;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(8px);
+            border-radius: 8px;
+            padding: 4px 10px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--color-primary-dark);
+        }
+
+        /* Thumbnail strip */
+        .thumb-strip {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding: 10px 16px;
+            background: rgba(245,213,228,0.08);
+            border-top: 1px solid rgba(201,126,160,0.1);
+            scrollbar-width: thin;
+            scrollbar-color: var(--color-primary-dark) transparent;
+        }
+        .thumb-strip::-webkit-scrollbar { height: 3px; }
+        .thumb-strip::-webkit-scrollbar-thumb { background: var(--color-primary-dark); border-radius: 3px; }
+        .thumb-strip img {
+            width: 48px; height: 48px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            flex-shrink: 0;
+            transition: var(--transition);
+            opacity: 0.7;
+        }
+        .thumb-strip img:hover, .thumb-strip img.active {
+            border-color: var(--color-primary-dark);
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        /* Card body */
+        .card-body { padding: 18px 20px 20px; flex: 1; display: flex; flex-direction: column; }
+        .card-body h3 { font-family: var(--font-sans); font-size: 1.05rem; font-weight: 600; margin-bottom: 5px; }
+        .card-body .desc { font-size: 0.85rem; color: var(--color-gray); margin-bottom: 14px; flex: 1; }
+        .card-footer-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .card-price { font-weight: 700; font-size: 1rem; color: var(--color-primary-dark); white-space: nowrap; }
+        .enquire-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--color-dark);
+            color: white;
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 50px;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .enquire-btn:hover { background: #25D366; transform: translateY(-1px); }
+
+        /* ── Lightbox ── */
+        .lightbox-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(10,10,20,0.92);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(6px);
+            animation: fadeIn 0.2s ease;
+        }
+        .lightbox-overlay.open { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .lightbox-img {
+            max-width: 88vw;
+            max-height: 88vh;
+            object-fit: contain;
+            border-radius: 16px;
+            box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+        }
+        .lightbox-close {
+            position: fixed;
+            top: 20px; right: 24px;
+            background: rgba(255,255,255,0.12);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .lightbox-close:hover { background: rgba(255,255,255,0.25); }
+
+        /* ── Responsive ── */
+        @media (max-width: 900px) {
+            .catalogue-layout { grid-template-columns: 1fr; }
+            .cat-sidebar { position: static; display: flex; flex-wrap: wrap; gap: 8px; padding: 16px; }
+            .cat-sidebar h3 { width: 100%; }
+            .cat-nav-link { padding: 8px 14px; font-size: 0.85rem; }
+        }
+        @media (max-width: 560px) {
+            .products-grid { grid-template-columns: 1fr; }
+            .card-img-wrap { height: 220px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container">
+            <a href="index.html" class="logo">Florista<span>.</span></a>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="products.html" class="nav-link">Products</a>
+                <a href="wholesale.html" class="nav-link">Wholesale &amp; Logistics</a>
+                <a href="about.html" class="nav-link">About Us</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </nav>
+            <button class="mobile-menu-btn" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <div class="container">
+                <div class="section-label">Full Catalogue</div>
+                <h1>Our Product Range</h1>
+                <p>Handcrafted organza &amp; fabric flowers — 12 pastel shades, made in Nagpur, shipped PAN India.</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="catalogue-layout">
+
+                <!-- Sticky Sidebar -->
+                <aside class="cat-sidebar">
+                    <h3>Browse By Category</h3>
+                    <a href="#organza" class="cat-nav-link" onclick="setActive(this)">
+                        <i class="fas fa-seedling"></i> Organza Flowers
+                        <span class="count">11</span>
+                    </a>
+                    <a href="#premium" class="cat-nav-link" onclick="setActive(this)">
+                        <i class="fas fa-star"></i> Premium & Specialty
+                        <span class="count">8</span>
+                    </a>
+                    <a href="#theme" class="cat-nav-link" onclick="setActive(this)">
+                        <i class="fas fa-party-horn"></i> Theme & Events
+                        <span class="count">3</span>
+                    </a>
+                    <div class="sidebar-cta">
+                        <p>Need bulk pricing? Chat with us directly.</p>
+                        <a href="https://wa.me/917588447595?text=Hi%20Florista!%20I%20want%20to%20enquire%20about%20bulk%20pricing." class="btn btn-whatsapp" target="_blank" style="font-size:0.82rem;padding:9px 14px;">
+                            <i class="fab fa-whatsapp"></i> WhatsApp Us
+                        </a>
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
+                <div class="catalogue-content">
+
+                    <section class="category-section reveal" id="organza">
+                        <div class="category-heading">
+                            <div class="cat-icon"><i class="fas fa-seedling"></i></div>
+                            <h2>Organza Flowers</h2>
+                            <span class="cat-count">11 products</span>
+                        </div>
+                        <div class="products-grid">
+                            <div class="product-card reveal">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_12_inch_1.png', this)">
+                                    <img class="main-img" id="main_organza_12_inch" src="images/product_organza_12_inch_1.png" alt="12" Regular & Ornela" loading="lazy">
+                                    <div class="variant-badge">11 shades</div>
+                                    <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
+                                </div>
+                                <div class="thumb-strip">
+                                    <img src="images/product_organza_12_inch_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_12_inch')">
+                                    <img src="images/product_organza_12_inch_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_12_inch')">
+                                    <img src="images/product_organza_12_inch_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_12_inch')">
+                                    <img src="images/product_organza_12_inch_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_12_inch')">
+                                    <img src="images/product_organza_12_inch_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_12_inch')">
+                                    <img src="images/product_organza_12_inch_6.png" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_12_inch')">
+                                    <img src="images/product_organza_12_inch_7.png" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_12_inch')">
+                                    <img src="images/product_organza_12_inch_8.png" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_12_inch')">
+                                    <img src="images/product_organza_12_inch_9.png" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_12_inch')">
+                                    <img src="images/product_organza_12_inch_10.png" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_12_inch')">
+                                    <img src="images/product_organza_12_inch_11.png" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_12_inch')">
+                                </div>
+                                <div class="card-body">
+                                    <h3>12" Regular & Ornela</h3>
+                                    <p class="desc">12 pastel shades available</p>
+                                    <div class="card-footer-row">
+                                        <span class="card-price">Rs. 230 – Rs. 275</span>
+                                        <a href="https://wa.me/917588447595?text=Enquiry%20for%2012%22%20Regular%20%26%20Ornela" class="enquire-btn" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> Enquire
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card reveal">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_18_inch_1.png', this)">
+                                    <img class="main-img" id="main_organza_18_inch" src="images/product_organza_18_inch_1.png" alt="18" Lumora" loading="lazy">
+                                    <div class="variant-badge">11 shades</div>
+                                    <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
+                                </div>
+                                <div class="thumb-strip">
+                                    <img src="images/product_organza_18_inch_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_18_inch')">
+                                    <img src="images/product_organza_18_inch_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_18_inch')">
+                                    <img src="images/product_organza_18_inch_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_18_inch')">
+                                    <img src="images/product_organza_18_inch_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_18_inch')">
+                                    <img src="images/product_organza_18_inch_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_18_inch')">
+                                    <img src="images/product_organza_18_inch_6.png" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_18_inch')">
+                                    <img src="images/product_organza_18_inch_7.png" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_18_inch')">
+                                    <img src="images/product_organza_18_inch_8.png" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_18_inch')">
+                                    <img src="images/product_organza_18_inch_9.png" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_18_inch')">
+                                    <img src="images/product_organza_18_inch_10.png" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_18_inch')">
+                                    <img src="images/product_organza_18_inch_11.png" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_18_inch')">
+                                </div>
+                                <div class="card-body">
+                                    <h3>18" Lumora</h3>
+                                    <p class="desc">12 pastel shades available</p>
+                                    <div class="card-footer-row">
+                                        <span class="card-price">Rs. 375</span>
+                                        <a href="https://wa.me/917588447595?text=Enquiry%20for%2018%22%20Lumora" class="enquire-btn" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> Enquire
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card reveal">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_24_inch_1.png', this)">
+                                    <img class="main-img" id="main_organza_24_inch" src="images/product_organza_24_inch_1.png" alt="24" Wedding Touch" loading="lazy">
+                                    <div class="variant-badge">13 shades</div>
+                                    <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
+                                </div>
+                                <div class="thumb-strip">
+                                    <img src="images/product_organza_24_inch_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_6.png" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_7.png" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_8.png" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_9.png" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_10.png" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_11.png" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_12.png" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_13.png" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_24_inch')">
+                                </div>
+                                <div class="card-body">
+                                    <h3>24" Wedding Touch</h3>
+                                    <p class="desc">Perfect for intimate backdrops</p>
+                                    <div class="card-footer-row">
+                                        <span class="card-price">Rs. 375</span>
+                                        <a href="https://wa.me/917588447595?text=Enquiry%20for%2024%22%20Wedding%20Touch" class="enquire-btn" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> Enquire
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card reveal">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_24_inch_premium_1.png', this)">
+                                    <img class="main-img" id="main_organza_24_inch_premium" src="images/product_organza_24_inch_premium_1.png" alt="24" Premium Collection" loading="lazy">
+                                    <div class="variant-badge">20 shades</div>
+                                    <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
+                                </div>
+                                <div class="thumb-strip">
+                                    <img src="images/product_organza_24_inch_premium_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_6.png" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_7.png" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_8.png" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_9.png" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_10.png" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_11.png" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_12.png" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_13.png" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_14.png" class="" loading="lazy" alt="Shade 14" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_15.png" class="" loading="lazy" alt="Shade 15" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_16.png" class="" loading="lazy" alt="Shade 16" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_17.png" class="" loading="lazy" alt="Shade 17" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_18.png" class="" loading="lazy" alt="Shade 18" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_19.png" class="" loading="lazy" alt="Shade 19" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_20.png" class="" loading="lazy" alt="Shade 20" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                </div>
+                                <div class="card-body">
+                                    <h3>24" Premium Collection</h3>
+                                    <p class="desc">Large-format premium prints</p>
+                                    <div class="card-footer-row">
+                                        <span class="card-price">Rs. 375 – Rs. 450</span>
+                                        <a href="https://wa.me/917588447595?text=Enquiry%20for%2024%22%20Premium%20Collection" class="enquire-btn" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> Enquire
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card reveal">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_28_inch_1.png', this)">
+                                    <img class="main-img" id="main_organza_28_inch" src="images/product_organza_28_inch_1.png" alt="28" Wedding Bloom" loading="lazy">
+                                    <div class="variant-badge">12 shades</div>
+                                    <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
+                                </div>
+                                <div class="thumb-strip">
+                                    <img src="images/product_organza_28_inch_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_28_inch')">
+                                    <img src="images/product_organza_28_inch_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_28_inch')">
+                                    <img src="images/product_organza_28_inch_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_28_inch')">
+                                    <img src="images/product_organza_28_inch_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_28_inch')">
+                                    <img src="images/product_organza_28_inch_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_28_inch')">
+                                    <img src="images/product_organza_28_inch_6.png" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_28_inch')">
+                                    <img src="images/product_organza_28_inch_7.png" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_28_inch')">
+                                    <img src="images/product_organza_28_inch_8.png" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_28_inch')">
+                                    <img src="images/product_organza_28_inch_9.png" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_28_inch')">
+                                    <img src="images/product_organza_28_inch_10.png" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_28_inch')">
+                                    <img src="images/product_organza_28_inch_11.png" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_28_inch')">
+                                    <img src="images/product_organza_28_inch_12.png" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_28_inch')">
+                                </div>
+                                <div class="card-body">
+                                    <h3>28" Wedding Bloom</h3>
+                                    <p class="desc">Premium finish for events</p>
+                                    <div class="card-footer-row">
+                                        <span class="card-price">Rs. 450</span>
+                                        <a href="https://wa.me/917588447595?text=Enquiry%20for%2028%22%20Wedding%20Bloom" class="enquire-btn" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> Enquire
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card reveal">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_32_inch_1.png', this)">
+                                    <img class="main-img" id="main_organza_32_inch" src="images/product_organza_32_inch_1.png" alt="32" Pure Bliss" loading="lazy">
+                                    <div class="variant-badge">12 shades</div>
+                                    <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
+                                </div>
+                                <div class="thumb-strip">
+                                    <img src="images/product_organza_32_inch_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_32_inch')">
+                                    <img src="images/product_organza_32_inch_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_32_inch')">
+                                    <img src="images/product_organza_32_inch_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_32_inch')">
+                                    <img src="images/product_organza_32_inch_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_32_inch')">
+                                    <img src="images/product_organza_32_inch_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_32_inch')">
+                                    <img src="images/product_organza_32_inch_6.png" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_32_inch')">
+                                    <img src="images/product_organza_32_inch_7.png" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_32_inch')">
+                                    <img src="images/product_organza_32_inch_8.png" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_32_inch')">
+                                    <img src="images/product_organza_32_inch_9.png" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_32_inch')">
+                                    <img src="images/product_organza_32_inch_10.png" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_32_inch')">
+                                    <img src="images/product_organza_32_inch_11.png" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_32_inch')">
+                                    <img src="images/product_organza_32_inch_12.png" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_32_inch')">
+                                </div>
+                                <div class="card-body">
+                                    <h3>32" Pure Bliss</h3>
+                                    <p class="desc">Large statement pieces</p>
+                                    <div class="card-footer-row">
+                                        <span class="card-price">Rs. 550 – Rs. 675</span>
+                                        <a href="https://wa.me/917588447595?text=Enquiry%20for%2032%22%20Pure%20Bliss" class="enquire-btn" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> Enquire
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card reveal">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_36_inch_1.png', this)">
+                                    <img class="main-img" id="main_organza_36_inch" src="images/product_organza_36_inch_1.png" alt="36" Premium Blooms" loading="lazy">
+                                    <div class="variant-badge">14 shades</div>
+                                    <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
+                                </div>
+                                <div class="thumb-strip">
+                                    <img src="images/product_organza_36_inch_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_6.png" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_7.png" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_8.png" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_9.png" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_10.png" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_11.png" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_12.png" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_13.png" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_14.png" class="" loading="lazy" alt="Shade 14" onclick="switchImg(this, 'main_organza_36_inch')">
+                                </div>
+                                <div class="card-body">
+                                    <h3>36" Premium Blooms</h3>
+                                    <p class="desc">Elegant 36" variants</p>
+                                    <div class="card-footer-row">
+                                        <span class="card-price">Rs. 750</span>
+                                        <a href="https://wa.me/917588447595?text=Enquiry%20for%2036%22%20Premium%20Blooms" class="enquire-btn" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> Enquire
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card reveal">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_40_inch_1.png', this)">
+                                    <img class="main-img" id="main_organza_40_inch" src="images/product_organza_40_inch_1.png" alt="40" Decor Blooms" loading="lazy">
+                                    <div class="variant-badge">13 shades</div>
+                                    <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
+                                </div>
+                                <div class="thumb-strip">
+                                    <img src="images/product_organza_40_inch_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_6.png" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_7.png" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_8.png" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_9.png" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_10.png" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_11.png" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_12.png" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_13.png" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_40_inch')">
+                                </div>
+                                <div class="card-body">
+                                    <h3>40" Decor Blooms</h3>
+                                    <p class="desc">Stage & backdrop decor</p>
+                                    <div class="card-footer-row">
+                                        <span class="card-price">Rs. 950</span>
+                                        <a href="https://wa.me/917588447595?text=Enquiry%20for%2040%22%20Decor%20Blooms" class="enquire-btn" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> Enquire
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card reveal">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_44_inch_1.png', this)">
+                                    <img class="main-img" id="main_organza_44_inch" src="images/product_organza_44_inch_1.png" alt="44" Majestic" loading="lazy">
+                                    <div class="variant-badge">13 shades</div>
+                                    <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
+                                </div>
+                                <div class="thumb-strip">
+                                    <img src="images/product_organza_44_inch_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_6.png" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_7.png" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_8.png" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_9.png" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_10.png" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_11.png" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_12.png" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_13.png" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_44_inch')">
+                                </div>
+                                <div class="card-body">
+                                    <h3>44" Majestic</h3>
+                                    <p class="desc">For grand stage decor</p>
+                                    <div class="card-footer-row">
+                                        <span class="card-price">Rs. 1,200</span>
+                                        <a href="https://wa.me/917588447595?text=Enquiry%20for%2044%22%20Majestic" class="enquire-btn" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> Enquire
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card reveal">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_48_inch_1.png', this)">
+                                    <img class="main-img" id="main_organza_48_inch" src="images/product_organza_48_inch_1.png" alt="48" Big Flora" loading="lazy">
+                                    <div class="variant-badge">13 shades</div>
+                                    <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
+                                </div>
+                                <div class="thumb-strip">
+                                    <img src="images/product_organza_48_inch_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_6.png" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_7.png" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_8.png" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_9.png" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_10.png" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_11.png" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_12.png" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_13.png" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_48_inch')">
+                                </div>
+                                <div class="card-body">
+                                    <h3>48" Big Flora</h3>
+                                    <p class="desc">Massive floral centerpieces</p>
+                                    <div class="card-footer-row">
+                                        <span class="card-price">Rs. 1,500</span>
+                                        <a href="https://wa.me/917588447595?text=Enquiry%20for%2048%22%20Big%20Flora" class="enquire-btn" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> Enquire
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card reveal">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_60_inch_1.png', this)">
+                                    <img class="main-img" id="main_organza_60_inch" src="images/product_organza_60_inch_1.png" alt="60" Giant Flora" loading="lazy">
+                                    <div class="variant-badge">13 shades</div>
+                                    <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
+                                </div>
+                                <div class="thumb-strip">
+                                    <img src="images/product_organza_60_inch_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_6.png" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_7.png" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_8.png" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_9.png" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_10.png" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_11.png" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_12.png" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_13.png" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_60_inch')">
+                                </div>
+                                <div class="card-body">
+                                    <h3>60" Giant Flora</h3>
+                                    <p class="desc">Our largest masterpiece</p>
+                                    <div class="card-footer-row">
+                                        <span class="card-price">Rs. 2,500</span>
+                                        <a href="https://wa.me/917588447595?text=Enquiry%20for%2060%22%20Giant%20Flora" class="enquire-btn" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> Enquire
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="category-section reveal" id="premium">
+                        <div class="category-heading">
+                            <div class="cat-icon"><i class="fas fa-star"></i></div>
+                            <h2>Premium & Specialty</h2>
+                            <span class="cat-count">8 products</span>
+                        </div>
+                        <div class="products-grid">
+                            <div class="product-card reveal">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_glowing_flower_1.png', this)">
+                                    <img class="main-img" id="main_glowing_flower" src="images/product_glowing_flower_1.png" alt="Glowing Flower (3ft)" loading="lazy">
+                                    <div class="variant-badge">2 shades</div>
+                                    <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
+                                </div>
+                                <div class="thumb-strip">
+                                    <img src="images/product_glowing_flower_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_glowing_flower')">
+                                    <img src="images/product_glowing_flower_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_glowing_flower')">
+                                </div>
+                                <div class="card-body">
+                                    <h3>Glowing Flower (3ft)</h3>
+                                    <p class="desc">Illuminated elegant decor</p>
+                                    <div class="card-footer-row">
+                                        <span class="card-price">Rs. 2,300</span>
+                                        <a href="https://wa.me/917588447595?text=Enquiry%20for%20Glowing%20Flower%20(3ft)" class="enquire-btn" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> Enquire
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card reveal">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_aura_flower_1.png', this)">
+                                    <img class="main-img" id="main_aura_flower" src="images/product_aura_flower_1.png" alt="Aura Flower (3ft)" loading="lazy">
+                                    <div class="variant-badge">2 shades</div>
+                                    <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
+                                </div>
+                                <div class="thumb-strip">
+                                    <img src="images/product_aura_flower_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_aura_flower')">
+                                    <img src="images/product_aura_flower_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_aura_flower')">
+                                </div>
+                                <div class="card-body">
+                                    <h3>Aura Flower (3ft)</h3>
+                                    <p class="desc">Premium structural design</p>
+                                    <div class="card-footer-row">
+                                        <span class="card-price">Rs. 1,699</span>
+                                        <a href="https://wa.me/917588447595?text=Enquiry%20for%20Aura%20Flower%20(3ft)" class="enquire-btn" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> Enquire
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card reveal">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_tri_petal_flower_1.png', this)">
+                                    <img class="main-img" id="main_tri_petal_flower" src="images/product_tri_petal_flower_1.png" alt="Tri-Petal Flower (2.5ft)" loading="lazy">
+                                    <div class="variant-badge">2 shades</div>
+                                    <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
+                                </div>
+                                <div class="thumb-strip">
+                                    <img src="images/product_tri_petal_flower_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_tri_petal_flower')">
+                                    <img src="images/product_tri_petal_flower_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_tri_petal_flower')">
+                                </div>
+                                <div class="card-body">
+                                    <h3>Tri-Petal Flower (2.5ft)</h3>
+                                    <p class="desc">Unique geometric style</p>
+                                    <div class="card-footer-row">
+                                        <span class="card-price">Rs. 1,200</span>
+                                        <a href="https://wa.me/917588447595?text=Enquiry%20for%20Tri-Petal%20Flower%20(2.5ft)" class="enquire-btn" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> Enquire
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card reveal">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_cinderella_flowers_1.png', this)">
+                                    <img class="main-img" id="main_cinderella_flowers" src="images/product_cinderella_flowers_1.png" alt="Cinderella Flowers" loading="lazy">
+                                    <div class="variant-badge">2 shades</div>
+                                    <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
+                                </div>
+                                <div class="thumb-strip">
+                                    <img src="images/product_cinderella_flowers_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_cinderella_flowers')">
+                                    <img src="images/product_cinderella_flowers_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_cinderella_flowers')">
+                                </div>
+                                <div class="card-body">
+                                    <h3>Cinderella Flowers</h3>
+                                    <p class="desc">Fairytale aesthetic</p>
+                                    <div class="card-footer-row">
+                                        <span class="card-price">From Rs. 1,025</span>
+                                        <a href="https://wa.me/917588447595?text=Enquiry%20for%20Cinderella%20Flowers" class="enquire-btn" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> Enquire
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card reveal">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_fluffy_bloom_1.png', this)">
+                                    <img class="main-img" id="main_fluffy_bloom" src="images/product_fluffy_bloom_1.png" alt="Fluffy Bloom" loading="lazy">
+                                    <div class="variant-badge">2 shades</div>
+                                    <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
+                                </div>
+                                <div class="thumb-strip">
+                                    <img src="images/product_fluffy_bloom_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_fluffy_bloom')">
+                                    <img src="images/product_fluffy_bloom_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_fluffy_bloom')">
+                                </div>
+                                <div class="card-body">
+                                    <h3>Fluffy Bloom</h3>
+                                    <p class="desc">Soft, voluminous texture</p>
+                                    <div class="card-footer-row">
+                                        <span class="card-price">From Rs. 445</span>
+                                        <a href="https://wa.me/917588447595?text=Enquiry%20for%20Fluffy%20Bloom" class="enquire-btn" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> Enquire
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card reveal">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_premium_fabric_1.png', this)">
+                                    <img class="main-img" id="main_premium_fabric" src="images/product_premium_fabric_1.png" alt="Premium Fabric Flowers" loading="lazy">
+                                    <div class="variant-badge">5 shades</div>
+                                    <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
+                                </div>
+                                <div class="thumb-strip">
+                                    <img src="images/product_premium_fabric_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_premium_fabric')">
+                                    <img src="images/product_premium_fabric_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_premium_fabric')">
+                                    <img src="images/product_premium_fabric_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_premium_fabric')">
+                                    <img src="images/product_premium_fabric_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_premium_fabric')">
+                                    <img src="images/product_premium_fabric_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_premium_fabric')">
+                                </div>
+                                <div class="card-body">
+                                    <h3>Premium Fabric Flowers</h3>
+                                    <p class="desc">High-quality structured fabric</p>
+                                    <div class="card-footer-row">
+                                        <span class="card-price">From Rs. 645</span>
+                                        <a href="https://wa.me/917588447595?text=Enquiry%20for%20Premium%20Fabric%20Flowers" class="enquire-btn" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> Enquire
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card reveal">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_blooming_dales_1.png', this)">
+                                    <img class="main-img" id="main_blooming_dales" src="images/product_blooming_dales_1.png" alt="Blooming Dales" loading="lazy">
+                                    <div class="variant-badge">4 shades</div>
+                                    <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
+                                </div>
+                                <div class="thumb-strip">
+                                    <img src="images/product_blooming_dales_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_blooming_dales')">
+                                    <img src="images/product_blooming_dales_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_blooming_dales')">
+                                    <img src="images/product_blooming_dales_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_blooming_dales')">
+                                    <img src="images/product_blooming_dales_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_blooming_dales')">
+                                </div>
+                                <div class="card-body">
+                                    <h3>Blooming Dales</h3>
+                                    <p class="desc">Available in 24", 32", 36"</p>
+                                    <div class="card-footer-row">
+                                        <span class="card-price">From Rs. 509</span>
+                                        <a href="https://wa.me/917588447595?text=Enquiry%20for%20Blooming%20Dales" class="enquire-btn" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> Enquire
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card reveal">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_printed_fabric_1.png', this)">
+                                    <img class="main-img" id="main_printed_fabric" src="images/product_printed_fabric_1.png" alt="Printed Fabric Flower" loading="lazy">
+                                    <div class="variant-badge">4 shades</div>
+                                    <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
+                                </div>
+                                <div class="thumb-strip">
+                                    <img src="images/product_printed_fabric_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_printed_fabric')">
+                                    <img src="images/product_printed_fabric_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_printed_fabric')">
+                                    <img src="images/product_printed_fabric_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_printed_fabric')">
+                                    <img src="images/product_printed_fabric_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_printed_fabric')">
+                                </div>
+                                <div class="card-body">
+                                    <h3>Printed Fabric Flower</h3>
+                                    <p class="desc">Vibrant printed textures</p>
+                                    <div class="card-footer-row">
+                                        <span class="card-price">Rs. 675</span>
+                                        <a href="https://wa.me/917588447595?text=Enquiry%20for%20Printed%20Fabric%20Flower" class="enquire-btn" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> Enquire
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="category-section reveal" id="theme">
+                        <div class="category-heading">
+                            <div class="cat-icon"><i class="fas fa-party-horn"></i></div>
+                            <h2>Theme & Events</h2>
+                            <span class="cat-count">3 products</span>
+                        </div>
+                        <div class="products-grid">
+                            <div class="product-card reveal">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_butterfly_1.png', this)">
+                                    <img class="main-img" id="main_organza_butterfly" src="images/product_organza_butterfly_1.png" alt="Organza Butterfly" loading="lazy">
+                                    <div class="variant-badge">2 shades</div>
+                                    <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
+                                </div>
+                                <div class="thumb-strip">
+                                    <img src="images/product_organza_butterfly_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_butterfly')">
+                                    <img src="images/product_organza_butterfly_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_butterfly')">
+                                </div>
+                                <div class="card-body">
+                                    <h3>Organza Butterfly</h3>
+                                    <p class="desc">12 pastel shades available</p>
+                                    <div class="card-footer-row">
+                                        <span class="card-price">From Rs. 450</span>
+                                        <a href="https://wa.me/917588447595?text=Enquiry%20for%20Organza%20Butterfly" class="enquire-btn" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> Enquire
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card reveal">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_dream_wings_1.png', this)">
+                                    <img class="main-img" id="main_dream_wings" src="images/product_dream_wings_1.png" alt="Dream Wings (90")" loading="lazy">
+                                    <div class="variant-badge">4 shades</div>
+                                    <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
+                                </div>
+                                <div class="thumb-strip">
+                                    <img src="images/product_dream_wings_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_dream_wings')">
+                                    <img src="images/product_dream_wings_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_dream_wings')">
+                                    <img src="images/product_dream_wings_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_dream_wings')">
+                                    <img src="images/product_dream_wings_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_dream_wings')">
+                                </div>
+                                <div class="card-body">
+                                    <h3>Dream Wings (90")</h3>
+                                    <p class="desc">Massive angel wing props</p>
+                                    <div class="card-footer-row">
+                                        <span class="card-price">Rs. 2,300</span>
+                                        <a href="https://wa.me/917588447595?text=Enquiry%20for%20Dream%20Wings%20(90%22)" class="enquire-btn" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> Enquire
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card reveal">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_theme_party_fish_1.png', this)">
+                                    <img class="main-img" id="main_theme_party_fish" src="images/product_theme_party_fish_1.png" alt="Theme Party Fish" loading="lazy">
+                                    <div class="variant-badge">4 shades</div>
+                                    <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
+                                </div>
+                                <div class="thumb-strip">
+                                    <img src="images/product_theme_party_fish_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_theme_party_fish')">
+                                    <img src="images/product_theme_party_fish_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_theme_party_fish')">
+                                    <img src="images/product_theme_party_fish_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_theme_party_fish')">
+                                    <img src="images/product_theme_party_fish_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_theme_party_fish')">
+                                </div>
+                                <div class="card-body">
+                                    <h3>Theme Party Fish</h3>
+                                    <p class="desc">Under-the-sea party decor</p>
+                                    <div class="card-footer-row">
+                                        <span class="card-price">From Rs. 725</span>
+                                        <a href="https://wa.me/917588447595?text=Enquiry%20for%20Theme%20Party%20Fish" class="enquire-btn" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> Enquire
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div><!-- /.catalogue-content -->
+            </div><!-- /.catalogue-layout -->
+        </div><!-- /.container -->
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <a href="index.html" class="logo" style="margin-bottom:14px;display:block;">Florista<span>.</span></a>
+                    <p>Bulk Decor Manufacturer.<br>Premium Quality at Factory Prices.<br>Nagpur, Maharashtra.</p>
+                    <div class="footer-social">
+                        <a href="https://wa.me/917588447595" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.instagram.com/thefloristaflowerss/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="tel:+917588447595" aria-label="Call"><i class="fas fa-phone"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Products</h4>
+                    <ul class="footer-links">
+                        <li><a href="products.html#organza">Organza Flowers</a></li>
+                        <li><a href="products.html#premium">Premium &amp; Specialty</a></li>
+                        <li><a href="products.html#theme">Theme &amp; Events</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="wholesale.html">Wholesale Policy</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Get In Touch</h4>
+                    <p style="margin-bottom:10px;"><i class="fab fa-whatsapp" style="color:#25D366;margin-right:8px;"></i>+91 75884 47595</p>
+                    <p><i class="fas fa-map-marker-alt" style="color:var(--color-primary);margin-right:8px;"></i>Nagpur, Maharashtra</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 The Florista Flowers. All rights reserved. Handcrafted in Nagpur.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Lightbox -->
+    <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox(event)">
+        <button class="lightbox-close" onclick="document.getElementById('lightbox').classList.remove('open')">
+            <i class="fas fa-times"></i>
+        </button>
+        <img class="lightbox-img" id="lightbox-img" src="" alt="Product zoom">
+    </div>
+
+    <a href="https://wa.me/917588447595" class="floating-whatsapp" target="_blank" aria-label="Chat on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+    <button class="back-to-top" aria-label="Back to top"><i class="fas fa-chevron-up"></i></button>
+
+    <script src="js/main.js"></script>
+    <script>
+        function switchImg(thumb, mainId) {
+            document.getElementById(mainId).src = thumb.src;
+            const strip = thumb.closest('.thumb-strip');
+            strip.querySelectorAll('img').forEach(t => t.classList.remove('active'));
+            thumb.classList.add('active');
+            // Update lightbox img if open
+            const lb = document.getElementById('lightbox');
+            if (lb.classList.contains('open')) {
+                document.getElementById('lightbox-img').src = thumb.src;
+            }
+        }
+        function openLightbox(src, wrap) {
+            const main = wrap.querySelector('.main-img');
+            document.getElementById('lightbox-img').src = main ? main.src : src;
+            document.getElementById('lightbox').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeLightbox(e) {
+            if (e.target === document.getElementById('lightbox') || e.target.closest('.lightbox-close')) {
+                document.getElementById('lightbox').classList.remove('open');
+                document.body.style.overflow = '';
+            }
+        }
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                document.getElementById('lightbox').classList.remove('open');
+                document.body.style.overflow = '';
+            }
+        });
+        function setActive(el) {
+            document.querySelectorAll('.cat-nav-link').forEach(l => l.classList.remove('active'));
+            el.classList.add('active');
+        }
+        // Highlight active sidebar item on scroll
+        const sections = document.querySelectorAll('.category-section');
+        const navLinks = document.querySelectorAll('.cat-nav-link');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(s => {
+                if (window.scrollY >= s.offsetTop - 130) current = s.id;
+            });
+            navLinks.forEach(l => {
+                l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+            });
+        }, { passive: true });
+    </script>
+</body>
+</html>
