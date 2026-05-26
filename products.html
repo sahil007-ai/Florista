@@ -9,12 +9,14 @@
     <!-- Open Graph Tags -->
     <meta property="og:title" content="Wholesale Organza & Fabric Flowers Catalogue | Florista Nagpur">
     <meta property="og:description" content="Complete B2B digital catalogue of premium organza flowers, giant backdrop flowers, and theme party decorations.">
-    <meta property="og:image" content="https://www.theflorista.in/images/product_organza_24_inch_premium_1.png">
+    <meta property="og:image" content="https://www.theflorista.in/images/product_organza_24_inch_premium_1.webp">
     <meta property="og:url" content="https://www.theflorista.in/products.html">
     <meta property="og:type" content="website">
 
-    <!-- Favicon -->
-    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <!-- Favicons -->
+    <link rel="icon" href="images/favicon.ico" sizes="any">
+    <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
 
     <!-- Preconnect for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -273,6 +275,114 @@
         }
         .enquire-btn:hover { background: #25D366; transform: translateY(-1px); }
 
+
+        /* ── Sort & Filter Toolbar ── */
+        .cat-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+            background: var(--glass-bg);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 14px 18px;
+            margin-bottom: 32px;
+            box-shadow: var(--glass-shadow);
+            position: sticky;
+            top: 90px;
+            z-index: 20;
+        }
+        .cat-toolbar-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .cat-toolbar .tb-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--color-gray);
+            margin-right: 4px;
+        }
+        .cat-toolbar .tb-chip {
+            background: rgba(245, 213, 228, 0.25);
+            border: 1px solid rgba(201, 126, 160, 0.18);
+            color: var(--color-gray);
+            font-size: 0.82rem;
+            font-weight: 500;
+            padding: 6px 13px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+        .cat-toolbar .tb-chip:hover {
+            background: var(--color-primary-light);
+            color: var(--color-primary-dark);
+            border-color: var(--color-primary-dark);
+        }
+        .cat-toolbar .tb-chip.active {
+            background: var(--color-primary-dark);
+            color: white;
+            border-color: var(--color-primary-dark);
+        }
+        .cat-toolbar #sort-select {
+            background: var(--color-white);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50px;
+            padding: 7px 30px 7px 14px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--color-dark);
+            cursor: pointer;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23c97ea0' d='M5 6L0 0h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            transition: var(--transition);
+        }
+        .cat-toolbar #sort-select:focus,
+        .cat-toolbar #sort-select:hover {
+            outline: none;
+            border-color: var(--color-primary-dark);
+            box-shadow: 0 0 0 3px rgba(201, 126, 160, 0.15);
+        }
+        .cat-toolbar-results {
+            margin-left: auto;
+            font-size: 0.85rem;
+            color: var(--color-gray);
+        }
+        .cat-toolbar-results #result-count {
+            font-weight: 700;
+            color: var(--color-primary-dark);
+        }
+        /* Hide products that are filtered out */
+        .product-card.is-hidden { display: none !important; }
+        /* Empty-section placeholder */
+        .category-section.is-empty {
+            opacity: 0.45;
+        }
+        .category-section.is-empty .products-grid::after {
+            content: "No products match the current filter in this category.";
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 32px 16px;
+            color: var(--color-gray);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+        @media (max-width: 768px) {
+            .cat-toolbar { position: static; gap: 12px; padding: 12px 14px; }
+            .cat-toolbar-results { margin-left: 0; width: 100%; text-align: center; }
+        }
+
         /* ── Lightbox ── */
         .lightbox-overlay {
             display: none;
@@ -336,7 +446,7 @@
           "item": {
             "@type": "Product",
             "name": "12\" Regular & Ornela",
-            "image": "https://www.theflorista.in/images/product_organza_12_inch_1.png",
+            "image": "https://www.theflorista.in/images/product_organza_12_inch_1.webp",
             "description": "Wholesale handcrafted decor flower by Florista, Nagpur. Minimum order quantity: 10 pieces. PAN India delivery.",
             "brand": {
               "@type": "Brand",
@@ -363,7 +473,7 @@
           "item": {
             "@type": "Product",
             "name": "18\" Lumora",
-            "image": "https://www.theflorista.in/images/product_organza_18_inch_1.png",
+            "image": "https://www.theflorista.in/images/product_organza_18_inch_1.webp",
             "description": "Wholesale handcrafted decor flower by Florista, Nagpur. Minimum order quantity: 10 pieces. PAN India delivery.",
             "brand": {
               "@type": "Brand",
@@ -389,7 +499,7 @@
           "item": {
             "@type": "Product",
             "name": "24\" Wedding Touch",
-            "image": "https://www.theflorista.in/images/product_organza_24_inch_1.png",
+            "image": "https://www.theflorista.in/images/product_organza_24_inch_1.webp",
             "description": "Wholesale handcrafted decor flower by Florista, Nagpur. Minimum order quantity: 10 pieces. PAN India delivery.",
             "brand": {
               "@type": "Brand",
@@ -415,7 +525,7 @@
           "item": {
             "@type": "Product",
             "name": "24\" Premium Collection",
-            "image": "https://www.theflorista.in/images/product_organza_24_inch_premium_1.png",
+            "image": "https://www.theflorista.in/images/product_organza_24_inch_premium_1.webp",
             "description": "Wholesale handcrafted decor flower by Florista, Nagpur. Minimum order quantity: 10 pieces. PAN India delivery.",
             "brand": {
               "@type": "Brand",
@@ -442,7 +552,7 @@
           "item": {
             "@type": "Product",
             "name": "28\" Wedding Bloom",
-            "image": "https://www.theflorista.in/images/product_organza_28_inch_1.png",
+            "image": "https://www.theflorista.in/images/product_organza_28_inch_1.webp",
             "description": "Wholesale handcrafted decor flower by Florista, Nagpur. Minimum order quantity: 10 pieces. PAN India delivery.",
             "brand": {
               "@type": "Brand",
@@ -468,7 +578,7 @@
           "item": {
             "@type": "Product",
             "name": "32\" Pure Bliss",
-            "image": "https://www.theflorista.in/images/product_organza_32_inch_1.png",
+            "image": "https://www.theflorista.in/images/product_organza_32_inch_1.webp",
             "description": "Wholesale handcrafted decor flower by Florista, Nagpur. Minimum order quantity: 10 pieces. PAN India delivery.",
             "brand": {
               "@type": "Brand",
@@ -495,7 +605,7 @@
           "item": {
             "@type": "Product",
             "name": "36\" Premium Blooms",
-            "image": "https://www.theflorista.in/images/product_organza_36_inch_1.png",
+            "image": "https://www.theflorista.in/images/product_organza_36_inch_1.webp",
             "description": "Wholesale handcrafted decor flower by Florista, Nagpur. Minimum order quantity: 10 pieces. PAN India delivery.",
             "brand": {
               "@type": "Brand",
@@ -521,7 +631,7 @@
           "item": {
             "@type": "Product",
             "name": "40\" Decor Blooms",
-            "image": "https://www.theflorista.in/images/product_organza_40_inch_1.png",
+            "image": "https://www.theflorista.in/images/product_organza_40_inch_1.webp",
             "description": "Wholesale handcrafted decor flower by Florista, Nagpur. Minimum order quantity: 10 pieces. PAN India delivery.",
             "brand": {
               "@type": "Brand",
@@ -547,7 +657,7 @@
           "item": {
             "@type": "Product",
             "name": "44\" Majestic",
-            "image": "https://www.theflorista.in/images/product_organza_44_inch_1.png",
+            "image": "https://www.theflorista.in/images/product_organza_44_inch_1.webp",
             "description": "Wholesale handcrafted decor flower by Florista, Nagpur. Minimum order quantity: 10 pieces. PAN India delivery.",
             "brand": {
               "@type": "Brand",
@@ -573,7 +683,7 @@
           "item": {
             "@type": "Product",
             "name": "48\" Big Flora",
-            "image": "https://www.theflorista.in/images/product_organza_48_inch_1.png",
+            "image": "https://www.theflorista.in/images/product_organza_48_inch_1.webp",
             "description": "Wholesale handcrafted decor flower by Florista, Nagpur. Minimum order quantity: 5 pieces. PAN India delivery.",
             "brand": {
               "@type": "Brand",
@@ -599,7 +709,7 @@
           "item": {
             "@type": "Product",
             "name": "60\" Giant Flora",
-            "image": "https://www.theflorista.in/images/product_organza_60_inch_1.png",
+            "image": "https://www.theflorista.in/images/product_organza_60_inch_1.webp",
             "description": "Wholesale handcrafted decor flower by Florista, Nagpur. Minimum order quantity: 5 pieces. PAN India delivery.",
             "brand": {
               "@type": "Brand",
@@ -625,7 +735,7 @@
           "item": {
             "@type": "Product",
             "name": "Glowing Flower (3ft)",
-            "image": "https://www.theflorista.in/images/product_glowing_flower_1.png",
+            "image": "https://www.theflorista.in/images/product_glowing_flower_1.webp",
             "description": "Wholesale handcrafted decor flower by Florista, Nagpur. Minimum order quantity: 5 pieces. PAN India delivery.",
             "brand": {
               "@type": "Brand",
@@ -651,7 +761,7 @@
           "item": {
             "@type": "Product",
             "name": "Aura Flower (3ft)",
-            "image": "https://www.theflorista.in/images/product_aura_flower_1.png",
+            "image": "https://www.theflorista.in/images/product_aura_flower_1.webp",
             "description": "Wholesale handcrafted decor flower by Florista, Nagpur. Minimum order quantity: 5 pieces. PAN India delivery.",
             "brand": {
               "@type": "Brand",
@@ -677,7 +787,7 @@
           "item": {
             "@type": "Product",
             "name": "Tri-Petal Flower (2.5ft)",
-            "image": "https://www.theflorista.in/images/product_tri_petal_flower_1.png",
+            "image": "https://www.theflorista.in/images/product_tri_petal_flower_1.webp",
             "description": "Wholesale handcrafted decor flower by Florista, Nagpur. Minimum order quantity: 10 pieces. PAN India delivery.",
             "brand": {
               "@type": "Brand",
@@ -703,7 +813,7 @@
           "item": {
             "@type": "Product",
             "name": "Cinderella Flowers",
-            "image": "https://www.theflorista.in/images/product_cinderella_flowers_1.png",
+            "image": "https://www.theflorista.in/images/product_cinderella_flowers_1.webp",
             "description": "Wholesale handcrafted decor flower by Florista, Nagpur. Minimum order quantity: 10 pieces. PAN India delivery.",
             "brand": {
               "@type": "Brand",
@@ -729,7 +839,7 @@
           "item": {
             "@type": "Product",
             "name": "Fluffy Bloom",
-            "image": "https://www.theflorista.in/images/product_fluffy_bloom_1.png",
+            "image": "https://www.theflorista.in/images/product_fluffy_bloom_1.webp",
             "description": "Wholesale handcrafted decor flower by Florista, Nagpur. Minimum order quantity: 10 pieces. PAN India delivery.",
             "brand": {
               "@type": "Brand",
@@ -755,7 +865,7 @@
           "item": {
             "@type": "Product",
             "name": "Premium Fabric Flowers",
-            "image": "https://www.theflorista.in/images/product_premium_fabric_1.png",
+            "image": "https://www.theflorista.in/images/product_premium_fabric_1.webp",
             "description": "Wholesale handcrafted decor flower by Florista, Nagpur. Minimum order quantity: 10 pieces. PAN India delivery.",
             "brand": {
               "@type": "Brand",
@@ -781,7 +891,7 @@
           "item": {
             "@type": "Product",
             "name": "Blooming Dales",
-            "image": "https://www.theflorista.in/images/product_blooming_dales_1.png",
+            "image": "https://www.theflorista.in/images/product_blooming_dales_1.webp",
             "description": "Wholesale handcrafted decor flower by Florista, Nagpur. Minimum order quantity: 10 pieces. PAN India delivery.",
             "brand": {
               "@type": "Brand",
@@ -807,7 +917,7 @@
           "item": {
             "@type": "Product",
             "name": "Printed Fabric Flower",
-            "image": "https://www.theflorista.in/images/product_printed_fabric_1.png",
+            "image": "https://www.theflorista.in/images/product_printed_fabric_1.webp",
             "description": "Wholesale handcrafted decor flower by Florista, Nagpur. Minimum order quantity: 10 pieces. PAN India delivery.",
             "brand": {
               "@type": "Brand",
@@ -833,7 +943,7 @@
           "item": {
             "@type": "Product",
             "name": "Organza Butterfly",
-            "image": "https://www.theflorista.in/images/product_organza_butterfly_1.png",
+            "image": "https://www.theflorista.in/images/product_organza_butterfly_1.webp",
             "description": "Wholesale handcrafted decor flower by Florista, Nagpur. Minimum order quantity: 10 pieces. PAN India delivery.",
             "brand": {
               "@type": "Brand",
@@ -859,7 +969,7 @@
           "item": {
             "@type": "Product",
             "name": "Dream Wings (90\")",
-            "image": "https://www.theflorista.in/images/product_dream_wings_1.png",
+            "image": "https://www.theflorista.in/images/product_dream_wings_1.webp",
             "description": "Wholesale handcrafted decor flower by Florista, Nagpur. Minimum order quantity: 5 pieces. PAN India delivery.",
             "brand": {
               "@type": "Brand",
@@ -885,7 +995,7 @@
           "item": {
             "@type": "Product",
             "name": "Theme Party Fish",
-            "image": "https://www.theflorista.in/images/product_theme_party_fish_1.png",
+            "image": "https://www.theflorista.in/images/product_theme_party_fish_1.webp",
             "description": "Wholesale handcrafted decor flower by Florista, Nagpur. Minimum order quantity: 10 pieces. PAN India delivery.",
             "brand": {
               "@type": "Brand",
@@ -963,6 +1073,32 @@
                 <!-- Main Content -->
                 <div class="catalogue-content">
 
+                    <!-- Sort & Filter Toolbar -->
+                    <div class="cat-toolbar reveal" role="region" aria-label="Sort and filter products">
+                        <div class="cat-toolbar-group">
+                            <span class="tb-label">Filter:</span>
+                            <button type="button" class="tb-chip active" data-filter="all">All</button>
+                            <button type="button" class="tb-chip" data-filter="moq-5">MOQ 5 pcs</button>
+                            <button type="button" class="tb-chip" data-filter="moq-10">MOQ 10 pcs</button>
+                            <button type="button" class="tb-chip" data-filter="size-small">Up to 24"</button>
+                            <button type="button" class="tb-chip" data-filter="size-medium">28&ndash;44"</button>
+                            <button type="button" class="tb-chip" data-filter="size-large">48"+</button>
+                        </div>
+                        <div class="cat-toolbar-group">
+                            <span class="tb-label" id="sort-label">Sort:</span>
+                            <select id="sort-select" aria-labelledby="sort-label">
+                                <option value="default">Default</option>
+                                <option value="price-asc">Price: Low to High</option>
+                                <option value="price-desc">Price: High to Low</option>
+                                <option value="size-asc">Size: Small to Large</option>
+                                <option value="size-desc">Size: Large to Small</option>
+                            </select>
+                        </div>
+                        <div class="cat-toolbar-results">
+                            <span id="result-count">22</span> products shown
+                        </div>
+                    </div>
+
                     <section class="category-section reveal" id="organza">
                         <div class="category-heading">
                             <div class="cat-icon"><i class="fas fa-seedling"></i></div>
@@ -970,24 +1106,24 @@
                             <span class="cat-count">11 products</span>
                         </div>
                         <div class="products-grid">
-                            <div class="product-card reveal">
-                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_12_inch_1.png', this)">
-                                    <img class="main-img" id="main_organza_12_inch" src="images/product_organza_12_inch_1.png" alt='12" Regular & Ornela' loading="lazy">
+                            <div class="product-card reveal" data-size="12" data-price="230" data-moq="10">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_12_inch_1.webp', this)">
+                                    <img class="main-img" id="main_organza_12_inch" src="images/product_organza_12_inch_1.webp" alt='12" Regular & Ornela' loading="lazy">
                                     <div class="variant-badge">11 shades</div>
                                     <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
                                 </div>
                                 <div class="thumb-strip">
-                                    <img src="images/product_organza_12_inch_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_12_inch')">
-                                    <img src="images/product_organza_12_inch_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_12_inch')">
-                                    <img src="images/product_organza_12_inch_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_12_inch')">
-                                    <img src="images/product_organza_12_inch_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_12_inch')">
-                                    <img src="images/product_organza_12_inch_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_12_inch')">
-                                    <img src="images/product_organza_12_inch_6.png" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_12_inch')">
-                                    <img src="images/product_organza_12_inch_7.png" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_12_inch')">
-                                    <img src="images/product_organza_12_inch_8.png" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_12_inch')">
-                                    <img src="images/product_organza_12_inch_9.png" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_12_inch')">
-                                    <img src="images/product_organza_12_inch_10.png" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_12_inch')">
-                                    <img src="images/product_organza_12_inch_11.png" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_12_inch')">
+                                    <img src="images/product_organza_12_inch_1.webp" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_12_inch')">
+                                    <img src="images/product_organza_12_inch_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_12_inch')">
+                                    <img src="images/product_organza_12_inch_3.webp" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_12_inch')">
+                                    <img src="images/product_organza_12_inch_4.webp" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_12_inch')">
+                                    <img src="images/product_organza_12_inch_5.webp" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_12_inch')">
+                                    <img src="images/product_organza_12_inch_6.webp" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_12_inch')">
+                                    <img src="images/product_organza_12_inch_7.webp" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_12_inch')">
+                                    <img src="images/product_organza_12_inch_8.webp" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_12_inch')">
+                                    <img src="images/product_organza_12_inch_9.webp" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_12_inch')">
+                                    <img src="images/product_organza_12_inch_10.webp" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_12_inch')">
+                                    <img src="images/product_organza_12_inch_11.webp" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_12_inch')">
                                 </div>
                                 <div class="card-body">
                                     <h3>12" Regular & Ornela</h3>
@@ -1001,24 +1137,24 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="product-card reveal">
-                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_18_inch_1.png', this)">
-                                    <img class="main-img" id="main_organza_18_inch" src="images/product_organza_18_inch_1.png" alt='18" Lumora' loading="lazy">
+                            <div class="product-card reveal" data-size="18" data-price="375" data-moq="10">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_18_inch_1.webp', this)">
+                                    <img class="main-img" id="main_organza_18_inch" src="images/product_organza_18_inch_1.webp" alt='18" Lumora' loading="lazy">
                                     <div class="variant-badge">11 shades</div>
                                     <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
                                 </div>
                                 <div class="thumb-strip">
-                                    <img src="images/product_organza_18_inch_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_18_inch')">
-                                    <img src="images/product_organza_18_inch_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_18_inch')">
-                                    <img src="images/product_organza_18_inch_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_18_inch')">
-                                    <img src="images/product_organza_18_inch_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_18_inch')">
-                                    <img src="images/product_organza_18_inch_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_18_inch')">
-                                    <img src="images/product_organza_18_inch_6.png" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_18_inch')">
-                                    <img src="images/product_organza_18_inch_7.png" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_18_inch')">
-                                    <img src="images/product_organza_18_inch_8.png" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_18_inch')">
-                                    <img src="images/product_organza_18_inch_9.png" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_18_inch')">
-                                    <img src="images/product_organza_18_inch_10.png" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_18_inch')">
-                                    <img src="images/product_organza_18_inch_11.png" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_18_inch')">
+                                    <img src="images/product_organza_18_inch_1.webp" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_18_inch')">
+                                    <img src="images/product_organza_18_inch_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_18_inch')">
+                                    <img src="images/product_organza_18_inch_3.webp" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_18_inch')">
+                                    <img src="images/product_organza_18_inch_4.webp" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_18_inch')">
+                                    <img src="images/product_organza_18_inch_5.webp" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_18_inch')">
+                                    <img src="images/product_organza_18_inch_6.webp" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_18_inch')">
+                                    <img src="images/product_organza_18_inch_7.webp" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_18_inch')">
+                                    <img src="images/product_organza_18_inch_8.webp" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_18_inch')">
+                                    <img src="images/product_organza_18_inch_9.webp" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_18_inch')">
+                                    <img src="images/product_organza_18_inch_10.webp" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_18_inch')">
+                                    <img src="images/product_organza_18_inch_11.webp" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_18_inch')">
                                 </div>
                                 <div class="card-body">
                                     <h3>18" Lumora</h3>
@@ -1032,26 +1168,26 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="product-card reveal">
-                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_24_inch_1.png', this)">
-                                    <img class="main-img" id="main_organza_24_inch" src="images/product_organza_24_inch_1.png" alt='24" Wedding Touch' loading="lazy">
+                            <div class="product-card reveal" data-size="24" data-price="375" data-moq="10">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_24_inch_1.webp', this)">
+                                    <img class="main-img" id="main_organza_24_inch" src="images/product_organza_24_inch_1.webp" alt='24" Wedding Touch' loading="lazy">
                                     <div class="variant-badge">13 shades</div>
                                     <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
                                 </div>
                                 <div class="thumb-strip">
-                                    <img src="images/product_organza_24_inch_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_24_inch')">
-                                    <img src="images/product_organza_24_inch_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_24_inch')">
-                                    <img src="images/product_organza_24_inch_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_24_inch')">
-                                    <img src="images/product_organza_24_inch_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_24_inch')">
-                                    <img src="images/product_organza_24_inch_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_24_inch')">
-                                    <img src="images/product_organza_24_inch_6.png" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_24_inch')">
-                                    <img src="images/product_organza_24_inch_7.png" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_24_inch')">
-                                    <img src="images/product_organza_24_inch_8.png" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_24_inch')">
-                                    <img src="images/product_organza_24_inch_9.png" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_24_inch')">
-                                    <img src="images/product_organza_24_inch_10.png" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_24_inch')">
-                                    <img src="images/product_organza_24_inch_11.png" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_24_inch')">
-                                    <img src="images/product_organza_24_inch_12.png" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_24_inch')">
-                                    <img src="images/product_organza_24_inch_13.png" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_1.webp" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_3.webp" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_4.webp" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_5.webp" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_6.webp" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_7.webp" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_8.webp" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_9.webp" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_10.webp" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_11.webp" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_12.webp" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_24_inch')">
+                                    <img src="images/product_organza_24_inch_13.webp" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_24_inch')">
                                 </div>
                                 <div class="card-body">
                                     <h3>24" Wedding Touch</h3>
@@ -1065,33 +1201,33 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="product-card reveal">
-                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_24_inch_premium_1.png', this)">
-                                    <img class="main-img" id="main_organza_24_inch_premium" src="images/product_organza_24_inch_premium_1.png" alt='24" Premium Collection' loading="lazy">
+                            <div class="product-card reveal" data-size="24" data-price="375" data-moq="10">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_24_inch_premium_1.webp', this)">
+                                    <img class="main-img" id="main_organza_24_inch_premium" src="images/product_organza_24_inch_premium_1.webp" alt='24" Premium Collection' loading="lazy">
                                     <div class="variant-badge">20 shades</div>
                                     <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
                                 </div>
                                 <div class="thumb-strip">
-                                    <img src="images/product_organza_24_inch_premium_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_24_inch_premium')">
-                                    <img src="images/product_organza_24_inch_premium_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_24_inch_premium')">
-                                    <img src="images/product_organza_24_inch_premium_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_24_inch_premium')">
-                                    <img src="images/product_organza_24_inch_premium_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_24_inch_premium')">
-                                    <img src="images/product_organza_24_inch_premium_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_24_inch_premium')">
-                                    <img src="images/product_organza_24_inch_premium_6.png" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_24_inch_premium')">
-                                    <img src="images/product_organza_24_inch_premium_7.png" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_24_inch_premium')">
-                                    <img src="images/product_organza_24_inch_premium_8.png" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_24_inch_premium')">
-                                    <img src="images/product_organza_24_inch_premium_9.png" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_24_inch_premium')">
-                                    <img src="images/product_organza_24_inch_premium_10.png" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_24_inch_premium')">
-                                    <img src="images/product_organza_24_inch_premium_11.png" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_24_inch_premium')">
-                                    <img src="images/product_organza_24_inch_premium_12.png" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_24_inch_premium')">
-                                    <img src="images/product_organza_24_inch_premium_13.png" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_24_inch_premium')">
-                                    <img src="images/product_organza_24_inch_premium_14.png" class="" loading="lazy" alt="Shade 14" onclick="switchImg(this, 'main_organza_24_inch_premium')">
-                                    <img src="images/product_organza_24_inch_premium_15.png" class="" loading="lazy" alt="Shade 15" onclick="switchImg(this, 'main_organza_24_inch_premium')">
-                                    <img src="images/product_organza_24_inch_premium_16.png" class="" loading="lazy" alt="Shade 16" onclick="switchImg(this, 'main_organza_24_inch_premium')">
-                                    <img src="images/product_organza_24_inch_premium_17.png" class="" loading="lazy" alt="Shade 17" onclick="switchImg(this, 'main_organza_24_inch_premium')">
-                                    <img src="images/product_organza_24_inch_premium_18.png" class="" loading="lazy" alt="Shade 18" onclick="switchImg(this, 'main_organza_24_inch_premium')">
-                                    <img src="images/product_organza_24_inch_premium_19.png" class="" loading="lazy" alt="Shade 19" onclick="switchImg(this, 'main_organza_24_inch_premium')">
-                                    <img src="images/product_organza_24_inch_premium_20.png" class="" loading="lazy" alt="Shade 20" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_1.webp" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_3.webp" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_4.webp" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_5.webp" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_6.webp" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_7.webp" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_8.webp" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_9.webp" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_10.webp" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_11.webp" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_12.webp" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_13.webp" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_14.webp" class="" loading="lazy" alt="Shade 14" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_15.webp" class="" loading="lazy" alt="Shade 15" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_16.webp" class="" loading="lazy" alt="Shade 16" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_17.webp" class="" loading="lazy" alt="Shade 17" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_18.webp" class="" loading="lazy" alt="Shade 18" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_19.webp" class="" loading="lazy" alt="Shade 19" onclick="switchImg(this, 'main_organza_24_inch_premium')">
+                                    <img src="images/product_organza_24_inch_premium_20.webp" class="" loading="lazy" alt="Shade 20" onclick="switchImg(this, 'main_organza_24_inch_premium')">
                                 </div>
                                 <div class="card-body">
                                     <h3>24" Premium Collection</h3>
@@ -1105,25 +1241,25 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="product-card reveal">
-                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_28_inch_1.png', this)">
-                                    <img class="main-img" id="main_organza_28_inch" src="images/product_organza_28_inch_1.png" alt='28" Wedding Bloom' loading="lazy">
+                            <div class="product-card reveal" data-size="28" data-price="450" data-moq="10">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_28_inch_1.webp', this)">
+                                    <img class="main-img" id="main_organza_28_inch" src="images/product_organza_28_inch_1.webp" alt='28" Wedding Bloom' loading="lazy">
                                     <div class="variant-badge">12 shades</div>
                                     <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
                                 </div>
                                 <div class="thumb-strip">
-                                    <img src="images/product_organza_28_inch_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_28_inch')">
-                                    <img src="images/product_organza_28_inch_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_28_inch')">
-                                    <img src="images/product_organza_28_inch_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_28_inch')">
-                                    <img src="images/product_organza_28_inch_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_28_inch')">
-                                    <img src="images/product_organza_28_inch_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_28_inch')">
-                                    <img src="images/product_organza_28_inch_6.png" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_28_inch')">
-                                    <img src="images/product_organza_28_inch_7.png" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_28_inch')">
-                                    <img src="images/product_organza_28_inch_8.png" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_28_inch')">
-                                    <img src="images/product_organza_28_inch_9.png" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_28_inch')">
-                                    <img src="images/product_organza_28_inch_10.png" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_28_inch')">
-                                    <img src="images/product_organza_28_inch_11.png" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_28_inch')">
-                                    <img src="images/product_organza_28_inch_12.png" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_28_inch')">
+                                    <img src="images/product_organza_28_inch_1.webp" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_28_inch')">
+                                    <img src="images/product_organza_28_inch_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_28_inch')">
+                                    <img src="images/product_organza_28_inch_3.webp" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_28_inch')">
+                                    <img src="images/product_organza_28_inch_4.webp" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_28_inch')">
+                                    <img src="images/product_organza_28_inch_5.webp" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_28_inch')">
+                                    <img src="images/product_organza_28_inch_6.webp" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_28_inch')">
+                                    <img src="images/product_organza_28_inch_7.webp" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_28_inch')">
+                                    <img src="images/product_organza_28_inch_8.webp" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_28_inch')">
+                                    <img src="images/product_organza_28_inch_9.webp" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_28_inch')">
+                                    <img src="images/product_organza_28_inch_10.webp" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_28_inch')">
+                                    <img src="images/product_organza_28_inch_11.webp" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_28_inch')">
+                                    <img src="images/product_organza_28_inch_12.webp" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_28_inch')">
                                 </div>
                                 <div class="card-body">
                                     <h3>28" Wedding Bloom</h3>
@@ -1137,25 +1273,25 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="product-card reveal">
-                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_32_inch_1.png', this)">
-                                    <img class="main-img" id="main_organza_32_inch" src="images/product_organza_32_inch_1.png" alt='32" Pure Bliss' loading="lazy">
+                            <div class="product-card reveal" data-size="32" data-price="550" data-moq="10">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_32_inch_1.webp', this)">
+                                    <img class="main-img" id="main_organza_32_inch" src="images/product_organza_32_inch_1.webp" alt='32" Pure Bliss' loading="lazy">
                                     <div class="variant-badge">12 shades</div>
                                     <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
                                 </div>
                                 <div class="thumb-strip">
-                                    <img src="images/product_organza_32_inch_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_32_inch')">
-                                    <img src="images/product_organza_32_inch_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_32_inch')">
-                                    <img src="images/product_organza_32_inch_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_32_inch')">
-                                    <img src="images/product_organza_32_inch_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_32_inch')">
-                                    <img src="images/product_organza_32_inch_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_32_inch')">
-                                    <img src="images/product_organza_32_inch_6.png" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_32_inch')">
-                                    <img src="images/product_organza_32_inch_7.png" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_32_inch')">
-                                    <img src="images/product_organza_32_inch_8.png" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_32_inch')">
-                                    <img src="images/product_organza_32_inch_9.png" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_32_inch')">
-                                    <img src="images/product_organza_32_inch_10.png" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_32_inch')">
-                                    <img src="images/product_organza_32_inch_11.png" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_32_inch')">
-                                    <img src="images/product_organza_32_inch_12.png" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_32_inch')">
+                                    <img src="images/product_organza_32_inch_1.webp" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_32_inch')">
+                                    <img src="images/product_organza_32_inch_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_32_inch')">
+                                    <img src="images/product_organza_32_inch_3.webp" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_32_inch')">
+                                    <img src="images/product_organza_32_inch_4.webp" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_32_inch')">
+                                    <img src="images/product_organza_32_inch_5.webp" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_32_inch')">
+                                    <img src="images/product_organza_32_inch_6.webp" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_32_inch')">
+                                    <img src="images/product_organza_32_inch_7.webp" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_32_inch')">
+                                    <img src="images/product_organza_32_inch_8.webp" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_32_inch')">
+                                    <img src="images/product_organza_32_inch_9.webp" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_32_inch')">
+                                    <img src="images/product_organza_32_inch_10.webp" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_32_inch')">
+                                    <img src="images/product_organza_32_inch_11.webp" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_32_inch')">
+                                    <img src="images/product_organza_32_inch_12.webp" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_32_inch')">
                                 </div>
                                 <div class="card-body">
                                     <h3>32" Pure Bliss</h3>
@@ -1169,27 +1305,27 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="product-card reveal">
-                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_36_inch_1.png', this)">
-                                    <img class="main-img" id="main_organza_36_inch" src="images/product_organza_36_inch_1.png" alt='36" Premium Blooms' loading="lazy">
+                            <div class="product-card reveal" data-size="36" data-price="750" data-moq="10">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_36_inch_1.webp', this)">
+                                    <img class="main-img" id="main_organza_36_inch" src="images/product_organza_36_inch_1.webp" alt='36" Premium Blooms' loading="lazy">
                                     <div class="variant-badge">14 shades</div>
                                     <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
                                 </div>
                                 <div class="thumb-strip">
-                                    <img src="images/product_organza_36_inch_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_36_inch')">
-                                    <img src="images/product_organza_36_inch_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_36_inch')">
-                                    <img src="images/product_organza_36_inch_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_36_inch')">
-                                    <img src="images/product_organza_36_inch_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_36_inch')">
-                                    <img src="images/product_organza_36_inch_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_36_inch')">
-                                    <img src="images/product_organza_36_inch_6.png" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_36_inch')">
-                                    <img src="images/product_organza_36_inch_7.png" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_36_inch')">
-                                    <img src="images/product_organza_36_inch_8.png" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_36_inch')">
-                                    <img src="images/product_organza_36_inch_9.png" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_36_inch')">
-                                    <img src="images/product_organza_36_inch_10.png" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_36_inch')">
-                                    <img src="images/product_organza_36_inch_11.png" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_36_inch')">
-                                    <img src="images/product_organza_36_inch_12.png" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_36_inch')">
-                                    <img src="images/product_organza_36_inch_13.png" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_36_inch')">
-                                    <img src="images/product_organza_36_inch_14.png" class="" loading="lazy" alt="Shade 14" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_1.webp" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_3.webp" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_4.webp" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_5.webp" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_6.webp" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_7.webp" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_8.webp" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_9.webp" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_10.webp" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_11.webp" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_12.webp" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_13.webp" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_36_inch')">
+                                    <img src="images/product_organza_36_inch_14.webp" class="" loading="lazy" alt="Shade 14" onclick="switchImg(this, 'main_organza_36_inch')">
                                 </div>
                                 <div class="card-body">
                                     <h3>36" Premium Blooms</h3>
@@ -1203,26 +1339,26 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="product-card reveal">
-                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_40_inch_1.png', this)">
-                                    <img class="main-img" id="main_organza_40_inch" src="images/product_organza_40_inch_1.png" alt='40" Decor Blooms' loading="lazy">
+                            <div class="product-card reveal" data-size="40" data-price="950" data-moq="10">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_40_inch_1.webp', this)">
+                                    <img class="main-img" id="main_organza_40_inch" src="images/product_organza_40_inch_1.webp" alt='40" Decor Blooms' loading="lazy">
                                     <div class="variant-badge">13 shades</div>
                                     <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
                                 </div>
                                 <div class="thumb-strip">
-                                    <img src="images/product_organza_40_inch_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_40_inch')">
-                                    <img src="images/product_organza_40_inch_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_40_inch')">
-                                    <img src="images/product_organza_40_inch_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_40_inch')">
-                                    <img src="images/product_organza_40_inch_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_40_inch')">
-                                    <img src="images/product_organza_40_inch_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_40_inch')">
-                                    <img src="images/product_organza_40_inch_6.png" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_40_inch')">
-                                    <img src="images/product_organza_40_inch_7.png" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_40_inch')">
-                                    <img src="images/product_organza_40_inch_8.png" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_40_inch')">
-                                    <img src="images/product_organza_40_inch_9.png" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_40_inch')">
-                                    <img src="images/product_organza_40_inch_10.png" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_40_inch')">
-                                    <img src="images/product_organza_40_inch_11.png" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_40_inch')">
-                                    <img src="images/product_organza_40_inch_12.png" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_40_inch')">
-                                    <img src="images/product_organza_40_inch_13.png" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_1.webp" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_3.webp" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_4.webp" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_5.webp" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_6.webp" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_7.webp" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_8.webp" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_9.webp" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_10.webp" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_11.webp" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_12.webp" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_40_inch')">
+                                    <img src="images/product_organza_40_inch_13.webp" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_40_inch')">
                                 </div>
                                 <div class="card-body">
                                     <h3>40" Decor Blooms</h3>
@@ -1236,26 +1372,26 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="product-card reveal">
-                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_44_inch_1.png', this)">
-                                    <img class="main-img" id="main_organza_44_inch" src="images/product_organza_44_inch_1.png" alt='44" Majestic' loading="lazy">
+                            <div class="product-card reveal" data-size="44" data-price="1200" data-moq="10">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_44_inch_1.webp', this)">
+                                    <img class="main-img" id="main_organza_44_inch" src="images/product_organza_44_inch_1.webp" alt='44" Majestic' loading="lazy">
                                     <div class="variant-badge">13 shades</div>
                                     <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
                                 </div>
                                 <div class="thumb-strip">
-                                    <img src="images/product_organza_44_inch_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_44_inch')">
-                                    <img src="images/product_organza_44_inch_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_44_inch')">
-                                    <img src="images/product_organza_44_inch_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_44_inch')">
-                                    <img src="images/product_organza_44_inch_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_44_inch')">
-                                    <img src="images/product_organza_44_inch_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_44_inch')">
-                                    <img src="images/product_organza_44_inch_6.png" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_44_inch')">
-                                    <img src="images/product_organza_44_inch_7.png" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_44_inch')">
-                                    <img src="images/product_organza_44_inch_8.png" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_44_inch')">
-                                    <img src="images/product_organza_44_inch_9.png" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_44_inch')">
-                                    <img src="images/product_organza_44_inch_10.png" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_44_inch')">
-                                    <img src="images/product_organza_44_inch_11.png" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_44_inch')">
-                                    <img src="images/product_organza_44_inch_12.png" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_44_inch')">
-                                    <img src="images/product_organza_44_inch_13.png" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_1.webp" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_3.webp" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_4.webp" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_5.webp" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_6.webp" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_7.webp" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_8.webp" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_9.webp" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_10.webp" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_11.webp" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_12.webp" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_44_inch')">
+                                    <img src="images/product_organza_44_inch_13.webp" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_44_inch')">
                                 </div>
                                 <div class="card-body">
                                     <h3>44" Majestic</h3>
@@ -1269,26 +1405,26 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="product-card reveal">
-                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_48_inch_1.png', this)">
-                                    <img class="main-img" id="main_organza_48_inch" src="images/product_organza_48_inch_1.png" alt='48" Big Flora' loading="lazy">
+                            <div class="product-card reveal" data-size="48" data-price="1500" data-moq="5">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_48_inch_1.webp', this)">
+                                    <img class="main-img" id="main_organza_48_inch" src="images/product_organza_48_inch_1.webp" alt='48" Big Flora' loading="lazy">
                                     <div class="variant-badge">13 shades</div>
                                     <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
                                 </div>
                                 <div class="thumb-strip">
-                                    <img src="images/product_organza_48_inch_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_48_inch')">
-                                    <img src="images/product_organza_48_inch_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_48_inch')">
-                                    <img src="images/product_organza_48_inch_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_48_inch')">
-                                    <img src="images/product_organza_48_inch_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_48_inch')">
-                                    <img src="images/product_organza_48_inch_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_48_inch')">
-                                    <img src="images/product_organza_48_inch_6.png" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_48_inch')">
-                                    <img src="images/product_organza_48_inch_7.png" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_48_inch')">
-                                    <img src="images/product_organza_48_inch_8.png" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_48_inch')">
-                                    <img src="images/product_organza_48_inch_9.png" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_48_inch')">
-                                    <img src="images/product_organza_48_inch_10.png" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_48_inch')">
-                                    <img src="images/product_organza_48_inch_11.png" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_48_inch')">
-                                    <img src="images/product_organza_48_inch_12.png" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_48_inch')">
-                                    <img src="images/product_organza_48_inch_13.png" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_1.webp" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_3.webp" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_4.webp" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_5.webp" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_6.webp" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_7.webp" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_8.webp" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_9.webp" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_10.webp" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_11.webp" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_12.webp" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_48_inch')">
+                                    <img src="images/product_organza_48_inch_13.webp" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_48_inch')">
                                 </div>
                                 <div class="card-body">
                                     <h3>48" Big Flora</h3>
@@ -1302,26 +1438,26 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="product-card reveal">
-                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_60_inch_1.png', this)">
-                                    <img class="main-img" id="main_organza_60_inch" src="images/product_organza_60_inch_1.png" alt='60" Giant Flora' loading="lazy">
+                            <div class="product-card reveal" data-size="60" data-price="2500" data-moq="5">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_60_inch_1.webp', this)">
+                                    <img class="main-img" id="main_organza_60_inch" src="images/product_organza_60_inch_1.webp" alt='60" Giant Flora' loading="lazy">
                                     <div class="variant-badge">13 shades</div>
                                     <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
                                 </div>
                                 <div class="thumb-strip">
-                                    <img src="images/product_organza_60_inch_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_60_inch')">
-                                    <img src="images/product_organza_60_inch_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_60_inch')">
-                                    <img src="images/product_organza_60_inch_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_60_inch')">
-                                    <img src="images/product_organza_60_inch_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_60_inch')">
-                                    <img src="images/product_organza_60_inch_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_60_inch')">
-                                    <img src="images/product_organza_60_inch_6.png" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_60_inch')">
-                                    <img src="images/product_organza_60_inch_7.png" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_60_inch')">
-                                    <img src="images/product_organza_60_inch_8.png" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_60_inch')">
-                                    <img src="images/product_organza_60_inch_9.png" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_60_inch')">
-                                    <img src="images/product_organza_60_inch_10.png" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_60_inch')">
-                                    <img src="images/product_organza_60_inch_11.png" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_60_inch')">
-                                    <img src="images/product_organza_60_inch_12.png" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_60_inch')">
-                                    <img src="images/product_organza_60_inch_13.png" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_1.webp" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_3.webp" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_4.webp" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_5.webp" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_6.webp" class="" loading="lazy" alt="Shade 6" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_7.webp" class="" loading="lazy" alt="Shade 7" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_8.webp" class="" loading="lazy" alt="Shade 8" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_9.webp" class="" loading="lazy" alt="Shade 9" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_10.webp" class="" loading="lazy" alt="Shade 10" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_11.webp" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_12.webp" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_60_inch')">
+                                    <img src="images/product_organza_60_inch_13.webp" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_60_inch')">
                                 </div>
                                 <div class="card-body">
                                     <h3>60" Giant Flora</h3>
@@ -1345,15 +1481,15 @@
                             <span class="cat-count">8 products</span>
                         </div>
                         <div class="products-grid">
-                            <div class="product-card reveal">
-                                <div class="card-img-wrap" onclick="openLightbox('images/product_glowing_flower_1.png', this)">
-                                    <img class="main-img" id="main_glowing_flower" src="images/product_glowing_flower_1.png" alt="Glowing Flower (3ft)" loading="lazy">
+                            <div class="product-card reveal" data-size="36" data-price="2300" data-moq="5">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_glowing_flower_1.webp', this)">
+                                    <img class="main-img" id="main_glowing_flower" src="images/product_glowing_flower_1.webp" alt="Glowing Flower (3ft)" loading="lazy">
                                     <div class="variant-badge">2 shades</div>
                                     <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
                                 </div>
                                 <div class="thumb-strip">
-                                    <img src="images/product_glowing_flower_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_glowing_flower')">
-                                    <img src="images/product_glowing_flower_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_glowing_flower')">
+                                    <img src="images/product_glowing_flower_1.webp" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_glowing_flower')">
+                                    <img src="images/product_glowing_flower_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_glowing_flower')">
                                 </div>
                                 <div class="card-body">
                                     <h3>Glowing Flower (3ft)</h3>
@@ -1367,15 +1503,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="product-card reveal">
-                                <div class="card-img-wrap" onclick="openLightbox('images/product_aura_flower_1.png', this)">
-                                    <img class="main-img" id="main_aura_flower" src="images/product_aura_flower_1.png" alt="Aura Flower (3ft)" loading="lazy">
+                            <div class="product-card reveal" data-size="36" data-price="1699" data-moq="5">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_aura_flower_1.webp', this)">
+                                    <img class="main-img" id="main_aura_flower" src="images/product_aura_flower_1.webp" alt="Aura Flower (3ft)" loading="lazy">
                                     <div class="variant-badge">2 shades</div>
                                     <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
                                 </div>
                                 <div class="thumb-strip">
-                                    <img src="images/product_aura_flower_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_aura_flower')">
-                                    <img src="images/product_aura_flower_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_aura_flower')">
+                                    <img src="images/product_aura_flower_1.webp" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_aura_flower')">
+                                    <img src="images/product_aura_flower_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_aura_flower')">
                                 </div>
                                 <div class="card-body">
                                     <h3>Aura Flower (3ft)</h3>
@@ -1389,15 +1525,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="product-card reveal">
-                                <div class="card-img-wrap" onclick="openLightbox('images/product_tri_petal_flower_1.png', this)">
-                                    <img class="main-img" id="main_tri_petal_flower" src="images/product_tri_petal_flower_1.png" alt="Tri-Petal Flower (2.5ft)" loading="lazy">
+                            <div class="product-card reveal" data-size="30" data-price="1200" data-moq="10">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_tri_petal_flower_1.webp', this)">
+                                    <img class="main-img" id="main_tri_petal_flower" src="images/product_tri_petal_flower_1.webp" alt="Tri-Petal Flower (2.5ft)" loading="lazy">
                                     <div class="variant-badge">2 shades</div>
                                     <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
                                 </div>
                                 <div class="thumb-strip">
-                                    <img src="images/product_tri_petal_flower_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_tri_petal_flower')">
-                                    <img src="images/product_tri_petal_flower_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_tri_petal_flower')">
+                                    <img src="images/product_tri_petal_flower_1.webp" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_tri_petal_flower')">
+                                    <img src="images/product_tri_petal_flower_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_tri_petal_flower')">
                                 </div>
                                 <div class="card-body">
                                     <h3>Tri-Petal Flower (2.5ft)</h3>
@@ -1411,15 +1547,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="product-card reveal">
-                                <div class="card-img-wrap" onclick="openLightbox('images/product_cinderella_flowers_1.png', this)">
-                                    <img class="main-img" id="main_cinderella_flowers" src="images/product_cinderella_flowers_1.png" alt="Cinderella Flowers" loading="lazy">
+                            <div class="product-card reveal" data-size="24" data-price="1025" data-moq="10">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_cinderella_flowers_1.webp', this)">
+                                    <img class="main-img" id="main_cinderella_flowers" src="images/product_cinderella_flowers_1.webp" alt="Cinderella Flowers" loading="lazy">
                                     <div class="variant-badge">2 shades</div>
                                     <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
                                 </div>
                                 <div class="thumb-strip">
-                                    <img src="images/product_cinderella_flowers_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_cinderella_flowers')">
-                                    <img src="images/product_cinderella_flowers_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_cinderella_flowers')">
+                                    <img src="images/product_cinderella_flowers_1.webp" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_cinderella_flowers')">
+                                    <img src="images/product_cinderella_flowers_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_cinderella_flowers')">
                                 </div>
                                 <div class="card-body">
                                     <h3>Cinderella Flowers</h3>
@@ -1433,15 +1569,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="product-card reveal">
-                                <div class="card-img-wrap" onclick="openLightbox('images/product_fluffy_bloom_1.png', this)">
-                                    <img class="main-img" id="main_fluffy_bloom" src="images/product_fluffy_bloom_1.png" alt="Fluffy Bloom" loading="lazy">
+                            <div class="product-card reveal" data-size="24" data-price="445" data-moq="10">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_fluffy_bloom_1.webp', this)">
+                                    <img class="main-img" id="main_fluffy_bloom" src="images/product_fluffy_bloom_1.webp" alt="Fluffy Bloom" loading="lazy">
                                     <div class="variant-badge">2 shades</div>
                                     <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
                                 </div>
                                 <div class="thumb-strip">
-                                    <img src="images/product_fluffy_bloom_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_fluffy_bloom')">
-                                    <img src="images/product_fluffy_bloom_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_fluffy_bloom')">
+                                    <img src="images/product_fluffy_bloom_1.webp" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_fluffy_bloom')">
+                                    <img src="images/product_fluffy_bloom_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_fluffy_bloom')">
                                 </div>
                                 <div class="card-body">
                                     <h3>Fluffy Bloom</h3>
@@ -1455,18 +1591,18 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="product-card reveal">
-                                <div class="card-img-wrap" onclick="openLightbox('images/product_premium_fabric_1.png', this)">
-                                    <img class="main-img" id="main_premium_fabric" src="images/product_premium_fabric_1.png" alt="Premium Fabric Flowers" loading="lazy">
+                            <div class="product-card reveal" data-size="24" data-price="645" data-moq="10">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_premium_fabric_1.webp', this)">
+                                    <img class="main-img" id="main_premium_fabric" src="images/product_premium_fabric_1.webp" alt="Premium Fabric Flowers" loading="lazy">
                                     <div class="variant-badge">5 shades</div>
                                     <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
                                 </div>
                                 <div class="thumb-strip">
-                                    <img src="images/product_premium_fabric_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_premium_fabric')">
-                                    <img src="images/product_premium_fabric_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_premium_fabric')">
-                                    <img src="images/product_premium_fabric_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_premium_fabric')">
-                                    <img src="images/product_premium_fabric_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_premium_fabric')">
-                                    <img src="images/product_premium_fabric_5.png" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_premium_fabric')">
+                                    <img src="images/product_premium_fabric_1.webp" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_premium_fabric')">
+                                    <img src="images/product_premium_fabric_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_premium_fabric')">
+                                    <img src="images/product_premium_fabric_3.webp" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_premium_fabric')">
+                                    <img src="images/product_premium_fabric_4.webp" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_premium_fabric')">
+                                    <img src="images/product_premium_fabric_5.webp" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_premium_fabric')">
                                 </div>
                                 <div class="card-body">
                                     <h3>Premium Fabric Flowers</h3>
@@ -1480,17 +1616,17 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="product-card reveal">
-                                <div class="card-img-wrap" onclick="openLightbox('images/product_blooming_dales_1.png', this)">
-                                    <img class="main-img" id="main_blooming_dales" src="images/product_blooming_dales_1.png" alt="Blooming Dales" loading="lazy">
+                            <div class="product-card reveal" data-size="24" data-price="509" data-moq="10">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_blooming_dales_1.webp', this)">
+                                    <img class="main-img" id="main_blooming_dales" src="images/product_blooming_dales_1.webp" alt="Blooming Dales" loading="lazy">
                                     <div class="variant-badge">4 shades</div>
                                     <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
                                 </div>
                                 <div class="thumb-strip">
-                                    <img src="images/product_blooming_dales_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_blooming_dales')">
-                                    <img src="images/product_blooming_dales_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_blooming_dales')">
-                                    <img src="images/product_blooming_dales_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_blooming_dales')">
-                                    <img src="images/product_blooming_dales_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_blooming_dales')">
+                                    <img src="images/product_blooming_dales_1.webp" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_blooming_dales')">
+                                    <img src="images/product_blooming_dales_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_blooming_dales')">
+                                    <img src="images/product_blooming_dales_3.webp" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_blooming_dales')">
+                                    <img src="images/product_blooming_dales_4.webp" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_blooming_dales')">
                                 </div>
                                 <div class="card-body">
                                     <h3>Blooming Dales</h3>
@@ -1504,17 +1640,17 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="product-card reveal">
-                                <div class="card-img-wrap" onclick="openLightbox('images/product_printed_fabric_1.png', this)">
-                                    <img class="main-img" id="main_printed_fabric" src="images/product_printed_fabric_1.png" alt="Printed Fabric Flower" loading="lazy">
+                            <div class="product-card reveal" data-size="24" data-price="675" data-moq="10">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_printed_fabric_1.webp', this)">
+                                    <img class="main-img" id="main_printed_fabric" src="images/product_printed_fabric_1.webp" alt="Printed Fabric Flower" loading="lazy">
                                     <div class="variant-badge">4 shades</div>
                                     <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
                                 </div>
                                 <div class="thumb-strip">
-                                    <img src="images/product_printed_fabric_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_printed_fabric')">
-                                    <img src="images/product_printed_fabric_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_printed_fabric')">
-                                    <img src="images/product_printed_fabric_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_printed_fabric')">
-                                    <img src="images/product_printed_fabric_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_printed_fabric')">
+                                    <img src="images/product_printed_fabric_1.webp" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_printed_fabric')">
+                                    <img src="images/product_printed_fabric_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_printed_fabric')">
+                                    <img src="images/product_printed_fabric_3.webp" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_printed_fabric')">
+                                    <img src="images/product_printed_fabric_4.webp" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_printed_fabric')">
                                 </div>
                                 <div class="card-body">
                                     <h3>Printed Fabric Flower</h3>
@@ -1538,15 +1674,15 @@
                             <span class="cat-count">3 products</span>
                         </div>
                         <div class="products-grid">
-                            <div class="product-card reveal">
-                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_butterfly_1.png', this)">
-                                    <img class="main-img" id="main_organza_butterfly" src="images/product_organza_butterfly_1.png" alt="Organza Butterfly" loading="lazy">
+                            <div class="product-card reveal" data-size="18" data-price="450" data-moq="10">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_organza_butterfly_1.webp', this)">
+                                    <img class="main-img" id="main_organza_butterfly" src="images/product_organza_butterfly_1.webp" alt="Organza Butterfly" loading="lazy">
                                     <div class="variant-badge">2 shades</div>
                                     <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
                                 </div>
                                 <div class="thumb-strip">
-                                    <img src="images/product_organza_butterfly_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_butterfly')">
-                                    <img src="images/product_organza_butterfly_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_butterfly')">
+                                    <img src="images/product_organza_butterfly_1.webp" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_organza_butterfly')">
+                                    <img src="images/product_organza_butterfly_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_butterfly')">
                                 </div>
                                 <div class="card-body">
                                     <h3>Organza Butterfly</h3>
@@ -1560,17 +1696,17 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="product-card reveal">
-                                <div class="card-img-wrap" onclick="openLightbox('images/product_dream_wings_1.png', this)">
-                                    <img class="main-img" id="main_dream_wings" src="images/product_dream_wings_1.png" alt='Dream Wings (90")' loading="lazy">
+                            <div class="product-card reveal" data-size="90" data-price="2300" data-moq="5">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_dream_wings_1.webp', this)">
+                                    <img class="main-img" id="main_dream_wings" src="images/product_dream_wings_1.webp" alt='Dream Wings (90")' loading="lazy">
                                     <div class="variant-badge">4 shades</div>
                                     <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
                                 </div>
                                 <div class="thumb-strip">
-                                    <img src="images/product_dream_wings_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_dream_wings')">
-                                    <img src="images/product_dream_wings_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_dream_wings')">
-                                    <img src="images/product_dream_wings_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_dream_wings')">
-                                    <img src="images/product_dream_wings_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_dream_wings')">
+                                    <img src="images/product_dream_wings_1.webp" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_dream_wings')">
+                                    <img src="images/product_dream_wings_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_dream_wings')">
+                                    <img src="images/product_dream_wings_3.webp" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_dream_wings')">
+                                    <img src="images/product_dream_wings_4.webp" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_dream_wings')">
                                 </div>
                                 <div class="card-body">
                                     <h3>Dream Wings (90")</h3>
@@ -1584,17 +1720,17 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="product-card reveal">
-                                <div class="card-img-wrap" onclick="openLightbox('images/product_theme_party_fish_1.png', this)">
-                                    <img class="main-img" id="main_theme_party_fish" src="images/product_theme_party_fish_1.png" alt="Theme Party Fish" loading="lazy">
+                            <div class="product-card reveal" data-size="24" data-price="725" data-moq="10">
+                                <div class="card-img-wrap" onclick="openLightbox('images/product_theme_party_fish_1.webp', this)">
+                                    <img class="main-img" id="main_theme_party_fish" src="images/product_theme_party_fish_1.webp" alt="Theme Party Fish" loading="lazy">
                                     <div class="variant-badge">4 shades</div>
                                     <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
                                 </div>
                                 <div class="thumb-strip">
-                                    <img src="images/product_theme_party_fish_1.png" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_theme_party_fish')">
-                                    <img src="images/product_theme_party_fish_2.png" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_theme_party_fish')">
-                                    <img src="images/product_theme_party_fish_3.png" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_theme_party_fish')">
-                                    <img src="images/product_theme_party_fish_4.png" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_theme_party_fish')">
+                                    <img src="images/product_theme_party_fish_1.webp" class="active" loading="lazy" alt="Shade 1" onclick="switchImg(this, 'main_theme_party_fish')">
+                                    <img src="images/product_theme_party_fish_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_theme_party_fish')">
+                                    <img src="images/product_theme_party_fish_3.webp" class="" loading="lazy" alt="Shade 3" onclick="switchImg(this, 'main_theme_party_fish')">
+                                    <img src="images/product_theme_party_fish_4.webp" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_theme_party_fish')">
                                 </div>
                                 <div class="card-body">
                                     <h3>Theme Party Fish</h3>
@@ -1722,6 +1858,81 @@
             navLinks.forEach(l => {
                 l.classList.toggle('active', l.getAttribute('href') === '#' + current);
             });
+        // ── Sort & Filter ──────────────────────────────────────
+        (function() {
+            const cards = Array.from(document.querySelectorAll('.product-card[data-price]'));
+            // Capture each card's original DOM position so "Default" can restore it.
+            cards.forEach((c, i) => {
+                c.dataset.originalIndex = i;
+                c._originalParent = c.parentNode;
+                c._originalNext = c.nextSibling;
+            });
+
+            const sortSelect = document.getElementById('sort-select');
+            const filterChips = document.querySelectorAll('.tb-chip[data-filter]');
+            const resultCount = document.getElementById('result-count');
+            const sections = document.querySelectorAll('.category-section');
+            let activeFilter = 'all';
+
+            function applyFilter() {
+                let visibleCount = 0;
+                cards.forEach(card => {
+                    const moq = parseInt(card.dataset.moq, 10);
+                    const size = parseInt(card.dataset.size, 10);
+                    let visible = true;
+                    if (activeFilter === 'moq-5') visible = (moq <= 5);
+                    else if (activeFilter === 'moq-10') visible = (moq <= 10 && moq > 5);
+                    else if (activeFilter === 'size-small') visible = (size <= 24);
+                    else if (activeFilter === 'size-medium') visible = (size >= 28 && size <= 44);
+                    else if (activeFilter === 'size-large') visible = (size >= 48);
+                    card.classList.toggle('is-hidden', !visible);
+                    if (visible) visibleCount++;
+                });
+                resultCount.textContent = visibleCount;
+                // Mark whole sections that have no visible cards
+                sections.forEach(sec => {
+                    const visibleInSec = sec.querySelectorAll('.product-card:not(.is-hidden)').length;
+                    sec.classList.toggle('is-empty', visibleInSec === 0);
+                });
+            }
+
+            function applySort(mode) {
+                if (mode === 'default') {
+                    // Restore original order: re-append each card at its original sibling position
+                    const sorted = [...cards].sort(
+                        (a, b) => parseInt(a.dataset.originalIndex,10) - parseInt(b.dataset.originalIndex,10)
+                    );
+                    sorted.forEach(c => c._originalParent.appendChild(c));
+                    return;
+                }
+                // For other sort modes, sort within each category-section's products-grid
+                document.querySelectorAll('.products-grid').forEach(grid => {
+                    const items = Array.from(grid.querySelectorAll('.product-card'));
+                    items.sort((a, b) => {
+                        const av = parseInt(a.dataset[mode.startsWith('price') ? 'price' : 'size'], 10);
+                        const bv = parseInt(b.dataset[mode.startsWith('price') ? 'price' : 'size'], 10);
+                        return mode.endsWith('asc') ? (av - bv) : (bv - av);
+                    });
+                    items.forEach(item => grid.appendChild(item));
+                });
+            }
+
+            filterChips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    filterChips.forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    activeFilter = chip.dataset.filter;
+                    applyFilter();
+                });
+            });
+
+            sortSelect.addEventListener('change', () => {
+                applySort(sortSelect.value);
+            });
+
+            applyFilter();
+        })();
+
         }, { passive: true });
     </script>
 </body>
