@@ -32,6 +32,17 @@
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
+
+      // DPDP Act: default-deny analytics until user gives consent
+      // (banner is rendered by js/main.js which respects this state).
+      gtag('consent', 'default', {
+        analytics_storage:
+          (typeof localStorage !== 'undefined'
+            && localStorage.getItem('florista-consent') === 'accepted')
+            ? 'granted' : 'denied',
+        ad_storage: 'denied'
+      });
+
       gtag('js', new Date());
       gtag('config', 'G-T5GR1DL2G0');
     </script>
@@ -557,7 +568,7 @@
                     </div>
                 </div>
                 <div class="hero-image reveal reveal-delay-2">
-                    <img src="images/product_organza_60_inch_1.webp" alt="Giant 60-inch Organza Event Flower by Florista, Nagpur" loading="eager">
+                    <img src="images/product_organza_60_inch_1.webp" alt="Giant 60-inch Organza Event Flower by Florista, Nagpur" loading="eager" fetchpriority="high" decoding="async" width="600" height="520">
                     <div class="hero-image-badge">
                         <i class="fas fa-wand-magic-sparkles"></i>
                         <div>

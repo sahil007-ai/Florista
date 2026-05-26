@@ -32,11 +32,114 @@
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
+
+      // DPDP Act: default-deny analytics until user gives consent
+      // (banner is rendered by js/main.js which respects this state).
+      gtag('consent', 'default', {
+        analytics_storage:
+          (typeof localStorage !== 'undefined'
+            && localStorage.getItem('florista-consent') === 'accepted')
+            ? 'granted' : 'denied',
+        ad_storage: 'denied'
+      });
+
       gtag('js', new Date());
       gtag('config', 'G-T5GR1DL2G0');
     </script>
 
     <style>
+        /* ── Size Guide (collapsible) ── */
+        .size-guide {
+            background: var(--glass-bg);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            box-shadow: var(--glass-shadow);
+            margin-bottom: 32px;
+            overflow: hidden;
+        }
+        .size-guide summary {
+            list-style: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 18px 24px;
+            font-size: 0.95rem;
+            color: var(--color-dark);
+            user-select: none;
+            transition: background 0.25s ease;
+        }
+        .size-guide summary::-webkit-details-marker { display: none; }
+        .size-guide summary:hover { background: rgba(245, 213, 228, 0.18); }
+        .size-guide .sg-summary-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+        .size-guide .sg-summary-label > i {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            background: var(--color-primary-light);
+            color: var(--color-primary-dark);
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+        }
+        .size-guide .sg-summary-label strong { color: var(--color-primary-dark); }
+        .size-guide .sg-chevron {
+            color: var(--color-gray);
+            transition: transform 0.32s ease;
+            font-size: 0.85rem;
+        }
+        .size-guide[open] .sg-chevron { transform: rotate(180deg); }
+        .size-guide .sg-body {
+            padding: 8px 24px 24px;
+            border-top: 1px solid rgba(201, 126, 160, 0.1);
+        }
+        .size-guide .sg-intro {
+            font-size: 0.9rem;
+            color: var(--color-gray);
+            margin: 14px 0 18px;
+        }
+        .size-guide .sg-svg {
+            width: 100%;
+            height: auto;
+            max-height: 280px;
+            display: block;
+        }
+        .size-guide .sg-flower-link {
+            cursor: pointer;
+            transition: opacity 0.25s ease;
+        }
+        .size-guide .sg-flower-link .sg-flower-shape {
+            transition: transform 0.35s cubic-bezier(0.25,0.8,0.25,1);
+            transform-origin: center;
+            transform-box: fill-box;
+        }
+        .size-guide .sg-flower-link:hover .sg-flower-shape {
+            transform: scale(1.08);
+        }
+        .size-guide .sg-foot {
+            font-size: 0.85rem;
+            color: var(--color-gray);
+            margin-top: 14px;
+            line-height: 1.6;
+        }
+        .size-guide .sg-foot a {
+            color: var(--color-primary-dark);
+            font-weight: 600;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+        @media (max-width: 600px) {
+            .size-guide summary { padding: 14px 16px; font-size: 0.88rem; }
+            .size-guide .sg-body { padding: 6px 16px 18px; }
+        }
+
         /* ── Products Page Layout ── */
         .catalogue-layout {
             display: grid;
@@ -1042,6 +1145,152 @@
                 <h1>Our Product Range</h1>
                 <p>Handcrafted organza &amp; fabric flowers — 12 pastel shades, made in Nagpur, shipped PAN India.</p>
             </div>
+        </div>
+
+        <!-- Size Guide (collapsible) -->
+        <div class="container">
+            <details class="size-guide reveal" id="size-guide">
+                <summary>
+                    <span class="sg-summary-label">
+                        <i class="fas fa-ruler-vertical"></i>
+                        <span><strong>Size guide</strong> &mdash; how big is "60 inches" actually?</span>
+                    </span>
+                    <span class="sg-chevron"><i class="fas fa-chevron-down"></i></span>
+                </summary>
+                <div class="sg-body">
+                    <p class="sg-intro">All sizes shown next to a 5&#39;7&quot; (170 cm) person to-scale. Click any size to jump to its product cards.</p>
+
+                    <svg class="sg-svg" viewBox="0 0 720 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Florista size comparison: 12 inch, 24 inch, 36 inch, 48 inch, and 60 inch flowers shown next to a 5 foot 7 inch silhouette.">
+                        <defs>
+                            <linearGradient id="sg-flower" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#fdeef5"/>
+                                <stop offset="100%" stop-color="#c97ea0"/>
+                            </linearGradient>
+                            <linearGradient id="sg-silhouette" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#5a6477"/>
+                                <stop offset="100%" stop-color="#18202e"/>
+                            </linearGradient>
+                            <pattern id="sg-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(201,126,160,0.08)" stroke-width="1"/>
+                            </pattern>
+                        </defs>
+
+                        <!-- Light grid background -->
+                        <rect width="720" height="220" fill="url(#sg-grid)"/>
+
+                        <!-- Floor line -->
+                        <line x1="20" y1="200" x2="700" y2="200" stroke="rgba(201,126,160,0.4)" stroke-width="1.5" stroke-dasharray="3 3"/>
+
+                        <!-- Person silhouette (170 cm = 67 inches), placed at left, 170 SVG units tall -->
+                        <!-- Head -->
+                        <circle cx="55" cy="50" r="14" fill="url(#sg-silhouette)"/>
+                        <!-- Neck/Shoulders/Body -->
+                        <path d="M 55 64
+                                 L 47 70
+                                 L 35 110
+                                 L 38 200
+                                 L 55 200
+                                 L 55 130
+                                 L 55 200
+                                 L 72 200
+                                 L 75 110
+                                 L 63 70 Z"
+                              fill="url(#sg-silhouette)"/>
+                        <!-- Arms -->
+                        <path d="M 35 75 L 25 130 L 32 132 L 42 80 Z" fill="url(#sg-silhouette)"/>
+                        <path d="M 75 75 L 85 130 L 78 132 L 68 80 Z" fill="url(#sg-silhouette)"/>
+                        <!-- Person label -->
+                        <text x="55" y="218" text-anchor="middle" font-size="11" font-family="Inter, sans-serif" fill="#5a6477">5&#39;7&quot;</text>
+
+                        <!-- Flowers next to silhouette, scaled proportionally -->
+                        <!-- Sizes: 12", 24", 36", 48", 60" inches -->
+                        <!-- Person height = 170 SVG units representing 67" → 1 inch ≈ 2.54 SVG units -->
+
+                        <!-- Helper: each flower is a 5-petal shape; centered at (cx, cy) with given radius r -->
+                        <!-- 12" flower (r ≈ 15) -->
+                        <a href="#organza" class="sg-flower-link">
+                            <g transform="translate(160, 170)">
+                                <g class="sg-flower-shape">
+                                    <ellipse cx="0" cy="-15" rx="9" ry="13" fill="url(#sg-flower)"/>
+                                    <ellipse cx="14" cy="-5" rx="9" ry="13" transform="rotate(72 14 -5)" fill="url(#sg-flower)"/>
+                                    <ellipse cx="9" cy="13" rx="9" ry="13" transform="rotate(144 9 13)" fill="url(#sg-flower)"/>
+                                    <ellipse cx="-9" cy="13" rx="9" ry="13" transform="rotate(216 -9 13)" fill="url(#sg-flower)"/>
+                                    <ellipse cx="-14" cy="-5" rx="9" ry="13" transform="rotate(288 -14 -5)" fill="url(#sg-flower)"/>
+                                    <circle cx="0" cy="0" r="5" fill="#c97ea0"/>
+                                </g>
+                                <text x="0" y="48" text-anchor="middle" font-size="11" font-weight="600" font-family="Inter, sans-serif" fill="#c97ea0">12&quot;</text>
+                                <text x="0" y="62" text-anchor="middle" font-size="9" font-family="Inter, sans-serif" fill="#5a6477">~30 cm</text>
+                            </g>
+                        </a>
+
+                        <!-- 24" flower (r ≈ 30) -->
+                        <a href="#organza" class="sg-flower-link">
+                            <g transform="translate(260, 140)">
+                                <g class="sg-flower-shape">
+                                    <ellipse cx="0" cy="-30" rx="18" ry="26" fill="url(#sg-flower)"/>
+                                    <ellipse cx="28" cy="-10" rx="18" ry="26" transform="rotate(72 28 -10)" fill="url(#sg-flower)"/>
+                                    <ellipse cx="18" cy="26" rx="18" ry="26" transform="rotate(144 18 26)" fill="url(#sg-flower)"/>
+                                    <ellipse cx="-18" cy="26" rx="18" ry="26" transform="rotate(216 -18 26)" fill="url(#sg-flower)"/>
+                                    <ellipse cx="-28" cy="-10" rx="18" ry="26" transform="rotate(288 -28 -10)" fill="url(#sg-flower)"/>
+                                    <circle cx="0" cy="0" r="10" fill="#c97ea0"/>
+                                </g>
+                                <text x="0" y="76" text-anchor="middle" font-size="11" font-weight="600" font-family="Inter, sans-serif" fill="#c97ea0">24&quot;</text>
+                                <text x="0" y="90" text-anchor="middle" font-size="9" font-family="Inter, sans-serif" fill="#5a6477">~61 cm</text>
+                            </g>
+                        </a>
+
+                        <!-- 36" flower (r ≈ 46) -->
+                        <a href="#organza" class="sg-flower-link">
+                            <g transform="translate(390, 110)">
+                                <g class="sg-flower-shape">
+                                    <ellipse cx="0" cy="-45" rx="27" ry="40" fill="url(#sg-flower)"/>
+                                    <ellipse cx="42" cy="-14" rx="27" ry="40" transform="rotate(72 42 -14)" fill="url(#sg-flower)"/>
+                                    <ellipse cx="26" cy="38" rx="27" ry="40" transform="rotate(144 26 38)" fill="url(#sg-flower)"/>
+                                    <ellipse cx="-26" cy="38" rx="27" ry="40" transform="rotate(216 -26 38)" fill="url(#sg-flower)"/>
+                                    <ellipse cx="-42" cy="-14" rx="27" ry="40" transform="rotate(288 -42 -14)" fill="url(#sg-flower)"/>
+                                    <circle cx="0" cy="0" r="14" fill="#c97ea0"/>
+                                </g>
+                                <text x="0" y="105" text-anchor="middle" font-size="11" font-weight="600" font-family="Inter, sans-serif" fill="#c97ea0">36&quot;</text>
+                                <text x="0" y="119" text-anchor="middle" font-size="9" font-family="Inter, sans-serif" fill="#5a6477">~91 cm / 3 ft</text>
+                            </g>
+                        </a>
+
+                        <!-- 48" flower (r ≈ 61) -->
+                        <a href="#organza" class="sg-flower-link">
+                            <g transform="translate(540, 88)">
+                                <g class="sg-flower-shape">
+                                    <ellipse cx="0" cy="-58" rx="35" ry="52" fill="url(#sg-flower)"/>
+                                    <ellipse cx="55" cy="-18" rx="35" ry="52" transform="rotate(72 55 -18)" fill="url(#sg-flower)"/>
+                                    <ellipse cx="34" cy="49" rx="35" ry="52" transform="rotate(144 34 49)" fill="url(#sg-flower)"/>
+                                    <ellipse cx="-34" cy="49" rx="35" ry="52" transform="rotate(216 -34 49)" fill="url(#sg-flower)"/>
+                                    <ellipse cx="-55" cy="-18" rx="35" ry="52" transform="rotate(288 -55 -18)" fill="url(#sg-flower)"/>
+                                    <circle cx="0" cy="0" r="18" fill="#c97ea0"/>
+                                </g>
+                                <text x="0" y="130" text-anchor="middle" font-size="11" font-weight="600" font-family="Inter, sans-serif" fill="#c97ea0">48&quot;</text>
+                                <text x="0" y="144" text-anchor="middle" font-size="9" font-family="Inter, sans-serif" fill="#5a6477">~122 cm / 4 ft</text>
+                            </g>
+                        </a>
+
+                        <!-- 60" flower (r ≈ 76) — almost as tall as the person -->
+                        <a href="#organza" class="sg-flower-link">
+                            <g transform="translate(670, 120)">
+                                <g class="sg-flower-shape">
+                                    <ellipse cx="0" cy="-50" rx="30" ry="44" fill="url(#sg-flower)"/>
+                                    <ellipse cx="47" cy="-15" rx="30" ry="44" transform="rotate(72 47 -15)" fill="url(#sg-flower)"/>
+                                    <ellipse cx="29" cy="42" rx="30" ry="44" transform="rotate(144 29 42)" fill="url(#sg-flower)"/>
+                                    <ellipse cx="-29" cy="42" rx="30" ry="44" transform="rotate(216 -29 42)" fill="url(#sg-flower)"/>
+                                    <ellipse cx="-47" cy="-15" rx="30" ry="44" transform="rotate(288 -47 -15)" fill="url(#sg-flower)"/>
+                                    <circle cx="0" cy="0" r="15" fill="#c97ea0"/>
+                                </g>
+                                <text x="0" y="105" text-anchor="middle" font-size="11" font-weight="600" font-family="Inter, sans-serif" fill="#c97ea0">60&quot;</text>
+                                <text x="0" y="119" text-anchor="middle" font-size="9" font-family="Inter, sans-serif" fill="#5a6477">~152 cm / 5 ft</text>
+                            </g>
+                        </a>
+                    </svg>
+
+                    <p class="sg-foot">For stage backdrops we recommend pairing 60&quot; centerpieces with 24&quot; or 36&quot; fillers. Need help choosing? <a href="https://wa.me/917588447595?text=Hi%20Florista%2C%20can%20you%20help%20me%20pick%20the%20right%20flower%20size%20for%20my%20event%3F" target="_blank">Ask us on WhatsApp</a>.</p>
+                </div>
+            </details>
         </div>
 
         <div class="container">

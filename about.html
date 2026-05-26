@@ -32,6 +32,17 @@
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
+
+      // DPDP Act: default-deny analytics until user gives consent
+      // (banner is rendered by js/main.js which respects this state).
+      gtag('consent', 'default', {
+        analytics_storage:
+          (typeof localStorage !== 'undefined'
+            && localStorage.getItem('florista-consent') === 'accepted')
+            ? 'granted' : 'denied',
+        ad_storage: 'denied'
+      });
+
       gtag('js', new Date());
       gtag('config', 'G-T5GR1DL2G0');
     </script>
