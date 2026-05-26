@@ -1,0 +1,124 @@
+name: Site Validation
+
+# Catches accidental regressions before they hit production.
+# Runs on every PR and on every push to main.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      # ── HTML well-formedness check (Python stdlib, no install) ────
+      - name: Validate HTML well-formedness
+        shell: python {0}
+        run: |
+          import pathlib, sys
+          from html.parser import HTMLParser
+
+          class Strict(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.errors, self.stack = [], []
+                  self.void = {"area","base","br","col","embed","hr","img","input",
+                               "link","meta","param","source","track","wbr"}
+              def handle_starttag(self, tag, attrs):
+                  if tag not in self.void:
+                      self.stack.append(tag)
+              def handle_endtag(self, tag):
+                  if tag in self.stack:
+                      while self.stack and self.stack[-1] != tag:
+                          self.errors.append(f"unclosed: </{self.stack.pop()}>")
+                      if self.stack: self.stack.pop()
+                  else:
+                      self.errors.append(f"unexpected </{tag}>")
+
+          fail = False
+          for f in sorted(pathlib.Path(".").glob("*.html")):
+              p = Strict()
+              p.feed(f.read_text())
+              p.close()
+              issues = p.errors + ([f"unclosed: {p.stack}"] if p.stack else [])
+              if issues:
+                  fail = True
+                  print(f"FAIL {f.name}: {issues[:3]}")
+              else:
+                  print(f"OK   {f.name}")
+          if fail:
+              sys.exit(1)
+
+      # ── JSON-LD schema validity ───────────────────────────────────
+      - name: Validate JSON-LD blocks
+        shell: python {0}
+        run: |
+          import re, json, pathlib, sys
+          fail = False
+          for f in pathlib.Path(".").glob("*.html"):
+              s = f.read_text()
+              for i, m in enumerate(re.finditer(
+                  r'<script type="application/ld\+json">\s*(\{[\s\S]+?\})\s*</script>',
+                  s
+              )):
+                  try:
+                      d = json.loads(m.group(1))
+                      print(f"OK   {f.name} ld+json block {i+1}: @type={d.get('@type')}")
+                  except Exception as e:
+                      fail = True
+                      print(f"FAIL {f.name} ld+json block {i+1}: {e}")
+          if fail:
+              sys.exit(1)
+
+      # ── Internal link integrity ───────────────────────────────────
+      - name: Check internal links
+        shell: python {0}
+        run: |
+          import re, pathlib, sys
+          root = pathlib.Path(".")
+          existing = (
+              {p.name for p in root.glob("*")}
+              | {f"images/{p.name}" for p in (root / "images").glob("*")}
+              | {"css/style.css", "js/main.js", "sitemap.xml", "robots.txt"}
+          )
+          broken = []
+          for html in root.glob("*.html"):
+              s = html.read_text()
+              for href in re.findall(
+                  r'(?:href|src)="([^"#?]+?)(?:[?#][^"]*)?"', s
+              ):
+                  if href.startswith(("http", "https", "tel:", "mailto:",
+                                      "javascript:", "data:")):
+                      continue
+                  if href in existing:
+                      continue
+                  broken.append((html.name, href))
+          for b in broken:
+              print(f"BROKEN {b[0]} -> {b[1]}")
+          print(f"Total broken local refs: {len(broken)}")
+          if broken:
+              sys.exit(1)
+
+      # ── sitemap.xml well-formedness ──────────────────────────────
+      - name: Validate sitemap.xml
+        shell: python {0}
+        run: |
+          import xml.etree.ElementTree as ET, pathlib, sys
+          try:
+              tree = ET.parse(pathlib.Path("sitemap.xml"))
+              ns = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
+              urls = tree.findall(f"{ns}url")
+              print(f"OK   sitemap.xml: {len(urls)} URLs declared")
+          except Exception as e:
+              print(f"FAIL sitemap.xml: {e}")
+              sys.exit(1)

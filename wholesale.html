@@ -32,6 +32,17 @@
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
+
+      // DPDP Act: default-deny analytics until user gives consent
+      // (banner is rendered by js/main.js which respects this state).
+      gtag('consent', 'default', {
+        analytics_storage:
+          (typeof localStorage !== 'undefined'
+            && localStorage.getItem('florista-consent') === 'accepted')
+            ? 'granted' : 'denied',
+        ad_storage: 'denied'
+      });
+
       gtag('js', new Date());
       gtag('config', 'G-T5GR1DL2G0');
     </script>
@@ -127,7 +138,7 @@
                     <h3><i class="fas fa-tags"></i> B2B Pricing Policies</h3>
                     <ul class="policy-list">
                         <li><strong>Factory Direct:</strong> All listed prices are strictly wholesale/factory-direct. No middlemen.</li>
-                        <li><strong>Tax:</strong> Prices are exclusive of GST (unless explicitly quoted).</li>
+                        <li><strong>All-Inclusive Pricing:</strong> The price quoted to you is the final product price. There are no hidden charges &mdash; only shipping is calculated separately based on your pin code.</li>
                         <li><strong>MOQ (Minimum Order Quantity):</strong> MOQs apply for standard wholesale pricing. Please enquire for specific product MOQs.</li>
                         <li><strong>Samples:</strong> Paid samples are available for large upcoming bulk orders.</li>
                     </ul>

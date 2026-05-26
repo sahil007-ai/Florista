@@ -27,6 +27,17 @@
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
+
+      // DPDP Act: default-deny analytics until user gives consent
+      // (banner is rendered by js/main.js which respects this state).
+      gtag('consent', 'default', {
+        analytics_storage:
+          (typeof localStorage !== 'undefined'
+            && localStorage.getItem('florista-consent') === 'accepted')
+            ? 'granted' : 'denied',
+        ad_storage: 'denied'
+      });
+
       gtag('js', new Date());
       gtag('config', 'G-T5GR1DL2G0');
     </script>
@@ -95,7 +106,7 @@
                 <li><strong>Repeat buyers (from the third order onward):</strong> 50% advance to start production, balance 50% prior to dispatch.</li>
                 <li>Accepted modes: bank transfer (NEFT/IMPS/RTGS), UPI, GPay, PhonePe.</li>
                 <li>Cash-on-delivery is not available for bulk wholesale orders.</li>
-                <li>Prices are exclusive of GST unless explicitly quoted otherwise. Applicable taxes will be added on the invoice.</li>
+                <li>All quoted prices are final product prices. Shipping is calculated separately and shared before dispatch.</li>
             </ul>
 
             <h2>6. Shipping &amp; Delivery</h2>
