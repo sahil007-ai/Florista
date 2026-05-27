@@ -66,8 +66,14 @@
 
     // ─── State (localStorage) ─────────────────────────────────────
     function loadCart() {
+        // The try/catch alone isn't enough: valid JSON like "null", "42",
+        // "[1,2,3]" parses cleanly but isn't a plain object. If we hand
+        // that back to addToCart() / setQty(), the next property write
+        // either crashes (TypeError on null) or silently no-ops (on a
+        // primitive). Coerce anything that isn't a plain object to {}.
         try {
-            return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+            const v = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+            return (v && typeof v === 'object' && !Array.isArray(v)) ? v : {};
         } catch (_) {
             return {};
         }
@@ -286,17 +292,24 @@
         let estTotal = 0;
         let html = '<ul class="quote-items">';
         items.forEach((item) => {
-            const lineTotal = item.price * item.qty;
+            // Defensive defaults: if a future schema change leaves old
+            // localStorage entries lacking price/qty/moq, render with
+            // safe fallbacks instead of crashing the whole drawer with
+            // `Cannot read properties of undefined (reading 'toLocaleString')`.
+            const moq   = typeof item.moq   === 'number' && item.moq   > 0 ? item.moq   : 1;
+            const price = typeof item.price === 'number' ? item.price : 0;
+            const qty   = typeof item.qty   === 'number' ? item.qty   : moq;
+            const lineTotal = price * qty;
             estTotal += lineTotal;
             html +=
                 '<li class="quote-item" data-id="' + escapeHtml(item.id) + '">' +
                     '<div class="quote-item-info">' +
                         '<strong>' + escapeHtml(item.name) + '</strong>' +
-                        '<span class="quote-item-meta">Rs. ' + item.price.toLocaleString('en-IN') + '/pc · MOQ ' + item.moq + '</span>' +
+                        '<span class="quote-item-meta">Rs. ' + price.toLocaleString('en-IN') + '/pc · MOQ ' + moq + '</span>' +
                     '</div>' +
                     '<div class="quote-qty">' +
                         '<button type="button" class="quote-qty-btn" data-action="decrement" aria-label="Decrease quantity">&minus;</button>' +
-                        '<input type="number" class="quote-qty-input" value="' + item.qty + '" min="' + item.moq + '" step="1" inputmode="numeric" aria-label="Quantity">' +
+                        '<input type="number" class="quote-qty-input" value="' + qty + '" min="' + moq + '" step="1" inputmode="numeric" aria-label="Quantity">' +
                         '<button type="button" class="quote-qty-btn" data-action="increment" aria-label="Increase quantity">+</button>' +
                     '</div>' +
                     '<button type="button" class="quote-remove" aria-label="Remove from quote">&times;</button>' +
@@ -368,9 +381,14 @@
 
         let estTotal = 0;
         const lines = items.map((item) => {
-            estTotal += item.price * item.qty;
-            return '• ' + item.name + ' × ' + item.qty + ' pcs (Rs. ' +
-                   item.price.toLocaleString('en-IN') + '/pc)';
+            // Same defensive defaults as renderDrawer(): never trust
+            // older localStorage shapes.
+            const price = typeof item.price === 'number' ? item.price : 0;
+            const qty   = typeof item.qty   === 'number' ? item.qty
+                          : (typeof item.moq === 'number' && item.moq > 0 ? item.moq : 1);
+            estTotal += price * qty;
+            return '• ' + item.name + ' × ' + qty + ' pcs (Rs. ' +
+                   price.toLocaleString('en-IN') + '/pc)';
         });
 
         // Tag this send with the same utm_source taxonomy used by main.js's
