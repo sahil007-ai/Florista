@@ -507,41 +507,9 @@
             .cat-toolbar-results { margin-left: 0; width: 100%; text-align: center; }
         }
 
-        /* ── Lightbox ── */
-        .lightbox-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(10,10,20,0.92);
-            z-index: 10000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(6px);
-            animation: fadeIn 0.2s ease;
-        }
-        .lightbox-overlay.open { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .lightbox-img {
-            max-width: 88vw;
-            max-height: 88vh;
-            object-fit: contain;
-            border-radius: 16px;
-            box-shadow: 0 32px 80px rgba(0,0,0,0.5);
-        }
-        .lightbox-close {
-            position: fixed;
-            top: 20px; right: 24px;
-            background: rgba(255,255,255,0.12);
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            width: 44px; height: 44px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: background 0.2s;
-        }
-        .lightbox-close:hover { background: rgba(255,255,255,0.25); }
+        /* Lightbox styles live in css/style.css (shared with per-product pages).
+           The original definitions used to live here; moved to the shared
+           sheet to avoid duplication. */
 
         /* ── Responsive ── */
         @media (max-width: 900px) {
@@ -1447,7 +1415,7 @@
                         <div class="products-grid">
                             <div class="product-card reveal" data-size="12" data-price="230" data-moq="10">
                                 <div class="card-img-wrap" onclick="openLightbox('images/product_organza_12_inch_1.webp', this)">
-                                    <img class="main-img" id="main_organza_12_inch" src="images/product_organza_12_inch_1.webp" alt='12" Regular & Ornela' loading="lazy">
+                                    <img class="main-img" id="main_organza_12_inch" src="images/product_organza_12_inch_1.webp" alt='12" Regular & Ornela' loading="eager" fetchpriority="high">
                                     <div class="variant-badge">11 shades</div>
                                     <div class="zoom-hint"><i class="fas fa-expand-alt"></i> Zoom</div>
                                 </div>
