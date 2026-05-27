@@ -1166,7 +1166,7 @@
                 <div class="sg-body">
                     <p class="sg-intro">All sizes shown next to a 5&#39;7&quot; (170 cm) person to-scale. Click any size to jump to its product cards.</p>
 
-                    <svg class="sg-svg" viewBox="0 0 780 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Florista size comparison: 12 inch, 24 inch, 36 inch, 48 inch, and 60 inch flowers shown next to a 5 foot 7 inch silhouette.">
+                    <svg class="sg-svg" viewBox="0 -30 780 285" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Florista size comparison: 12 inch, 24 inch, 36 inch, 48 inch, and 60 inch flowers shown next to a 5 foot 7 inch silhouette.">
                         <defs>
                             <linearGradient id="sg-flower" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="0%" stop-color="#fdeef5"/>
@@ -1182,7 +1182,7 @@
                         </defs>
 
                         <!-- Light grid background -->
-                        <rect width="780" height="220" fill="url(#sg-grid)"/>
+                        <rect x="0" y="-30" width="780" height="285" fill="url(#sg-grid)"/>
 
                         <!-- Floor line -->
                         <line x1="20" y1="200" x2="760" y2="200" stroke="rgba(201,126,160,0.4)" stroke-width="1.5" stroke-dasharray="3 3"/>
@@ -2145,6 +2145,13 @@
                     else if (/^size-\d+$/.test(activeFilter)) visible = (size === parseInt(activeFilter.split('-')[1], 10));
                     else if (activeFilter !== 'all') visible = false;
                     card.classList.toggle('is-hidden', !visible);
+                    // Cards have the `.reveal` class which keeps them at opacity:0 until the
+                    // IntersectionObserver in main.js promotes them to `.visible`. When a filter
+                    // hides surrounding cards, the matching card may never have entered the
+                    // viewport yet (e.g. clicking the 60" flower jumps to a card far below).
+                    // Force-add `.visible` here so any card that should be shown is actually
+                    // rendered, regardless of scroll history.
+                    if (visible) card.classList.add('visible');
                     if (visible) visibleCount++;
                 });
                 resultCount.textContent = visibleCount;
