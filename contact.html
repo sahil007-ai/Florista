@@ -169,19 +169,19 @@
                     <form id="b2b-enquiry-form" novalidate>
                         <div class="form-group">
                             <label for="companyName">Name &amp; Company/Business Name *</label>
-                            <input type="text" id="companyName" name="companyName" class="form-control" required autocomplete="organization" placeholder="e.g. John Doe, Elite Events">
+                            <input type="text" id="companyName" name="companyName" class="form-control" required autocomplete="organization" maxlength="120" placeholder="e.g. John Doe, Elite Events">
                         </div>
                         <div class="form-group">
                             <label for="phone">WhatsApp Number *</label>
-                            <input type="tel" id="phone" name="phone" class="form-control" required autocomplete="tel" placeholder="+91 XXXXX XXXXX">
+                            <input type="tel" id="phone" name="phone" class="form-control" required autocomplete="tel" maxlength="25" placeholder="+91 XXXXX XXXXX">
                         </div>
                         <div class="form-group">
                             <label for="city">City *</label>
-                            <input type="text" id="city" name="city" class="form-control" required autocomplete="address-level2" placeholder="e.g. Mumbai">
+                            <input type="text" id="city" name="city" class="form-control" required autocomplete="address-level2" maxlength="80" placeholder="e.g. Mumbai">
                         </div>
                         <div class="form-group">
                             <label for="interest">Products you are interested in</label>
-                            <input type="text" id="interest" name="interest" class="form-control" placeholder="e.g. Giant Flora 60 inch, Theme Party Fish">
+                            <input type="text" id="interest" name="interest" class="form-control" maxlength="200" placeholder="e.g. Giant Flora 60 inch, Theme Party Fish">
                         </div>
                         <button type="submit" class="btn btn-primary" id="enquiry-submit-btn" style="width: 100%; margin-top: 10px;">
                             <i class="fab fa-whatsapp"></i> Send Enquiry on WhatsApp

@@ -1319,6 +1319,29 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 """
 
 
+def safe_jsonld(obj: Any) -> str:
+    """Serialize JSON-LD with the three HTML-special chars escaped.
+
+    json.dumps() does NOT escape ``<``, ``>``, or ``&``. The HTML5 parser
+    scans every ``<script>`` block (including ``type="application/ld+json"``)
+    for ``</script>`` end-tags. If a product name or description ever
+    contained ``</script>`` &mdash; e.g. via a future CSV import or headless
+    CMS &mdash; the JSON-LD block would terminate early and any
+    ``<script>...</script>`` payload it carried would render as live HTML.
+
+    No real product name has these chars today, so this is a defense-in-
+    depth gap rather than an exploited bug. Still, applying the standard
+    escapes here is the recommended pattern (Google's own JSON-LD examples
+    use it) and costs us nothing.
+    """
+    return (
+        json.dumps(obj, indent=2)
+        .replace("<", "\\u003c")
+        .replace(">", "\\u003e")
+        .replace("&", "\\u0026")
+    )
+
+
 def render_thumbs(p: dict[str, Any]) -> str:
     """Render the thumbnail grid HTML."""
     name_e = html.escape(p["name"])
@@ -1365,8 +1388,8 @@ def render_page(p: dict[str, Any]) -> str:
         description_e=html.escape(meta_description(p)),
         canonical=f"{SITE_URL}/products/{p['slug']}.html",
         og_image=img_abs_url(p["image_prefix"], p["image_indices"][0]),
-        product_jsonld=json.dumps(product_jsonld(p), indent=2),
-        breadcrumb_jsonld=json.dumps(breadcrumb_jsonld(p), indent=2),
+        product_jsonld=safe_jsonld(product_jsonld(p)),
+        breadcrumb_jsonld=safe_jsonld(breadcrumb_jsonld(p)),
         category=p["category"],
         category_name_e=html.escape(CATEGORY_NAMES[p["category"]]),
         main_image=main_image,

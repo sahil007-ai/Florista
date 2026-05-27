@@ -202,7 +202,16 @@
         const cart = loadCart();
         if (!cart[id]) return;
         const moq = cart[id].moq || 1;
-        cart[id].qty = Math.max(moq, Math.floor(qty) || moq);
+        // Sanity-cap the upper bound. Without this, `Infinity`, `1e15`,
+        // or any pasted-in absurd value sails through Math.floor() (which
+        // is itself an identity on Infinity) and lands in the WhatsApp
+        // message body and Apps Script lead row. 100,000 pcs is far above
+        // any plausible single-SKU bulk order — adjust if business needs
+        // it bigger.
+        const MAX_QTY = 100000;
+        const parsed = Math.floor(qty);
+        const safe = Number.isFinite(parsed) ? parsed : moq;
+        cart[id].qty = Math.min(MAX_QTY, Math.max(moq, safe || moq));
         saveCart(cart);
     }
 
@@ -309,7 +318,7 @@
                     '</div>' +
                     '<div class="quote-qty">' +
                         '<button type="button" class="quote-qty-btn" data-action="decrement" aria-label="Decrease quantity">&minus;</button>' +
-                        '<input type="number" class="quote-qty-input" value="' + qty + '" min="' + moq + '" step="1" inputmode="numeric" aria-label="Quantity">' +
+                        '<input type="number" class="quote-qty-input" value="' + qty + '" min="' + moq + '" max="100000" step="1" inputmode="numeric" aria-label="Quantity">' +
                         '<button type="button" class="quote-qty-btn" data-action="increment" aria-label="Increase quantity">+</button>' +
                     '</div>' +
                     '<button type="button" class="quote-remove" aria-label="Remove from quote">&times;</button>' +
