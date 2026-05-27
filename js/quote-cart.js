@@ -74,7 +74,18 @@
     }
 
     function saveCart(cart) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
+        // iOS Safari private browsing historically had a 0-byte localStorage
+        // quota — every setItem() throws QuotaExceededError. Modern Safari
+        // 16+ lifted this, but enough older devices still exist among older
+        // buyer segments to make the unwrapped call risky. Swallow the
+        // failure: the cart UI still updates from the in-memory `cart`
+        // object passed in, and the next page load will simply start with
+        // an empty cart instead of crashing.
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
+        } catch (e) {
+            console.warn('[FloristaCart] localStorage write failed:', e);
+        }
         renderCartButton();
         if (drawer && drawer.classList.contains('open')) renderDrawer();
     }

@@ -14,6 +14,50 @@
 // only two callsites.)
 const FORM_ENDPOINT_URL = ''; // <-- paste your Apps Script /exec URL here
 
+/**
+ * Send a fire-and-forget POST to the lead-capture endpoint.
+ *
+ * Prefers navigator.sendBeacon() because it's specifically designed to
+ * survive a page navigation — exactly the situation we hit when the
+ * user clicks a wa.me link or submits the contact form. With plain
+ * fetch(), if the page navigates before the request completes, the
+ * browser cancels it; on mobile Safari this is aggressive and frequent.
+ *
+ * Falls back to fetch({ keepalive: true }) for browsers without
+ * sendBeacon (very rare in 2026, but keepalive on the fetch is the
+ * idiomatic backup so the modern browser still treats it as
+ * navigation-survivable).
+ *
+ * Returns true if the request was queued (regardless of whether the
+ * server eventually accepted it — we can't read the response in either
+ * mode). Returns false if no endpoint is configured.
+ */
+function postLeadCapture(payload) {
+    if (!FORM_ENDPOINT_URL) return false;
+    const body = JSON.stringify(payload);
+    try {
+        if (navigator.sendBeacon) {
+            // Apps Script accepts text/plain bodies; Blob preserves the
+            // encoding header that sendBeacon would otherwise default to
+            // application/x-www-form-urlencoded.
+            const blob = new Blob([body], { type: 'text/plain;charset=utf-8' });
+            return navigator.sendBeacon(FORM_ENDPOINT_URL, blob);
+        }
+        // Older browsers: fetch with keepalive=true so the modern
+        // versions still prioritize completion across navigation.
+        fetch(FORM_ENDPOINT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body,
+            keepalive: true,
+        });
+        return true;
+    } catch (_) {
+        return false;
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // ── Mobile Menu Toggle ──────────────────────────────────────
@@ -127,6 +171,46 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 3500);
         };
 
+        // Phone-field input normalization.
+        // The naive `phone.replace(/\D/g, '')` rejects every Indic digit
+        // glyph (Devanagari, Tamil, Bengali, Arabic-Indic) as "non-digit",
+        // which silently fails for buyers typing on a Hindi keyboard.
+        // Map those Unicode-numeric ranges to ASCII before stripping.
+        //
+        // Note: a tempting one-liner is `(c.charCodeAt(0) & 0xF) + 48`,
+        // but that only works for ranges whose "0" digit is at .._0
+        // (Arabic-Indic). Devanagari starts at U+0966, Bengali at
+        // U+09E6, etc. — the low 4 bits of "0" aren't zero in most Indic
+        // scripts, so the bitmask approach silently corrupts those.
+        // Subtract from the known range start instead.
+        const DIGIT_RANGE_STARTS = [
+            0x0660, // Arabic-Indic           ٠-٩
+            0x06F0, // Extended Arabic-Indic  ۰-۹
+            0x0966, // Devanagari             ०-९
+            0x09E6, // Bengali                ০-৯
+            0x0A66, // Gurmukhi               ੦-੯
+            0x0AE6, // Gujarati               ૦-૯
+            0x0B66, // Oriya                  ୦-୯
+            0x0BE6, // Tamil                  ௦-௯
+            0x0C66, // Telugu                 ౦-౯
+            0x0CE6, // Kannada                ೦-೯
+            0x0D66, // Malayalam              ൦-൯
+        ];
+        function toAsciiDigits(s) {
+            return String(s).replace(
+                /[\u0660-\u0669\u06F0-\u06F9\u0966-\u096F\u09E6-\u09EF\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F\u0BE6-\u0BEF\u0C66-\u0C6F\u0CE6-\u0CEF\u0D66-\u0D6F]/g,
+                (c) => {
+                    const code = c.charCodeAt(0);
+                    for (const start of DIGIT_RANGE_STARTS) {
+                        if (code >= start && code <= start + 9) {
+                            return String.fromCharCode((code - start) + 0x30);
+                        }
+                    }
+                    return c; // unreachable given the regex above
+                }
+            );
+        }
+
         // Clear red border as soon as user types — feels reactive.
         ['companyName', 'phone', 'city'].forEach((id) => {
             const f = document.getElementById(id);
@@ -151,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 flagInvalid(companyField, 'Please enter your name & business');
                 return;
             }
-            const digits = phone.replace(/\D/g, '');
+            const digits = toAsciiDigits(phone).replace(/\D/g, '');
             if (digits.length < 10) {
                 flagInvalid(phoneField, 'Please enter a valid 10-digit number');
                 return;
@@ -183,31 +267,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
-            // (2) Fire-and-forget lead capture to Google Sheets.
-            //     `mode: 'no-cors'` lets the request go through without a
-            //     CORS preflight (Apps Script doesn't return CORS headers
-            //     by default). We can't read the response, but Apps Script
-            //     still receives and logs it.
+            // (2) Fire-and-forget lead capture to Google Sheets via
+            //     postLeadCapture() — prefers navigator.sendBeacon() so
+            //     the request survives the WhatsApp tab-open below.
             if (FORM_ENDPOINT_URL) {
-                try {
-                    fetch(FORM_ENDPOINT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                        body: JSON.stringify({
-                            company,
-                            phone,
-                            city,
-                            // Tag with [contact_form] so this row is easy to
-                            // distinguish in the sheet from the anonymous
-                            // [<source>] WhatsApp-click rows below.
-                            interest: '[contact_form] ' + interest,
-                            page: window.location.href,
-                            userAgent: navigator.userAgent,
-                            timestamp: new Date().toISOString(),
-                        }),
-                    });
-                } catch (_) { /* never block WhatsApp open */ }
+                postLeadCapture({
+                    company,
+                    phone,
+                    city,
+                    // Tag with [contact_form] so this row is easy to
+                    // distinguish in the sheet from the anonymous
+                    // [<source>] WhatsApp-click rows below.
+                    interest: '[contact_form] ' + interest,
+                    page: window.location.href,
+                    userAgent: navigator.userAgent,
+                    timestamp: new Date().toISOString(),
+                });
             }
 
             // (3) Open WhatsApp SYNCHRONOUSLY in the same click handler so
@@ -537,29 +612,28 @@ document.addEventListener('DOMContentLoaded', () => {
         // no-op instead of throwing inside the click handler.
         if (typeof FORM_ENDPOINT_URL === 'undefined' || !FORM_ENDPOINT_URL) return;
 
+        // Snippet of the pre-filled message for context in the sheet.
+        let interestHint = '';
         try {
-            // Snippet of the pre-filled message for context in the sheet.
-            let interestHint = '';
-            try {
-                const u = new URL(anchor.href);
-                interestHint = (u.searchParams.get('text') || '').slice(0, 200);
-            } catch (_) { /* unparsable URL — no hint */ }
+            const u = new URL(anchor.href);
+            interestHint = (u.searchParams.get('text') || '').slice(0, 200);
+        } catch (_) { /* unparsable URL — no hint */ }
 
-            fetch(FORM_ENDPOINT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({
-                    company:   '(WhatsApp click — anonymous; awaiting reply)',
-                    phone:     '',
-                    city:      '',
-                    interest:  '[' + source + '] ' + interestHint,
-                    page:      window.location.href,
-                    userAgent: navigator.userAgent,
-                    timestamp: new Date().toISOString(),
-                }),
-            });
-        } catch (_) { /* never block the WhatsApp open */ }
+        // postLeadCapture() prefers navigator.sendBeacon, which is
+        // specifically designed to survive the page navigation that
+        // happens when the active tab follows a wa.me link (popup
+        // blocked path). The previous fetch() implementation was being
+        // cancelled mid-flight on mobile Safari before the row hit the
+        // sheet.
+        postLeadCapture({
+            company:   '(WhatsApp click — anonymous; awaiting reply)',
+            phone:     '',
+            city:      '',
+            interest:  '[' + source + '] ' + interestHint,
+            page:      window.location.href,
+            userAgent: navigator.userAgent,
+            timestamp: new Date().toISOString(),
+        });
     }
 
     function tagAll(root) {

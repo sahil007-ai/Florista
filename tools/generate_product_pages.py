@@ -932,6 +932,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
         }}
         .related-card {{
             background: var(--glass-bg);
+            -webkit-backdrop-filter: blur(14px);
             backdrop-filter: blur(14px);
             border: 1px solid var(--glass-border);
             border-radius: 16px;
@@ -993,6 +994,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
             z-index: 10000;
             align-items: center;
             justify-content: center;
+            -webkit-backdrop-filter: blur(6px);
             backdrop-filter: blur(6px);
         }}
         .lightbox-overlay.open {{ display: flex; }}
@@ -1151,7 +1153,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 
                 <!-- Gallery -->
                 <div class="pd-gallery">
-                    <div class="pd-main-img-wrap" onclick="openLightbox()">
+                    <div class="pd-main-img-wrap">
                         <img class="pd-main-img" id="pd-main-img"
                              src="{main_image}" alt="{name_e} - {size_label_e} wholesale decor flower by Florista Nagpur"
                              loading="eager" fetchpriority="high">
@@ -1272,8 +1274,8 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
     </footer>
 
     <!-- Lightbox -->
-    <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox(event)">
-        <button class="lightbox-close" onclick="document.getElementById('lightbox').classList.remove('open')">
+    <div class="lightbox-overlay" id="lightbox">
+        <button class="lightbox-close" type="button">
             <i class="fas fa-times"></i>
         </button>
         <img class="lightbox-img" id="lightbox-img" src="" alt="Product zoom">
@@ -1287,32 +1289,59 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
     <script src="../js/main.js"></script>
     <script src="../js/quote-cart.js"></script>
     <script>
-        function pdSwitchImg(thumb) {{
-            document.getElementById('pd-main-img').src = thumb.dataset.full;
-            document.querySelectorAll('.pd-thumbs img').forEach(t => t.classList.remove('active'));
-            thumb.classList.add('active');
-            const lb = document.getElementById('lightbox');
-            if (lb.classList.contains('open')) {{
-                document.getElementById('lightbox-img').src = thumb.dataset.full;
+        // Per-product page interactions. Bound via addEventListener so
+        // that a future strict Content-Security-Policy with a
+        // script-src that disallows 'unsafe-inline' can land without
+        // breaking the gallery / lightbox.
+        (function () {{
+            const mainImg = document.getElementById('pd-main-img');
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const closeBtn = lightbox && lightbox.querySelector('.lightbox-close');
+
+            function pdSwitchImg(thumb) {{
+                mainImg.src = thumb.dataset.full;
+                document.querySelectorAll('.pd-thumbs img').forEach(t => t.classList.remove('active'));
+                thumb.classList.add('active');
+                if (lightbox.classList.contains('open')) {{
+                    lightboxImg.src = thumb.dataset.full;
+                }}
             }}
-        }}
-        function openLightbox() {{
-            document.getElementById('lightbox-img').src = document.getElementById('pd-main-img').src;
-            document.getElementById('lightbox').classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }}
-        function closeLightbox(e) {{
-            if (e.target === document.getElementById('lightbox') || e.target.closest('.lightbox-close')) {{
-                document.getElementById('lightbox').classList.remove('open');
+            function openLightbox() {{
+                lightboxImg.src = mainImg.src;
+                lightbox.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }}
+            function closeLightbox(e) {{
+                // Close only when the click is on the overlay backdrop or
+                // the close button (matches the previous inline behaviour).
+                if (!e || e.target === lightbox || e.target.closest('.lightbox-close')) {{
+                    lightbox.classList.remove('open');
+                    document.body.style.overflow = '';
+                }}
+            }}
+
+            // Bindings
+            const wrap = document.querySelector('.pd-main-img-wrap');
+            if (wrap) wrap.addEventListener('click', openLightbox);
+            if (lightbox) lightbox.addEventListener('click', closeLightbox);
+            if (closeBtn) closeBtn.addEventListener('click', () => {{
+                lightbox.classList.remove('open');
                 document.body.style.overflow = '';
-            }}
-        }}
-        document.addEventListener('keydown', e => {{
-            if (e.key === 'Escape') {{
-                document.getElementById('lightbox').classList.remove('open');
-                document.body.style.overflow = '';
-            }}
-        }});
+            }});
+            document.querySelectorAll('.pd-thumbs img').forEach(thumb => {{
+                thumb.addEventListener('click', () => pdSwitchImg(thumb));
+            }});
+
+            // Esc closes the lightbox even if a thumbnail or button has
+            // focus elsewhere on the page.
+            document.addEventListener('keydown', e => {{
+                if (e.key === 'Escape' && lightbox && lightbox.classList.contains('open')) {{
+                    lightbox.classList.remove('open');
+                    document.body.style.overflow = '';
+                }}
+            }});
+        }})();
     </script>
 </body>
 </html>
@@ -1329,7 +1358,7 @@ def render_thumbs(p: dict[str, Any]) -> str:
         rows.append(
             f'                        <img src="{url}" data-full="{url}" '
             f'class="{active.strip()}" loading="lazy" '
-            f'alt="{name_e} shade {n}" onclick="pdSwitchImg(this)">'
+            f'alt="{name_e} shade {n}">'
         )
     return "\n".join(rows)
 

@@ -642,6 +642,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
         }}
         .uc-card {{
             background: var(--glass-bg);
+            -webkit-backdrop-filter: blur(14px);
             backdrop-filter: blur(14px);
             border: 1px solid var(--glass-border);
             border-radius: 18px;
@@ -681,6 +682,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
             position: absolute;
             top: 12px; left: 12px;
             background: rgba(255,255,255,0.92);
+            -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
             border-radius: 8px;
             padding: 4px 10px;
