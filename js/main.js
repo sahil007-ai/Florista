@@ -2,6 +2,18 @@
  * Main JavaScript for Florista Website
  */
 
+// ── Lead-capture endpoint ────────────────────────────────────────
+//
+// Single shared URL for the B2B contact form (below) and the WhatsApp
+// click attribution (bottom of file). Setup steps for the Apps Script
+// /exec endpoint live in `.kiro/steering/lead-capture.md`.
+//
+// NOTE: js/quote-cart.js has its own copy of this URL — paste the same
+// URL there too when wiring up Apps Script. (The duplication is
+// intentional: each file is small and self-contained, and there are
+// only two callsites.)
+const FORM_ENDPOINT_URL = ''; // <-- paste your Apps Script /exec URL here
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // ── Mobile Menu Toggle ──────────────────────────────────────
@@ -98,11 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // still has to tap Send inside WhatsApp for the message to actually
     // reach Florista. If they bail, step 1 has already saved the lead.
     //
-    // Setup steps for FORM_ENDPOINT_URL are in .kiro/steering/lead-capture.md.
-    // Until configured (left as ''), the form still opens WhatsApp normally —
-    // it just won't log to a spreadsheet.
-    const FORM_ENDPOINT_URL = ''; // <-- paste your Apps Script /exec URL here
-
+    // FORM_ENDPOINT_URL is declared at the top of this file — same URL is
+    // also referenced by the WhatsApp click attribution at the bottom.
+    // Setup steps in .kiro/steering/lead-capture.md.
     const enquiryForm = document.getElementById('b2b-enquiry-form');
     if (enquiryForm) {
         // Helper: flag a field as invalid + show a one-time hint placeholder.
@@ -170,7 +180,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             company,
                             phone,
                             city,
-                            interest,
+                            // Tag with [contact_form] so this row is easy to
+                            // distinguish in the sheet from the anonymous
+                            // [<source>] WhatsApp-click rows below.
+                            interest: '[contact_form] ' + interest,
                             page: window.location.href,
                             userAgent: navigator.userAgent,
                             timestamp: new Date().toISOString(),
@@ -359,5 +372,207 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('DOMContentLoaded', buildBanner);
     } else {
         buildBanner();
+    }
+})();
+
+
+
+/**
+ * ── WhatsApp click attribution ──────────────────────────────────
+ *
+ * Every wa.me/... anchor on the page is decorated with utm_source so the
+ * lead-capture sheet shows exactly which page/section drove each enquiry.
+ *
+ * Three layers of attribution (each captures a different dropout point):
+ *
+ *   1. utm_source / utm_medium / utm_campaign params on the wa.me URL.
+ *      wa.me itself ignores them, but the URL becomes self-documenting
+ *      in dev tools and GA4's outbound-link click events pick them up.
+ *
+ *   2. Fire-and-forget beacon to FORM_ENDPOINT_URL on click. Writes a
+ *      row to the lead-capture sheet so the owner sees source attribution
+ *      even when the user opens WhatsApp but never taps Send. The row
+ *      appears with company="(WhatsApp click — anonymous; awaiting reply)"
+ *      so it's easy to filter from real form submissions.
+ *
+ *   3. A short "\n\n— via: <source>" appended to the pre-filled message
+ *      text. Survives the wa.me hop into WhatsApp itself, so the source
+ *      is also visible inside the chat for any message the customer
+ *      actually sends.
+ *
+ * Source slug taxonomy (auto-derived per anchor)
+ *   - data-wa-source="..." attribute on the anchor wins (use for things
+ *     the auto-derivation can't infer — e.g. "home_hero").
+ *   - .floating-whatsapp           → "<page>_floating"
+ *   - inside .footer-social        → "<page>_footer_social"
+ *   - inside .product-card           → "<page>_card_<slug>"
+ *     (slug is data-id if present, else extracted from the card's title
+ *      link "products/<slug>.html", else "size_<data-size>" as fallback)
+ *   - inside .uc-final-cta         → "<page>_final_cta"
+ *   - inside .uc-hero              → "<page>_hero"
+ *   - inside .size-guide           → "<page>_size_guide"
+ *   - inside .cat-sidebar / .sidebar-cta → "<page>_sidebar"
+ *   - inside .pd-cta (per-product) → "<page>_enquire"
+ *   - everything else              → "<page>_unknown"
+ *     (rename via data-wa-source as needed; rows in the sheet tagged
+ *      "*_unknown" are a TODO list of links worth attributing more
+ *      precisely.)
+ *
+ * <page> is derived from the URL path:
+ *   /                                  → "home"
+ *   /products.html                     → "products"
+ *   /products/60-inch-giant-flora.html → "product_60-inch-giant-flora"
+ *   /use-cases/wedding-backdrops.html  → "use_case_wedding-backdrops"
+ *
+ * Public API (for code that injects WA links dynamically — e.g. quote-cart):
+ *   window.FloristaWA.tagAll(rootElement)   // re-tag a subtree
+ *   window.FloristaWA.deriveSource(anchor)  // for inspection / overrides
+ */
+(function () {
+    'use strict';
+
+    const UTM_MEDIUM = 'whatsapp';
+    const UTM_CAMPAIGN = 'enquiry';
+
+    function pageSlug() {
+        // Allow per-page override via <body data-wa-page="...">.
+        const explicit = document.body && document.body.dataset && document.body.dataset.waPage;
+        if (explicit) return explicit;
+
+        const path = window.location.pathname;
+        let m;
+        if ((m = path.match(/^\/products\/(.+?)\.html$/)))  return 'product_'  + m[1];
+        if ((m = path.match(/^\/use-cases\/(.+?)\.html$/))) return 'use_case_' + m[1];
+
+        m = path.match(/\/([^\/]+?)(?:\.html)?$/);
+        const f = (m && m[1]) || '';
+        return (f === '' || f === 'index') ? 'home' : f;
+    }
+
+    function deriveSource(anchor) {
+        const explicit = anchor.getAttribute('data-wa-source');
+        if (explicit) return explicit;
+
+        const page = pageSlug();
+        if (anchor.classList.contains('floating-whatsapp')) return page + '_floating';
+        if (anchor.closest('.footer-social'))               return page + '_footer_social';
+
+        const card = anchor.closest('.product-card');
+        if (card) {
+            // Best-effort card identifier:
+            //   - explicit data-id (set by quote-cart.js or by PR #12 on
+            //     home best-sellers and use-case recommended grids)
+            //   - else slug extracted from the card's title link to a
+            //     /products/<slug>.html page (the catalogue on
+            //     products.html doesn't carry data-id at parse time)
+            //   - else fall back to data-size as a last resort
+            let id = card.dataset.id;
+            if (!id) {
+                const link = card.querySelector('a.card-title-link, a[href*="products/"]');
+                const m = link && link.getAttribute('href').match(/products\/(.+?)\.html/);
+                if (m) id = m[1];
+            }
+            if (!id && card.dataset.size) id = 'size_' + card.dataset.size;
+            if (id) return page + '_card_' + id;
+        }
+
+        if (anchor.closest('.uc-final-cta'))                return page + '_final_cta';
+        if (anchor.closest('.uc-hero'))                     return page + '_hero';
+        if (anchor.closest('.size-guide'))                  return page + '_size_guide';
+        if (anchor.closest('.cat-sidebar') ||
+            anchor.closest('.sidebar-cta'))                 return page + '_sidebar';
+        if (anchor.closest('.pd-cta'))                      return page + '_enquire';
+
+        return page + '_unknown';
+    }
+
+    function decorateUrl(rawUrl, source) {
+        // Idempotent: don't double-tag if utm_source is already present.
+        if (rawUrl.indexOf('utm_source=') !== -1) return rawUrl;
+        const params =
+            'utm_source='    + encodeURIComponent(source) +
+            '&utm_medium='   + UTM_MEDIUM +
+            '&utm_campaign=' + UTM_CAMPAIGN;
+        const sep = rawUrl.indexOf('?') === -1 ? '?' : '&';
+        return rawUrl + sep + params;
+    }
+
+    function appendMessageMarker(rawUrl, source) {
+        // Append "\n\n— via: <source>" to the &text= portion if present.
+        // Customer-visible (last line of the WhatsApp message they're
+        // about to send) but unobtrusive — feels like a sign-off.
+        try {
+            const u = new URL(rawUrl);
+            const text = u.searchParams.get('text');
+            if (!text) return rawUrl;                            // no pre-filled message
+            if (text.indexOf('— via:') !== -1) return rawUrl;    // idempotent
+            u.searchParams.set('text', text + '\n\n— via: ' + source);
+            return u.toString();
+        } catch (_) {
+            return rawUrl;
+        }
+    }
+
+    function beaconClick(source, anchor) {
+        // typeof check is safe even if FORM_ENDPOINT_URL is somehow not
+        // declared (e.g. if someone strips out the constant): we silently
+        // no-op instead of throwing inside the click handler.
+        if (typeof FORM_ENDPOINT_URL === 'undefined' || !FORM_ENDPOINT_URL) return;
+
+        try {
+            // Snippet of the pre-filled message for context in the sheet.
+            let interestHint = '';
+            try {
+                const u = new URL(anchor.href);
+                interestHint = (u.searchParams.get('text') || '').slice(0, 200);
+            } catch (_) { /* unparsable URL — no hint */ }
+
+            fetch(FORM_ENDPOINT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({
+                    company:   '(WhatsApp click — anonymous; awaiting reply)',
+                    phone:     '',
+                    city:      '',
+                    interest:  '[' + source + '] ' + interestHint,
+                    page:      window.location.href,
+                    userAgent: navigator.userAgent,
+                    timestamp: new Date().toISOString(),
+                }),
+            });
+        } catch (_) { /* never block the WhatsApp open */ }
+    }
+
+    function tagAll(root) {
+        const scope = root || document;
+        const links = scope.querySelectorAll('a[href*="wa.me/"]');
+        links.forEach(function (a) {
+            // Process each anchor only once per page lifetime.
+            if (a.dataset.waTagged === '1') return;
+            a.dataset.waTagged = '1';
+
+            const source = deriveSource(a);
+            let url = a.getAttribute('href');
+            url = decorateUrl(url, source);
+            url = appendMessageMarker(url, source);
+            a.setAttribute('href', url);
+
+            a.addEventListener('click', function () {
+                beaconClick(source, a);
+            });
+        });
+    }
+
+    // Public API for code that injects WA anchors dynamically.
+    window.FloristaWA = {
+        tagAll: tagAll,
+        deriveSource: deriveSource,
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () { tagAll(document); });
+    } else {
+        tagAll(document);
     }
 })();

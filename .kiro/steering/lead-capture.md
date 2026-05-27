@@ -1,17 +1,35 @@
 # Florista Lead Capture — Google Sheets Setup
 
-The B2B enquiry form on `contact.html` does two things on submit:
+The same Google Apps Script endpoint captures three kinds of leads, all
+appended to the same sheet so the owner has one place to look:
 
-1. **Logs the lead to a Google Sheet** via a Google Apps Script Web App (background, fire-and-forget).
-2. **Opens WhatsApp** with a pre-filled message so the user can also send it directly.
+1. **Contact-form submissions** (`contact.html`). User fills name, phone,
+   city, interest → row appears with `[contact_form] <interest>` in the
+   "Interested In" column.
+2. **Quote-cart sends** (multi-product cart on any catalogue/use-case
+   page). User builds a cart, taps "Send Quote on WhatsApp" → row
+   appears with `[quote_cart_send] <items>` in "Interested In", and
+   the company column reads "(Quote — anonymous; awaiting WhatsApp
+   reply)".
+3. **Plain WhatsApp clicks** (any of the wa.me/... links across the
+   site). User taps "Enquire" or the floating WhatsApp button → row
+   appears with `[<source>] <message preview>` in "Interested In",
+   where `<source>` identifies the page/section (e.g. `home_hero`,
+   `products_card_60-inch-giant-flora`, `home_floating`).
 
-Step 1 matters because step 2 only *opens* WhatsApp — the user still has to
-tap Send inside WhatsApp for the message to actually reach Florista. If they
-bail or the popup is blocked, the lead is still captured by step 1.
+In all three cases, **the row is logged BEFORE WhatsApp opens** — so even
+if the user opens WhatsApp and never taps Send, you still see the intent
+in the sheet. That's why the company column has a clear marker for the
+anonymous click/cart variants: filter the sheet by `Name & Company starts
+with "("` to find them.
 
 The endpoint URL is configured in `js/main.js` as the constant
-`FORM_ENDPOINT_URL`. Until that URL is set, the form still works as a
-WhatsApp redirect — it just won't log to a spreadsheet.
+`FORM_ENDPOINT_URL` (top of file). `js/quote-cart.js` has its own copy of
+the same constant — paste the same `/exec` URL in both places when you
+wire up Apps Script.
+
+Until the URL is set, all three flows still open WhatsApp normally — they
+just won't log to the sheet.
 
 ---
 

@@ -373,13 +373,21 @@
                    item.price.toLocaleString('en-IN') + '/pc)';
         });
 
+        // Tag this send with the same utm_source taxonomy used by main.js's
+        // WhatsApp click attribution, so cart sends and ad-hoc card clicks
+        // show up consistently in the lead-capture sheet.
+        const SOURCE = 'quote_cart_send';
         const message =
             "Hi Florista! I'd like a quote for the following:\n\n" +
             lines.join('\n') + '\n\n' +
             'Estimated at base prices: Rs. ' + estTotal.toLocaleString('en-IN') + '\n\n' +
-            'Please share final wholesale pricing and dispatch timeline. Thanks!';
+            'Please share final wholesale pricing and dispatch timeline. Thanks!\n\n' +
+            '— via: ' + SOURCE;
 
-        const waUrl = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(message);
+        const waUrl = 'https://wa.me/' + WA_NUMBER +
+                      '?text=' + encodeURIComponent(message) +
+                      '&utm_source=' + encodeURIComponent(SOURCE) +
+                      '&utm_medium=whatsapp&utm_campaign=enquiry';
 
         // (1) Fire-and-forget anonymous capture to Google Sheets if configured.
         //     We don't have the buyer's name/phone yet (those come back via
@@ -400,7 +408,7 @@
                         company: '(Quote — anonymous; awaiting WhatsApp reply)',
                         phone: '',
                         city: '',
-                        interest: interestStr,
+                        interest: '[' + SOURCE + '] ' + interestStr,
                         page: window.location.href,
                         userAgent: navigator.userAgent,
                         timestamp: new Date().toISOString(),
