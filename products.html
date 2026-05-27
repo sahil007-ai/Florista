@@ -554,6 +554,60 @@
             .products-grid { grid-template-columns: 1fr; }
             .card-img-wrap { height: 220px; }
         }
+
+        /* ── Shop-by-Use-Case strip ── */
+        .use-case-strip {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            background: var(--glass-bg);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 14px 20px;
+            margin-bottom: 28px;
+            box-shadow: var(--glass-shadow);
+        }
+        .use-case-strip-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--color-gray);
+            margin-right: 4px;
+        }
+        .uc-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: rgba(245, 213, 228, 0.25);
+            border: 1px solid rgba(201, 126, 160, 0.18);
+            color: var(--color-dark);
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 7px 14px;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        .uc-pill i {
+            font-size: 0.78rem;
+            color: var(--color-primary-dark);
+            transition: transform 0.25s ease;
+        }
+        .uc-pill:hover {
+            background: var(--color-primary-light);
+            color: var(--color-primary-dark);
+            border-color: var(--color-primary-dark);
+            transform: translateY(-1px);
+        }
+        .uc-pill:hover i { transform: scale(1.12); }
+        @media (max-width: 640px) {
+            .use-case-strip { padding: 12px 14px; gap: 8px; }
+            .use-case-strip-label { width: 100%; margin-bottom: 2px; }
+        }
     </style>
 
     <!-- Product Catalogue Schema -->
@@ -1312,6 +1366,18 @@
                     <p class="sg-foot">For stage backdrops we recommend pairing 60&quot; centerpieces with 24&quot; or 36&quot; fillers. Need help choosing? <a href="https://wa.me/917588447595?text=Hi%20Florista%2C%20can%20you%20help%20me%20pick%20the%20right%20flower%20size%20for%20my%20event%3F" target="_blank">Ask us on WhatsApp</a>.</p>
                 </div>
             </details>
+        </div>
+
+        <!-- Shop by event / use case -->
+        <div class="container">
+            <div class="use-case-strip reveal" role="region" aria-label="Shop by event">
+                <span class="use-case-strip-label">Shopping for an event?</span>
+                <a href="use-cases/mehndi-decor.html" class="uc-pill"><i class="fas fa-leaf"></i> Mehndi Decor</a>
+                <a href="use-cases/wedding-backdrops.html" class="uc-pill"><i class="fas fa-archway"></i> Wedding Backdrops</a>
+                <a href="use-cases/stage-decor.html" class="uc-pill"><i class="fas fa-star"></i> Stage Decor</a>
+                <a href="use-cases/haldi-decor.html" class="uc-pill"><i class="fas fa-sun"></i> Haldi Decor</a>
+                <a href="use-cases/theme-party-decor.html" class="uc-pill"><i class="fas fa-party-horn"></i> Theme Party Decor</a>
+            </div>
         </div>
 
         <div class="container">
