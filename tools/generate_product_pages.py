@@ -812,7 +812,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 
                 <!-- Gallery -->
                 <div class="pd-gallery">
-                    <div class="pd-main-img-wrap" onclick="openLightbox()">
+                    <div class="pd-main-img-wrap">
                         <img class="pd-main-img" id="pd-main-img"
                              src="{main_image}" alt="{name_e} - {size_label_e} wholesale decor flower by Florista Nagpur"
                              loading="eager" fetchpriority="high">
@@ -933,8 +933,8 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
     </footer>
 
     <!-- Lightbox -->
-    <div class="lightbox-overlay" id="lightbox" role="dialog" aria-modal="true" aria-label="Product image zoom" onclick="closeLightbox(event)">
-        <button class="lightbox-close" aria-label="Close zoom" onclick="document.getElementById('lightbox').classList.remove('open')">
+    <div class="lightbox-overlay" id="lightbox" role="dialog" aria-modal="true" aria-label="Product image zoom">
+        <button class="lightbox-close" type="button" aria-label="Close zoom">
             <i class="fas fa-times" aria-hidden="true"></i>
         </button>
         <img class="lightbox-img" id="lightbox-img" src="" alt="Product zoom">
@@ -948,51 +948,71 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
     <script src="../js/main.js"></script>
     <script src="../js/quote-cart.js"></script>
     <script>
-        function pdSwitchImg(thumb) {{
-            document.getElementById('pd-main-img').src = thumb.dataset.full;
-            document.querySelectorAll('.pd-thumbs img').forEach(t => t.classList.remove('active'));
-            thumb.classList.add('active');
-            const lb = document.getElementById('lightbox');
-            if (lb.classList.contains('open')) {{
-                document.getElementById('lightbox-img').src = thumb.dataset.full;
+        // Per-product page interactions. Bound via addEventListener so
+        // that a future strict Content-Security-Policy with a
+        // script-src that disallows 'unsafe-inline' can land without
+        // breaking the gallery / lightbox.
+        (function () {{
+            const mainImg = document.getElementById('pd-main-img');
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const closeBtn = lightbox && lightbox.querySelector('.lightbox-close');
+
+            function pdSwitchImg(thumb) {{
+                mainImg.src = thumb.dataset.full;
+                document.querySelectorAll('.pd-thumbs img').forEach(t => t.classList.remove('active'));
+                thumb.classList.add('active');
+                if (lightbox.classList.contains('open')) {{
+                    lightboxImg.src = thumb.dataset.full;
+                }}
             }}
-        }}
-        // Track the element focused right before the lightbox opened so
-        // we can restore focus on close. Keyboard users land back on
-        // their starting point instead of jumping to <body>.
-        let lightboxOpener = null;
-        function openLightbox() {{
-            document.getElementById('lightbox-img').src = document.getElementById('pd-main-img').src;
-            document.getElementById('lightbox').classList.add('open');
-            document.body.style.overflow = 'hidden';
-            lightboxOpener = document.activeElement;
-            requestAnimationFrame(() => {{
-                const closeBtn = document.querySelector('#lightbox .lightbox-close');
-                if (closeBtn) closeBtn.focus();
+
+            // Track the element focused right before the lightbox opened
+            // so we can restore focus on close. Keyboard users land back
+            // on their starting point instead of jumping to <body>.
+            let lightboxOpener = null;
+            function dismissLightbox() {{
+                lightbox.classList.remove('open');
+                document.body.style.overflow = '';
+                if (lightboxOpener && typeof lightboxOpener.focus === 'function') {{
+                    lightboxOpener.focus();
+                    lightboxOpener = null;
+                }}
+            }}
+            function openLightbox() {{
+                lightboxImg.src = mainImg.src;
+                lightbox.classList.add('open');
+                document.body.style.overflow = 'hidden';
+                lightboxOpener = document.activeElement;
+                requestAnimationFrame(() => {{
+                    if (closeBtn) closeBtn.focus();
+                }});
+            }}
+            function closeLightbox(e) {{
+                // Close only when the click is on the overlay backdrop or
+                // the close button (matches the previous inline behaviour).
+                if (!e || e.target === lightbox || e.target.closest('.lightbox-close')) {{
+                    dismissLightbox();
+                }}
+            }}
+
+            // Bindings
+            const wrap = document.querySelector('.pd-main-img-wrap');
+            if (wrap) wrap.addEventListener('click', openLightbox);
+            if (lightbox) lightbox.addEventListener('click', closeLightbox);
+            if (closeBtn) closeBtn.addEventListener('click', dismissLightbox);
+            document.querySelectorAll('.pd-thumbs img').forEach(thumb => {{
+                thumb.addEventListener('click', () => pdSwitchImg(thumb));
             }});
-        }}
-        function closeLightbox(e) {{
-            if (e.target === document.getElementById('lightbox') || e.target.closest('.lightbox-close')) {{
-                document.getElementById('lightbox').classList.remove('open');
-                document.body.style.overflow = '';
-                if (lightboxOpener && typeof lightboxOpener.focus === 'function') {{
-                    lightboxOpener.focus();
-                    lightboxOpener = null;
+
+            // Esc closes the lightbox even if a thumbnail or button has
+            // focus elsewhere on the page.
+            document.addEventListener('keydown', e => {{
+                if (e.key === 'Escape' && lightbox && lightbox.classList.contains('open')) {{
+                    dismissLightbox();
                 }}
-            }}
-        }}
-        document.addEventListener('keydown', e => {{
-            if (e.key === 'Escape') {{
-                const lb = document.getElementById('lightbox');
-                if (!lb.classList.contains('open')) return;
-                lb.classList.remove('open');
-                document.body.style.overflow = '';
-                if (lightboxOpener && typeof lightboxOpener.focus === 'function') {{
-                    lightboxOpener.focus();
-                    lightboxOpener = null;
-                }}
-            }}
-        }});
+            }});
+        }})();
     </script>
 </body>
 </html>
@@ -1032,7 +1052,7 @@ def render_thumbs(p: dict[str, Any]) -> str:
         rows.append(
             f'                        <img src="{url}" data-full="{url}" '
             f'class="{active.strip()}" loading="lazy" '
-            f'alt="{name_e} shade {n}" onclick="pdSwitchImg(this)">'
+            f'alt="{name_e} shade {n}">'
         )
     return "\n".join(rows)
 

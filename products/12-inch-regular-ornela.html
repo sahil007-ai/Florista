@@ -164,23 +164,23 @@
 
                 <!-- Gallery -->
                 <div class="pd-gallery">
-                    <div class="pd-main-img-wrap" onclick="openLightbox()">
+                    <div class="pd-main-img-wrap">
                         <img class="pd-main-img" id="pd-main-img"
                              src="../images/product_organza_12_inch_1.webp" alt="12&quot; Regular &amp; Ornela - 12&quot; wholesale decor flower by Florista Nagpur"
                              loading="eager" fetchpriority="high">
                     </div>
                     <div class="pd-thumbs" role="list">
-                        <img src="../images/product_organza_12_inch_1.webp" data-full="../images/product_organza_12_inch_1.webp" class="active" loading="lazy" alt="12&quot; Regular &amp; Ornela shade 1" onclick="pdSwitchImg(this)">
-                        <img src="../images/product_organza_12_inch_2.webp" data-full="../images/product_organza_12_inch_2.webp" class="" loading="lazy" alt="12&quot; Regular &amp; Ornela shade 2" onclick="pdSwitchImg(this)">
-                        <img src="../images/product_organza_12_inch_3.webp" data-full="../images/product_organza_12_inch_3.webp" class="" loading="lazy" alt="12&quot; Regular &amp; Ornela shade 3" onclick="pdSwitchImg(this)">
-                        <img src="../images/product_organza_12_inch_4.webp" data-full="../images/product_organza_12_inch_4.webp" class="" loading="lazy" alt="12&quot; Regular &amp; Ornela shade 4" onclick="pdSwitchImg(this)">
-                        <img src="../images/product_organza_12_inch_5.webp" data-full="../images/product_organza_12_inch_5.webp" class="" loading="lazy" alt="12&quot; Regular &amp; Ornela shade 5" onclick="pdSwitchImg(this)">
-                        <img src="../images/product_organza_12_inch_6.webp" data-full="../images/product_organza_12_inch_6.webp" class="" loading="lazy" alt="12&quot; Regular &amp; Ornela shade 6" onclick="pdSwitchImg(this)">
-                        <img src="../images/product_organza_12_inch_7.webp" data-full="../images/product_organza_12_inch_7.webp" class="" loading="lazy" alt="12&quot; Regular &amp; Ornela shade 7" onclick="pdSwitchImg(this)">
-                        <img src="../images/product_organza_12_inch_8.webp" data-full="../images/product_organza_12_inch_8.webp" class="" loading="lazy" alt="12&quot; Regular &amp; Ornela shade 8" onclick="pdSwitchImg(this)">
-                        <img src="../images/product_organza_12_inch_9.webp" data-full="../images/product_organza_12_inch_9.webp" class="" loading="lazy" alt="12&quot; Regular &amp; Ornela shade 9" onclick="pdSwitchImg(this)">
-                        <img src="../images/product_organza_12_inch_10.webp" data-full="../images/product_organza_12_inch_10.webp" class="" loading="lazy" alt="12&quot; Regular &amp; Ornela shade 10" onclick="pdSwitchImg(this)">
-                        <img src="../images/product_organza_12_inch_11.webp" data-full="../images/product_organza_12_inch_11.webp" class="" loading="lazy" alt="12&quot; Regular &amp; Ornela shade 11" onclick="pdSwitchImg(this)">
+                        <img src="../images/product_organza_12_inch_1.webp" data-full="../images/product_organza_12_inch_1.webp" class="active" loading="lazy" alt="12&quot; Regular &amp; Ornela shade 1">
+                        <img src="../images/product_organza_12_inch_2.webp" data-full="../images/product_organza_12_inch_2.webp" class="" loading="lazy" alt="12&quot; Regular &amp; Ornela shade 2">
+                        <img src="../images/product_organza_12_inch_3.webp" data-full="../images/product_organza_12_inch_3.webp" class="" loading="lazy" alt="12&quot; Regular &amp; Ornela shade 3">
+                        <img src="../images/product_organza_12_inch_4.webp" data-full="../images/product_organza_12_inch_4.webp" class="" loading="lazy" alt="12&quot; Regular &amp; Ornela shade 4">
+                        <img src="../images/product_organza_12_inch_5.webp" data-full="../images/product_organza_12_inch_5.webp" class="" loading="lazy" alt="12&quot; Regular &amp; Ornela shade 5">
+                        <img src="../images/product_organza_12_inch_6.webp" data-full="../images/product_organza_12_inch_6.webp" class="" loading="lazy" alt="12&quot; Regular &amp; Ornela shade 6">
+                        <img src="../images/product_organza_12_inch_7.webp" data-full="../images/product_organza_12_inch_7.webp" class="" loading="lazy" alt="12&quot; Regular &amp; Ornela shade 7">
+                        <img src="../images/product_organza_12_inch_8.webp" data-full="../images/product_organza_12_inch_8.webp" class="" loading="lazy" alt="12&quot; Regular &amp; Ornela shade 8">
+                        <img src="../images/product_organza_12_inch_9.webp" data-full="../images/product_organza_12_inch_9.webp" class="" loading="lazy" alt="12&quot; Regular &amp; Ornela shade 9">
+                        <img src="../images/product_organza_12_inch_10.webp" data-full="../images/product_organza_12_inch_10.webp" class="" loading="lazy" alt="12&quot; Regular &amp; Ornela shade 10">
+                        <img src="../images/product_organza_12_inch_11.webp" data-full="../images/product_organza_12_inch_11.webp" class="" loading="lazy" alt="12&quot; Regular &amp; Ornela shade 11">
                     </div>
                 </div>
 
@@ -362,8 +362,8 @@
     </footer>
 
     <!-- Lightbox -->
-    <div class="lightbox-overlay" id="lightbox" role="dialog" aria-modal="true" aria-label="Product image zoom" onclick="closeLightbox(event)">
-        <button class="lightbox-close" aria-label="Close zoom" onclick="document.getElementById('lightbox').classList.remove('open')">
+    <div class="lightbox-overlay" id="lightbox" role="dialog" aria-modal="true" aria-label="Product image zoom">
+        <button class="lightbox-close" type="button" aria-label="Close zoom">
             <i class="fas fa-times" aria-hidden="true"></i>
         </button>
         <img class="lightbox-img" id="lightbox-img" src="" alt="Product zoom">
@@ -377,51 +377,71 @@
     <script src="../js/main.js"></script>
     <script src="../js/quote-cart.js"></script>
     <script>
-        function pdSwitchImg(thumb) {
-            document.getElementById('pd-main-img').src = thumb.dataset.full;
-            document.querySelectorAll('.pd-thumbs img').forEach(t => t.classList.remove('active'));
-            thumb.classList.add('active');
-            const lb = document.getElementById('lightbox');
-            if (lb.classList.contains('open')) {
-                document.getElementById('lightbox-img').src = thumb.dataset.full;
+        // Per-product page interactions. Bound via addEventListener so
+        // that a future strict Content-Security-Policy with a
+        // script-src that disallows 'unsafe-inline' can land without
+        // breaking the gallery / lightbox.
+        (function () {
+            const mainImg = document.getElementById('pd-main-img');
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const closeBtn = lightbox && lightbox.querySelector('.lightbox-close');
+
+            function pdSwitchImg(thumb) {
+                mainImg.src = thumb.dataset.full;
+                document.querySelectorAll('.pd-thumbs img').forEach(t => t.classList.remove('active'));
+                thumb.classList.add('active');
+                if (lightbox.classList.contains('open')) {
+                    lightboxImg.src = thumb.dataset.full;
+                }
             }
-        }
-        // Track the element focused right before the lightbox opened so
-        // we can restore focus on close. Keyboard users land back on
-        // their starting point instead of jumping to <body>.
-        let lightboxOpener = null;
-        function openLightbox() {
-            document.getElementById('lightbox-img').src = document.getElementById('pd-main-img').src;
-            document.getElementById('lightbox').classList.add('open');
-            document.body.style.overflow = 'hidden';
-            lightboxOpener = document.activeElement;
-            requestAnimationFrame(() => {
-                const closeBtn = document.querySelector('#lightbox .lightbox-close');
-                if (closeBtn) closeBtn.focus();
+
+            // Track the element focused right before the lightbox opened
+            // so we can restore focus on close. Keyboard users land back
+            // on their starting point instead of jumping to <body>.
+            let lightboxOpener = null;
+            function dismissLightbox() {
+                lightbox.classList.remove('open');
+                document.body.style.overflow = '';
+                if (lightboxOpener && typeof lightboxOpener.focus === 'function') {
+                    lightboxOpener.focus();
+                    lightboxOpener = null;
+                }
+            }
+            function openLightbox() {
+                lightboxImg.src = mainImg.src;
+                lightbox.classList.add('open');
+                document.body.style.overflow = 'hidden';
+                lightboxOpener = document.activeElement;
+                requestAnimationFrame(() => {
+                    if (closeBtn) closeBtn.focus();
+                });
+            }
+            function closeLightbox(e) {
+                // Close only when the click is on the overlay backdrop or
+                // the close button (matches the previous inline behaviour).
+                if (!e || e.target === lightbox || e.target.closest('.lightbox-close')) {
+                    dismissLightbox();
+                }
+            }
+
+            // Bindings
+            const wrap = document.querySelector('.pd-main-img-wrap');
+            if (wrap) wrap.addEventListener('click', openLightbox);
+            if (lightbox) lightbox.addEventListener('click', closeLightbox);
+            if (closeBtn) closeBtn.addEventListener('click', dismissLightbox);
+            document.querySelectorAll('.pd-thumbs img').forEach(thumb => {
+                thumb.addEventListener('click', () => pdSwitchImg(thumb));
             });
-        }
-        function closeLightbox(e) {
-            if (e.target === document.getElementById('lightbox') || e.target.closest('.lightbox-close')) {
-                document.getElementById('lightbox').classList.remove('open');
-                document.body.style.overflow = '';
-                if (lightboxOpener && typeof lightboxOpener.focus === 'function') {
-                    lightboxOpener.focus();
-                    lightboxOpener = null;
+
+            // Esc closes the lightbox even if a thumbnail or button has
+            // focus elsewhere on the page.
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape' && lightbox && lightbox.classList.contains('open')) {
+                    dismissLightbox();
                 }
-            }
-        }
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') {
-                const lb = document.getElementById('lightbox');
-                if (!lb.classList.contains('open')) return;
-                lb.classList.remove('open');
-                document.body.style.overflow = '';
-                if (lightboxOpener && typeof lightboxOpener.focus === 'function') {
-                    lightboxOpener.focus();
-                    lightboxOpener = null;
-                }
-            }
-        });
+            });
+        })();
     </script>
 </body>
 </html>
