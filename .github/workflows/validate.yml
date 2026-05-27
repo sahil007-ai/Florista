@@ -2,6 +2,10 @@ name: Site Validation
 
 # Catches accidental regressions before they hit production.
 # Runs on every PR and on every push to main.
+#
+# Scope: validates every *.html at the repo root AND under products/
+# (per-product SEO landing pages). Add new HTML directories to
+# the html_files glob below as the site grows.
 
 on:
   push:
@@ -45,17 +49,22 @@ jobs:
                   else:
                       self.errors.append(f"unexpected </{tag}>")
 
+          root = pathlib.Path(".")
+          html_files = sorted(set(root.glob("*.html"))
+                              | set((root / "products").glob("*.html")))
+
           fail = False
-          for f in sorted(pathlib.Path(".").glob("*.html")):
+          for f in html_files:
               p = Strict()
               p.feed(f.read_text())
               p.close()
               issues = p.errors + ([f"unclosed: {p.stack}"] if p.stack else [])
+              rel = f.relative_to(root)
               if issues:
                   fail = True
-                  print(f"FAIL {f.name}: {issues[:3]}")
+                  print(f"FAIL {rel}: {issues[:3]}")
               else:
-                  print(f"OK   {f.name}")
+                  print(f"OK   {rel}")
           if fail:
               sys.exit(1)
 
@@ -64,8 +73,12 @@ jobs:
         shell: python {0}
         run: |
           import re, json, pathlib, sys
+          root = pathlib.Path(".")
+          html_files = sorted(set(root.glob("*.html"))
+                              | set((root / "products").glob("*.html")))
           fail = False
-          for f in pathlib.Path(".").glob("*.html"):
+          for f in html_files:
+              rel = f.relative_to(root)
               s = f.read_text()
               for i, m in enumerate(re.finditer(
                   r'<script type="application/ld\+json">\s*(\{[\s\S]+?\})\s*</script>',
@@ -73,10 +86,10 @@ jobs:
               )):
                   try:
                       d = json.loads(m.group(1))
-                      print(f"OK   {f.name} ld+json block {i+1}: @type={d.get('@type')}")
+                      print(f"OK   {rel} ld+json block {i+1}: @type={d.get('@type')}")
                   except Exception as e:
                       fail = True
-                      print(f"FAIL {f.name} ld+json block {i+1}: {e}")
+                      print(f"FAIL {rel} ld+json block {i+1}: {e}")
           if fail:
               sys.exit(1)
 
@@ -94,6 +107,15 @@ jobs:
               | {f"css/{p.name}" for p in (root / "css").glob("*") if p.is_file()}
               | {"sitemap.xml", "robots.txt"}
           )
+          # Per-product SEO landing pages live under products/. Index them so
+          # links from products.html (e.g. "products/60-inch-giant-flora.html")
+          # validate. The pages' own ../-relative links are checked separately
+          # below using path resolution.
+          if (root / "products").is_dir():
+              existing |= {
+                  f"products/{p.name}"
+                  for p in (root / "products").glob("*.html")
+              }
           broken = []
           for html in root.glob("*.html"):
               s = html.read_text()
@@ -106,6 +128,29 @@ jobs:
                   if href in existing:
                       continue
                   broken.append((html.name, href))
+
+          # Per-product pages: resolve every href relative to its own
+          # directory so "../index.html", "../images/foo.webp", etc. all
+          # validate against the actual filesystem.
+          abs_root = root.resolve()
+          for html in (root / "products").glob("*.html"):
+              s = html.read_text()
+              for href in re.findall(
+                  r'(?:href|src)="([^"#?]+?)(?:[?#][^"]*)?"', s
+              ):
+                  if href.startswith(("http", "https", "tel:", "mailto:",
+                                      "javascript:", "data:")):
+                      continue
+                  target = (html.parent / href).resolve()
+                  try:
+                      target.relative_to(abs_root)
+                  except ValueError:
+                      broken.append((str(html.relative_to(root)),
+                                     f"{href} (escapes repo)"))
+                      continue
+                  if not target.exists():
+                      broken.append((str(html.relative_to(root)), href))
+
           for b in broken:
               print(f"BROKEN {b[0]} -> {b[1]}")
           print(f"Total broken local refs: {len(broken)}")
