@@ -120,8 +120,14 @@
             transform-origin: center;
             transform-box: fill-box;
         }
-        .size-guide .sg-flower-link:hover .sg-flower-shape {
+        .size-guide .sg-flower-link:hover .sg-flower-shape,
+        .size-guide .sg-flower-link:focus-visible .sg-flower-shape {
             transform: scale(1.08);
+        }
+        .size-guide .sg-flower-link:focus-visible {
+            outline: 2px solid var(--color-primary, #4a7c59);
+            outline-offset: 3px;
+            border-radius: 4px;
         }
         .size-guide .sg-foot {
             font-size: 0.85rem;
@@ -2198,6 +2204,12 @@
                     applyFilter();
                     var toolbar = document.querySelector('.cat-toolbar');
                     if (toolbar) toolbar.scrollIntoView({ behavior: 'smooth' });
+                });
+                link.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        link.click();
+                    }
                 });
             });
         })();
