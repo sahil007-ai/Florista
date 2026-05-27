@@ -141,10 +141,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const cityField     = document.getElementById('city');
             const interestField = document.getElementById('interest');
 
-            const company  = companyField.value.trim();
-            const phone    = phoneField.value.trim();
-            const city     = cityField.value.trim();
-            const interest = interestField.value.trim();
+            const company  = companyField.value.trim().slice(0, 120);
+            const phone    = phoneField.value.trim().slice(0, 25);
+            const city     = cityField.value.trim().slice(0, 80);
+            const interest = interestField.value.trim().slice(0, 200);
 
             // Validate required fields, focus the first invalid one.
             if (!company) {
