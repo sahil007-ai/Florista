@@ -2,7 +2,7 @@
   "id": "FEAT-001",
   "type": "fix",
   "description": "Fix the 60-inch flower overflowing the SVG viewBox and add click-to-filter functionality so clicking a flower in the size guide filters products to that exact size, then scrolls to the product area.",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Step 1 - Fix SVG overflow: In products.html around line 1163, the SVG has viewBox='0 0 720 220'. The 60-inch flower is at translate(670, 120) with petals extending ~77px to the right (cx='47' + rx='30' = 77), giving a max x of 747px which exceeds the 720px viewBox. Fix by widening the viewBox to '0 0 780 220' OR by repositioning the 60-inch flower leftward (e.g., translate(620, 120) would keep it within bounds at 620+77=697px). Choose whichever approach looks best - moving the flower left slightly is preferred since the viewBox change could affect the grid pattern background. If moving the flower, also adjust the floor line x2 value if needed (currently x2='700').",
     "Step 2 - Add data-size attributes to SVG flower links: Change each <a href='#organza' class='sg-flower-link'> to include a data-size attribute matching the flower's size: data-size='12', data-size='24', data-size='36', data-size='48', data-size='60'. Remove the href='#organza' and replace with href='javascript:void(0)' or just use role='button' since we'll handle the click in JS.",
@@ -26,5 +26,5 @@
     "Confirm the SVG flower links have data-size attributes and the click handler calls applyFilter with the correct filter value"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "Moved 60-inch flower to translate(630,120) instead of widening viewBox per step guidance. Max x is now 630+47+30=707 which is safely within 720. All CI validation checks pass (HTML well-formedness, internal links). Used regex /^size-\\d+$/ in applyFilter for a generic exact-size match approach."
 }
