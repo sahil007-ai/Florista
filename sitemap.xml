@@ -183,4 +183,36 @@
     <priority>0.7</priority>
   </url>
 
+
+  <!-- Use-case landing pages -->
+  <url>
+    <loc>https://www.theflorista.in/use-cases/mehndi-decor.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.theflorista.in/use-cases/wedding-backdrops.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.theflorista.in/use-cases/stage-decor.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.theflorista.in/use-cases/haldi-decor.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.theflorista.in/use-cases/theme-party-decor.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
 </urlset>
