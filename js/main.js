@@ -88,51 +88,121 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ── Form Submission (WhatsApp Redirect) ──────────────────────
+    // ── B2B Enquiry Form ─────────────────────────────────────────
+    //
+    // Two things happen on submit:
+    //   1. Lead is logged to a Google Sheet via Apps Script (background).
+    //   2. WhatsApp opens with a pre-filled message (foreground).
+    //
+    // Lead capture matters because step 2 only opens WhatsApp; the user
+    // still has to tap Send inside WhatsApp for the message to actually
+    // reach Florista. If they bail, step 1 has already saved the lead.
+    //
+    // Setup steps for FORM_ENDPOINT_URL are in .kiro/steering/lead-capture.md.
+    // Until configured (left as ''), the form still opens WhatsApp normally —
+    // it just won't log to a spreadsheet.
+    const FORM_ENDPOINT_URL = ''; // <-- paste your Apps Script /exec URL here
+
     const enquiryForm = document.getElementById('b2b-enquiry-form');
     if (enquiryForm) {
+        // Helper: flag a field as invalid + show a one-time hint placeholder.
+        const flagInvalid = (field, hint) => {
+            field.style.borderColor = '#e05c5c';
+            field.focus();
+            const orig = field.getAttribute('placeholder') || '';
+            if (hint) field.setAttribute('placeholder', hint);
+            setTimeout(() => {
+                field.style.borderColor = '';
+                if (hint) field.setAttribute('placeholder', orig);
+            }, 3500);
+        };
+
+        // Clear red border as soon as user types — feels reactive.
+        ['companyName', 'phone', 'city'].forEach((id) => {
+            const f = document.getElementById(id);
+            if (f) f.addEventListener('input', () => { f.style.borderColor = ''; });
+        });
+
         enquiryForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const company  = document.getElementById('companyName').value.trim();
-            const phone    = document.getElementById('phone').value.trim();
-            const city     = document.getElementById('city').value.trim();
-            const interest = document.getElementById('interest').value.trim();
 
-            // Basic phone validation — must have at least 10 digits
+            const companyField  = document.getElementById('companyName');
+            const phoneField    = document.getElementById('phone');
+            const cityField     = document.getElementById('city');
+            const interestField = document.getElementById('interest');
+
+            const company  = companyField.value.trim();
+            const phone    = phoneField.value.trim();
+            const city     = cityField.value.trim();
+            const interest = interestField.value.trim();
+
+            // Validate required fields, focus the first invalid one.
+            if (!company) {
+                flagInvalid(companyField, 'Please enter your name & business');
+                return;
+            }
             const digits = phone.replace(/\D/g, '');
             if (digits.length < 10) {
-                const phoneField = document.getElementById('phone');
-                phoneField.style.borderColor = '#e05c5c';
-                phoneField.focus();
-                phoneField.setAttribute('placeholder', 'Please enter a valid number');
-                setTimeout(() => {
-                    phoneField.style.borderColor = '';
-                    phoneField.setAttribute('placeholder', '+91 XXXXX XXXXX');
-                }, 3000);
+                flagInvalid(phoneField, 'Please enter a valid 10-digit number');
+                return;
+            }
+            if (!city) {
+                flagInvalid(cityField, 'Please enter your city');
                 return;
             }
 
+            // Build the WhatsApp pre-fill text.
             const message = `Hi Florista! I'm enquiring from ${company} (${city}). My WhatsApp is ${phone}. I'm interested in: ${interest || 'your products'}. Please share bulk pricing details.`;
             const waUrl = `https://wa.me/917588447595?text=${encodeURIComponent(message)}`;
 
-            // Visual feedback on the button
+            // (1) Fire-and-forget lead capture to Google Sheets.
+            //     `mode: 'no-cors'` lets the request go through without a
+            //     CORS preflight (Apps Script doesn't return CORS headers
+            //     by default). We can't read the response, but Apps Script
+            //     still receives and logs it.
+            if (FORM_ENDPOINT_URL) {
+                try {
+                    fetch(FORM_ENDPOINT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({
+                            company,
+                            phone,
+                            city,
+                            interest,
+                            page: window.location.href,
+                            userAgent: navigator.userAgent,
+                            timestamp: new Date().toISOString(),
+                        }),
+                    });
+                } catch (_) { /* never block WhatsApp open */ }
+            }
+
+            // (2) Open WhatsApp SYNCHRONOUSLY in the same click handler so
+            //     popup blockers treat it as a direct user gesture. The old
+            //     setTimeout-then-window.open pattern was being blocked.
+            const popup = window.open(waUrl, '_blank');
+            if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+                // Popup was blocked — fall back to navigating the current
+                // tab so the enquiry can still go through.
+                window.location.href = waUrl;
+                return;
+            }
+
+            // (3) Honest button feedback. The message is NOT yet sent —
+            //     the user must tap Send inside WhatsApp.
             const btn = enquiryForm.querySelector('button[type="submit"]');
             const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<i class="fab fa-whatsapp"></i> Opening WhatsApp...';
+            btn.innerHTML = '<i class="fab fa-whatsapp"></i> WhatsApp opened — tap Send to finish';
+            btn.style.background = 'linear-gradient(135deg, #25D366, #128C7E)';
             btn.disabled = true;
-            btn.style.opacity = '0.75';
-
             setTimeout(() => {
-                window.open(waUrl, '_blank');
-                btn.innerHTML = '<i class="fas fa-check"></i> Message Sent!';
-                btn.style.background = 'linear-gradient(135deg, #25D366, #128C7E)';
-                setTimeout(() => {
-                    btn.innerHTML = originalHTML;
-                    btn.disabled = false;
-                    btn.style.opacity = '';
-                    btn.style.background = '';
-                    enquiryForm.reset();
-                }, 3000);
-            }, 400);
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+                btn.style.background = '';
+                enquiryForm.reset();
+            }, 5000);
         });
     }
 });
