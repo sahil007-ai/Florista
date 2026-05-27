@@ -61,6 +61,36 @@ a { text-decoration: none; color: inherit; }
 
 img { max-width: 100%; height: auto; display: block; }
 
+/* ==========================================================================
+   Keyboard focus
+   ==========================================================================
+   Browsers each ship a default focus ring that varies wildly in colour
+   and visibility — Chrome's faint blue is nearly invisible on our cream
+   background, and Safari's dotted outline disappears against the brand
+   pink. Define a single brand-aware focus style so keyboard users see
+   the same clear ring everywhere.
+
+   `:focus-visible` (not `:focus`) ensures the ring appears only for
+   keyboard / programmatic focus, never for mouse clicks — so the design
+   stays clean for pointer users while staying accessible.
+
+   The .quote-add-btn in js/quote-cart.js already has its own custom
+   focus-visible treatment; this rule covers everything else. */
+:focus-visible {
+  outline: 2px solid var(--color-primary-dark);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+button:focus-visible,
+.btn:focus-visible {
+  outline-offset: 3px;
+}
+/* Anchor focus rings can clip on rounded cards/headers — a slightly
+   softer offset feels less harsh inline. */
+a:focus-visible {
+  outline-offset: 2px;
+}
+
 .container {
   width: 100%;
   max-width: var(--max-width);
