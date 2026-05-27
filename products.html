@@ -120,8 +120,14 @@
             transform-origin: center;
             transform-box: fill-box;
         }
-        .size-guide .sg-flower-link:hover .sg-flower-shape {
+        .size-guide .sg-flower-link:hover .sg-flower-shape,
+        .size-guide .sg-flower-link:focus-visible .sg-flower-shape {
             transform: scale(1.08);
+        }
+        .size-guide .sg-flower-link:focus-visible {
+            outline: 2px solid var(--color-primary, #4a7c59);
+            outline-offset: 3px;
+            border-radius: 4px;
         }
         .size-guide .sg-foot {
             font-size: 0.85rem;
@@ -1208,7 +1214,7 @@
 
                         <!-- Helper: each flower is a 5-petal shape; centered at (cx, cy) with given radius r -->
                         <!-- 12" flower (r ≈ 15) -->
-                        <a href="#organza" class="sg-flower-link">
+                        <a data-size="12" role="button" tabindex="0" class="sg-flower-link">
                             <g transform="translate(160, 170)">
                                 <g class="sg-flower-shape">
                                     <ellipse cx="0" cy="-15" rx="9" ry="13" fill="url(#sg-flower)"/>
@@ -1224,7 +1230,7 @@
                         </a>
 
                         <!-- 24" flower (r ≈ 30) -->
-                        <a href="#organza" class="sg-flower-link">
+                        <a data-size="24" role="button" tabindex="0" class="sg-flower-link">
                             <g transform="translate(260, 140)">
                                 <g class="sg-flower-shape">
                                     <ellipse cx="0" cy="-30" rx="18" ry="26" fill="url(#sg-flower)"/>
@@ -1240,7 +1246,7 @@
                         </a>
 
                         <!-- 36" flower (r ≈ 46) -->
-                        <a href="#organza" class="sg-flower-link">
+                        <a data-size="36" role="button" tabindex="0" class="sg-flower-link">
                             <g transform="translate(390, 110)">
                                 <g class="sg-flower-shape">
                                     <ellipse cx="0" cy="-45" rx="27" ry="40" fill="url(#sg-flower)"/>
@@ -1256,7 +1262,7 @@
                         </a>
 
                         <!-- 48" flower (r ≈ 61) -->
-                        <a href="#organza" class="sg-flower-link">
+                        <a data-size="48" role="button" tabindex="0" class="sg-flower-link">
                             <g transform="translate(540, 88)">
                                 <g class="sg-flower-shape">
                                     <ellipse cx="0" cy="-58" rx="35" ry="52" fill="url(#sg-flower)"/>
@@ -1272,8 +1278,8 @@
                         </a>
 
                         <!-- 60" flower (r ≈ 76) — almost as tall as the person -->
-                        <a href="#organza" class="sg-flower-link">
-                            <g transform="translate(670, 120)">
+                        <a data-size="60" role="button" tabindex="0" class="sg-flower-link">
+                            <g transform="translate(630, 120)">
                                 <g class="sg-flower-shape">
                                     <ellipse cx="0" cy="-50" rx="30" ry="44" fill="url(#sg-flower)"/>
                                     <ellipse cx="47" cy="-15" rx="30" ry="44" transform="rotate(72 47 -15)" fill="url(#sg-flower)"/>
@@ -1332,6 +1338,11 @@
                             <button type="button" class="tb-chip" data-filter="size-small">Up to 24"</button>
                             <button type="button" class="tb-chip" data-filter="size-medium">28&ndash;44"</button>
                             <button type="button" class="tb-chip" data-filter="size-large">48"+</button>
+                            <button type="button" class="tb-chip" data-filter="size-12">12&quot;</button>
+                            <button type="button" class="tb-chip" data-filter="size-24">24&quot;</button>
+                            <button type="button" class="tb-chip" data-filter="size-36">36&quot;</button>
+                            <button type="button" class="tb-chip" data-filter="size-48">48&quot;</button>
+                            <button type="button" class="tb-chip" data-filter="size-60">60&quot;</button>
                         </div>
                         <div class="cat-toolbar-group">
                             <span class="tb-label" id="sort-label">Sort:</span>
@@ -2134,6 +2145,7 @@
                     else if (activeFilter === 'size-small') visible = (size <= 24);
                     else if (activeFilter === 'size-medium') visible = (size >= 28 && size <= 44);
                     else if (activeFilter === 'size-large') visible = (size >= 48);
+                    else if (/^size-\d+$/.test(activeFilter)) visible = (size === parseInt(activeFilter.split('-')[1], 10));
                     card.classList.toggle('is-hidden', !visible);
                     if (visible) visibleCount++;
                 });
@@ -2180,6 +2192,26 @@
             });
 
             applyFilter();
+
+            // SVG size-guide flower click-to-filter
+            document.querySelectorAll('.sg-flower-link[data-size]').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    var size = link.getAttribute('data-size');
+                    activeFilter = 'size-' + size;
+                    filterChips.forEach(function(c) { c.classList.remove('active'); });
+                    var matchingChip = document.querySelector('.tb-chip[data-filter="size-' + size + '"]');
+                    if (matchingChip) matchingChip.classList.add('active');
+                    applyFilter();
+                    var toolbar = document.querySelector('.cat-toolbar');
+                    if (toolbar) toolbar.scrollIntoView({ behavior: 'smooth' });
+                });
+                link.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        link.click();
+                    }
+                });
+            });
         })();
 
         }, { passive: true });
