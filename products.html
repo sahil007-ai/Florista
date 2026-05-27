@@ -351,6 +351,21 @@
         /* Card body */
         .card-body { padding: 18px 20px 20px; flex: 1; display: flex; flex-direction: column; }
         .card-body h3 { font-family: var(--font-sans); font-size: 1.05rem; font-weight: 600; margin-bottom: 5px; }
+        .card-body h3 .card-title-link {
+            color: inherit;
+            text-decoration: none;
+            background-image: linear-gradient(var(--color-primary-dark), var(--color-primary-dark));
+            background-size: 0% 1px;
+            background-repeat: no-repeat;
+            background-position: 0 100%;
+            transition: background-size 0.3s ease, color 0.2s ease;
+        }
+        .card-body h3 .card-title-link:hover,
+        .card-body h3 .card-title-link:focus-visible {
+            color: var(--color-primary-dark);
+            background-size: 100% 1px;
+            outline: none;
+        }
         .card-body .desc { font-size: 0.85rem; color: var(--color-gray); margin-bottom: 14px; flex: 1; }
         .card-footer-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
         .card-price { font-weight: 700; font-size: 1rem; color: var(--color-primary-dark); white-space: nowrap; }
@@ -1384,7 +1399,7 @@
                                     <img src="images/product_organza_12_inch_11.webp" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_12_inch')">
                                 </div>
                                 <div class="card-body">
-                                    <h3>12" Regular & Ornela</h3>
+                                    <h3><a class="card-title-link" href="products/12-inch-regular-ornela.html">12" Regular & Ornela</a></h3>
                                     <p class="desc">12 pastel shades available</p>
                                     <span class="moq-chip"><i class="fas fa-box-open"></i> MOQ 10 pcs</span>
                                     <div class="card-footer-row">
@@ -1415,7 +1430,7 @@
                                     <img src="images/product_organza_18_inch_11.webp" class="" loading="lazy" alt="Shade 11" onclick="switchImg(this, 'main_organza_18_inch')">
                                 </div>
                                 <div class="card-body">
-                                    <h3>18" Lumora</h3>
+                                    <h3><a class="card-title-link" href="products/18-inch-lumora.html">18" Lumora</a></h3>
                                     <p class="desc">12 pastel shades available</p>
                                     <span class="moq-chip"><i class="fas fa-box-open"></i> MOQ 10 pcs</span>
                                     <div class="card-footer-row">
@@ -1448,7 +1463,7 @@
                                     <img src="images/product_organza_24_inch_13.webp" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_24_inch')">
                                 </div>
                                 <div class="card-body">
-                                    <h3>24" Wedding Touch</h3>
+                                    <h3><a class="card-title-link" href="products/24-inch-wedding-touch.html">24" Wedding Touch</a></h3>
                                     <p class="desc">Perfect for intimate backdrops</p>
                                     <span class="moq-chip"><i class="fas fa-box-open"></i> MOQ 10 pcs</span>
                                     <div class="card-footer-row">
@@ -1488,7 +1503,7 @@
                                     <img src="images/product_organza_24_inch_premium_20.webp" class="" loading="lazy" alt="Shade 20" onclick="switchImg(this, 'main_organza_24_inch_premium')">
                                 </div>
                                 <div class="card-body">
-                                    <h3>24" Premium Collection</h3>
+                                    <h3><a class="card-title-link" href="products/24-inch-premium-collection.html">24" Premium Collection</a></h3>
                                     <p class="desc">Large-format premium prints</p>
                                     <span class="moq-chip"><i class="fas fa-box-open"></i> MOQ 10 pcs</span>
                                     <div class="card-footer-row">
@@ -1520,7 +1535,7 @@
                                     <img src="images/product_organza_28_inch_12.webp" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_28_inch')">
                                 </div>
                                 <div class="card-body">
-                                    <h3>28" Wedding Bloom</h3>
+                                    <h3><a class="card-title-link" href="products/28-inch-wedding-bloom.html">28" Wedding Bloom</a></h3>
                                     <p class="desc">Premium finish for events</p>
                                     <span class="moq-chip"><i class="fas fa-box-open"></i> MOQ 10 pcs</span>
                                     <div class="card-footer-row">
@@ -1552,7 +1567,7 @@
                                     <img src="images/product_organza_32_inch_12.webp" class="" loading="lazy" alt="Shade 12" onclick="switchImg(this, 'main_organza_32_inch')">
                                 </div>
                                 <div class="card-body">
-                                    <h3>32" Pure Bliss</h3>
+                                    <h3><a class="card-title-link" href="products/32-inch-pure-bliss.html">32" Pure Bliss</a></h3>
                                     <p class="desc">Large statement pieces</p>
                                     <span class="moq-chip"><i class="fas fa-box-open"></i> MOQ 10 pcs</span>
                                     <div class="card-footer-row">
@@ -1586,7 +1601,7 @@
                                     <img src="images/product_organza_36_inch_14.webp" class="" loading="lazy" alt="Shade 14" onclick="switchImg(this, 'main_organza_36_inch')">
                                 </div>
                                 <div class="card-body">
-                                    <h3>36" Premium Blooms</h3>
+                                    <h3><a class="card-title-link" href="products/36-inch-premium-blooms.html">36" Premium Blooms</a></h3>
                                     <p class="desc">Elegant 36" variants</p>
                                     <span class="moq-chip"><i class="fas fa-box-open"></i> MOQ 10 pcs</span>
                                     <div class="card-footer-row">
@@ -1619,7 +1634,7 @@
                                     <img src="images/product_organza_40_inch_13.webp" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_40_inch')">
                                 </div>
                                 <div class="card-body">
-                                    <h3>40" Decor Blooms</h3>
+                                    <h3><a class="card-title-link" href="products/40-inch-decor-blooms.html">40" Decor Blooms</a></h3>
                                     <p class="desc">Stage & backdrop decor</p>
                                     <span class="moq-chip"><i class="fas fa-box-open"></i> MOQ 10 pcs</span>
                                     <div class="card-footer-row">
@@ -1652,7 +1667,7 @@
                                     <img src="images/product_organza_44_inch_13.webp" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_44_inch')">
                                 </div>
                                 <div class="card-body">
-                                    <h3>44" Majestic</h3>
+                                    <h3><a class="card-title-link" href="products/44-inch-majestic.html">44" Majestic</a></h3>
                                     <p class="desc">For grand stage decor</p>
                                     <span class="moq-chip"><i class="fas fa-box-open"></i> MOQ 10 pcs</span>
                                     <div class="card-footer-row">
@@ -1685,7 +1700,7 @@
                                     <img src="images/product_organza_48_inch_13.webp" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_48_inch')">
                                 </div>
                                 <div class="card-body">
-                                    <h3>48" Big Flora</h3>
+                                    <h3><a class="card-title-link" href="products/48-inch-big-flora.html">48" Big Flora</a></h3>
                                     <p class="desc">Massive floral centerpieces</p>
                                     <span class="moq-chip"><i class="fas fa-box-open"></i> MOQ 5 pcs</span>
                                     <div class="card-footer-row">
@@ -1718,7 +1733,7 @@
                                     <img src="images/product_organza_60_inch_13.webp" class="" loading="lazy" alt="Shade 13" onclick="switchImg(this, 'main_organza_60_inch')">
                                 </div>
                                 <div class="card-body">
-                                    <h3>60" Giant Flora</h3>
+                                    <h3><a class="card-title-link" href="products/60-inch-giant-flora.html">60" Giant Flora</a></h3>
                                     <p class="desc">Our largest masterpiece</p>
                                     <span class="moq-chip"><i class="fas fa-box-open"></i> MOQ 5 pcs</span>
                                     <div class="card-footer-row">
@@ -1750,7 +1765,7 @@
                                     <img src="images/product_glowing_flower_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_glowing_flower')">
                                 </div>
                                 <div class="card-body">
-                                    <h3>Glowing Flower (3ft)</h3>
+                                    <h3><a class="card-title-link" href="products/glowing-flower-3ft.html">Glowing Flower (3ft)</a></h3>
                                     <p class="desc">Illuminated elegant decor</p>
                                     <span class="moq-chip"><i class="fas fa-box-open"></i> MOQ 5 pcs</span>
                                     <div class="card-footer-row">
@@ -1772,7 +1787,7 @@
                                     <img src="images/product_aura_flower_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_aura_flower')">
                                 </div>
                                 <div class="card-body">
-                                    <h3>Aura Flower (3ft)</h3>
+                                    <h3><a class="card-title-link" href="products/aura-flower-3ft.html">Aura Flower (3ft)</a></h3>
                                     <p class="desc">Premium structural design</p>
                                     <span class="moq-chip"><i class="fas fa-box-open"></i> MOQ 5 pcs</span>
                                     <div class="card-footer-row">
@@ -1794,7 +1809,7 @@
                                     <img src="images/product_tri_petal_flower_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_tri_petal_flower')">
                                 </div>
                                 <div class="card-body">
-                                    <h3>Tri-Petal Flower (2.5ft)</h3>
+                                    <h3><a class="card-title-link" href="products/tri-petal-flower-2-5ft.html">Tri-Petal Flower (2.5ft)</a></h3>
                                     <p class="desc">Unique geometric style</p>
                                     <span class="moq-chip"><i class="fas fa-box-open"></i> MOQ 10 pcs</span>
                                     <div class="card-footer-row">
@@ -1816,7 +1831,7 @@
                                     <img src="images/product_cinderella_flowers_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_cinderella_flowers')">
                                 </div>
                                 <div class="card-body">
-                                    <h3>Cinderella Flowers</h3>
+                                    <h3><a class="card-title-link" href="products/cinderella-flowers.html">Cinderella Flowers</a></h3>
                                     <p class="desc">Fairytale aesthetic</p>
                                     <span class="moq-chip"><i class="fas fa-box-open"></i> MOQ 10 pcs</span>
                                     <div class="card-footer-row">
@@ -1838,7 +1853,7 @@
                                     <img src="images/product_fluffy_bloom_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_fluffy_bloom')">
                                 </div>
                                 <div class="card-body">
-                                    <h3>Fluffy Bloom</h3>
+                                    <h3><a class="card-title-link" href="products/fluffy-bloom.html">Fluffy Bloom</a></h3>
                                     <p class="desc">Soft, voluminous texture</p>
                                     <span class="moq-chip"><i class="fas fa-box-open"></i> MOQ 10 pcs</span>
                                     <div class="card-footer-row">
@@ -1863,7 +1878,7 @@
                                     <img src="images/product_premium_fabric_5.webp" class="" loading="lazy" alt="Shade 5" onclick="switchImg(this, 'main_premium_fabric')">
                                 </div>
                                 <div class="card-body">
-                                    <h3>Premium Fabric Flowers</h3>
+                                    <h3><a class="card-title-link" href="products/premium-fabric-flowers.html">Premium Fabric Flowers</a></h3>
                                     <p class="desc">High-quality structured fabric</p>
                                     <span class="moq-chip"><i class="fas fa-box-open"></i> MOQ 10 pcs</span>
                                     <div class="card-footer-row">
@@ -1887,7 +1902,7 @@
                                     <img src="images/product_blooming_dales_4.webp" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_blooming_dales')">
                                 </div>
                                 <div class="card-body">
-                                    <h3>Blooming Dales</h3>
+                                    <h3><a class="card-title-link" href="products/blooming-dales.html">Blooming Dales</a></h3>
                                     <p class="desc">Available in 24", 32", 36"</p>
                                     <span class="moq-chip"><i class="fas fa-box-open"></i> MOQ 10 pcs</span>
                                     <div class="card-footer-row">
@@ -1911,7 +1926,7 @@
                                     <img src="images/product_printed_fabric_4.webp" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_printed_fabric')">
                                 </div>
                                 <div class="card-body">
-                                    <h3>Printed Fabric Flower</h3>
+                                    <h3><a class="card-title-link" href="products/printed-fabric-flower.html">Printed Fabric Flower</a></h3>
                                     <p class="desc">Vibrant printed textures</p>
                                     <span class="moq-chip"><i class="fas fa-box-open"></i> MOQ 10 pcs</span>
                                     <div class="card-footer-row">
@@ -1943,7 +1958,7 @@
                                     <img src="images/product_organza_butterfly_2.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_organza_butterfly')">
                                 </div>
                                 <div class="card-body">
-                                    <h3>Organza Butterfly</h3>
+                                    <h3><a class="card-title-link" href="products/organza-butterfly.html">Organza Butterfly</a></h3>
                                     <p class="desc">12 pastel shades available</p>
                                     <span class="moq-chip"><i class="fas fa-box-open"></i> MOQ 10 pcs</span>
                                     <div class="card-footer-row">
@@ -1965,7 +1980,7 @@
                                     <img src="images/product_dream_wings_3.webp" class="" loading="lazy" alt="Shade 2" onclick="switchImg(this, 'main_dream_wings')">
                                 </div>
                                 <div class="card-body">
-                                    <h3>Dream Wings (90")</h3>
+                                    <h3><a class="card-title-link" href="products/dream-wings-90-inch.html">Dream Wings (90")</a></h3>
                                     <p class="desc">Massive angel wing props</p>
                                     <span class="moq-chip"><i class="fas fa-box-open"></i> MOQ 5 pcs</span>
                                     <div class="card-footer-row">
@@ -1989,7 +2004,7 @@
                                     <img src="images/product_theme_party_fish_4.webp" class="" loading="lazy" alt="Shade 4" onclick="switchImg(this, 'main_theme_party_fish')">
                                 </div>
                                 <div class="card-body">
-                                    <h3>Theme Party Fish</h3>
+                                    <h3><a class="card-title-link" href="products/theme-party-fish.html">Theme Party Fish</a></h3>
                                     <p class="desc">Under-the-sea party decor</p>
                                     <span class="moq-chip"><i class="fas fa-box-open"></i> MOQ 10 pcs</span>
                                     <div class="card-footer-row">
