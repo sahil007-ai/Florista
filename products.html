@@ -1166,7 +1166,7 @@
                 <div class="sg-body">
                     <p class="sg-intro">All sizes shown next to a 5&#39;7&quot; (170 cm) person to-scale. Click any size to jump to its product cards.</p>
 
-                    <svg class="sg-svg" viewBox="0 0 720 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Florista size comparison: 12 inch, 24 inch, 36 inch, 48 inch, and 60 inch flowers shown next to a 5 foot 7 inch silhouette.">
+                    <svg class="sg-svg" viewBox="0 0 780 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Florista size comparison: 12 inch, 24 inch, 36 inch, 48 inch, and 60 inch flowers shown next to a 5 foot 7 inch silhouette.">
                         <defs>
                             <linearGradient id="sg-flower" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="0%" stop-color="#fdeef5"/>
@@ -1182,10 +1182,10 @@
                         </defs>
 
                         <!-- Light grid background -->
-                        <rect width="720" height="220" fill="url(#sg-grid)"/>
+                        <rect width="780" height="220" fill="url(#sg-grid)"/>
 
                         <!-- Floor line -->
-                        <line x1="20" y1="200" x2="700" y2="200" stroke="rgba(201,126,160,0.4)" stroke-width="1.5" stroke-dasharray="3 3"/>
+                        <line x1="20" y1="200" x2="760" y2="200" stroke="rgba(201,126,160,0.4)" stroke-width="1.5" stroke-dasharray="3 3"/>
 
                         <!-- Person silhouette (170 cm = 67 inches), placed at left, 170 SVG units tall -->
                         <!-- Head -->
@@ -1333,8 +1333,6 @@
                         <div class="cat-toolbar-group">
                             <span class="tb-label">Filter:</span>
                             <button type="button" class="tb-chip active" data-filter="all">All</button>
-                            <button type="button" class="tb-chip" data-filter="moq-5">MOQ 5 pcs</button>
-                            <button type="button" class="tb-chip" data-filter="moq-10">MOQ 10 pcs</button>
                             <button type="button" class="tb-chip" data-filter="size-small">Up to 24"</button>
                             <button type="button" class="tb-chip" data-filter="size-medium">28&ndash;44"</button>
                             <button type="button" class="tb-chip" data-filter="size-large">48"+</button>
@@ -2118,6 +2116,8 @@
             navLinks.forEach(l => {
                 l.classList.toggle('active', l.getAttribute('href') === '#' + current);
             });
+        }, { passive: true });
+
         // ── Sort & Filter ──────────────────────────────────────
         (function() {
             const cards = Array.from(document.querySelectorAll('.product-card[data-price]'));
@@ -2137,15 +2137,13 @@
             function applyFilter() {
                 let visibleCount = 0;
                 cards.forEach(card => {
-                    const moq = parseInt(card.dataset.moq, 10);
                     const size = parseInt(card.dataset.size, 10);
                     let visible = true;
-                    if (activeFilter === 'moq-5') visible = (moq <= 5);
-                    else if (activeFilter === 'moq-10') visible = (moq <= 10 && moq > 5);
-                    else if (activeFilter === 'size-small') visible = (size <= 24);
+                    if (activeFilter === 'size-small') visible = (size <= 24);
                     else if (activeFilter === 'size-medium') visible = (size >= 28 && size <= 44);
                     else if (activeFilter === 'size-large') visible = (size >= 48);
                     else if (/^size-\d+$/.test(activeFilter)) visible = (size === parseInt(activeFilter.split('-')[1], 10));
+                    else if (activeFilter !== 'all') visible = false;
                     card.classList.toggle('is-hidden', !visible);
                     if (visible) visibleCount++;
                 });
@@ -2214,7 +2212,6 @@
             });
         })();
 
-        }, { passive: true });
     </script>
 </body>
 </html>
