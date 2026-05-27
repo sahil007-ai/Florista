@@ -367,9 +367,105 @@
         }
         .lightbox-close:hover { background: rgba(255,255,255,0.25); }
 
+        /* ── Story section: Pairs / Behind the craft / Promise ── */
+        .pd-story {
+            padding: 48px 0 16px;
+            border-top: 1px solid rgba(201,126,160,0.18);
+            margin-top: 30px;
+        }
+        .pd-story .section-title {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .pd-story-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            margin-top: 28px;
+        }
+        .pd-story-block {
+            background: var(--glass-bg);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 28px 26px;
+            box-shadow: var(--glass-shadow);
+            transition: var(--transition);
+        }
+        .pd-story-block:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 50px rgba(80,30,60,0.10);
+        }
+        .pd-story-block h3 {
+            font-family: var(--font-sans);
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--color-primary-dark);
+            margin: 0 0 14px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+        .pd-story-block h3 i { font-size: 0.95rem; }
+        .pd-story-block p {
+            color: var(--color-dark);
+            line-height: 1.7;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+        .pd-story-promise {
+            background: linear-gradient(135deg, rgba(201,126,160,0.08), rgba(245,213,228,0.16));
+        }
+
+        /* ── Branded contact hook block ── */
+        .pd-hook {
+            background: linear-gradient(135deg, rgba(201,126,160,0.12), rgba(245,213,228,0.20));
+            border: 1px solid rgba(201,126,160,0.22);
+            border-radius: 22px;
+            padding: 48px 36px;
+            margin: 40px 0 8px;
+            text-align: center;
+        }
+        .pd-hook h2 {
+            font-family: var(--font-serif);
+            font-size: clamp(1.4rem, 2.4vw, 1.95rem);
+            margin: 0 0 14px;
+            color: var(--color-dark);
+        }
+        .pd-hook > p {
+            color: var(--color-gray);
+            font-size: 1rem;
+            line-height: 1.65;
+            max-width: 640px;
+            margin: 0 auto 24px;
+        }
+        .pd-hook-cta {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 18px;
+        }
+        .pd-hook-meta {
+            font-size: 0.82rem;
+            color: var(--color-gray);
+            margin: 0;
+        }
+        .pd-hook-meta i {
+            color: #1f6b3a;
+            margin-right: 6px;
+        }
+
         @media (max-width: 900px) {
             .product-detail { grid-template-columns: 1fr; gap: 28px; }
             .pd-gallery { position: static; }
+        }
+        @media (max-width: 600px) {
+            .pd-hook { padding: 36px 22px; }
+            .pd-story-block { padding: 24px 20px; }
         }
     </style>
 </head>
@@ -451,17 +547,50 @@
                     </div>
 
                     <div class="pd-description">
-<p>The <strong>Blooming Dales</strong> is a handcrafted premium decor flower produced in Florista&rsquo;s Nagpur factory. At <strong>24&quot; / 32&quot; / 36&quot; (61–91 cm)</strong>, it&rsquo;s designed for mixed-size backdrop arrangements and layered decor. Each piece is built on a wire frame with high-quality fabric so it holds shape across multiple events and ships safely PAN India.</p><p>Wholesale-only supply &mdash; minimum order quantity is <strong>10 pieces</strong>. Mix and match shades within an order, and combine with other Florista sizes for layered backdrop installations. Volumetric shipping is calculated at the factory; chat with us on WhatsApp for a packed quote to your city.</p>
+<p>One design, three sizes &mdash; 24, 32, and 36 inches. Made for layered installations where you want unified visual language across a multi-tier backdrop.</p><p>Four shades, available across all three sizes. Buyers building tiered backdrops usually order in roughly a 1:2:1 ratio (large : medium : small) and adjust by venue.</p>
                     </div>
 
                     <ul class="pd-feature-list">
-                        <li><i class="fas fa-check-circle"></i> Direct-from-factory pricing &mdash; no middlemen.</li>
-                        <li><i class="fas fa-check-circle"></i> 4 shades available; custom bulk colours on request.</li>
-                        <li><i class="fas fa-check-circle"></i> Volumetric shipping calculated PAN India from Nagpur.</li>
-                        <li><i class="fas fa-check-circle"></i> Reusable across multiple events &mdash; durable wire-frame construction.</li>
+                        <li><i class="fas fa-check-circle"></i> Direct-from-factory pricing &mdash; no middlemen, no inflated retail markup.</li>
+                        <li><i class="fas fa-check-circle"></i> Multi-tier reception and sangeet backdrops.</li>
+                        <li><i class="fas fa-check-circle"></i> Layered photo-walls with single-design consistency.</li>
+                        <li><i class="fas fa-check-circle"></i> Phased installations across multiple event nights.</li>
+                        <li><i class="fas fa-check-circle"></i> Decor partners building reusable inventory.</li>
                     </ul>
                 </div>
             </article>
+
+            <section class="pd-story" aria-label="Behind this piece">
+                <div class="section-title">
+                    <div class="section-label">Behind this piece</div>
+                    <h2>How buyers use the Blooming Dales</h2>
+                </div>
+                <div class="pd-story-grid">
+                    <div class="pd-story-block">
+                        <h3><i class="fas fa-layer-group" aria-hidden="true"></i> Pairs well with</h3>
+                        <p>Blooming Dales is itself a layering kit &mdash; keep the installation within the family for a clean consistent read, or mix with 18" Lumora for an extra outer layer.</p>
+                    </div>
+                    <div class="pd-story-block">
+                        <h3><i class="fas fa-hammer" aria-hidden="true"></i> Behind the craft</h3>
+                        <p>Same petal pattern at three scales means the shape language stays consistent across the wall. Most multi-size flowers from other manufacturers shift petal count or layering across sizes, and the wall reads inconsistent. Ours doesn't.</p>
+                    </div>
+                    <div class="pd-story-block pd-story-promise">
+                        <h3><i class="fas fa-seedling" aria-hidden="true"></i> The Florista promise</h3>
+                        <p>Direct from our Nagpur factory floor &mdash; no middlemen, no inflated retail markup. Every flower is hand-cut, hand-pleated, and hand-finished by the same artisan team that has been making decor since 2018. Bulk pricing, honest MOQs, PAN India shipping.</p>
+                    </div>
+                </div>
+            </section>
+            <section class="pd-hook" aria-label="Talk to Florista">
+                <h2>Building reusable decor inventory?</h2>
+                <p>If you're a decor partner, talk to us about volume slabs across the size mix &mdash; we structure pricing differently for inventory-building orders versus single-event orders.</p>
+                <div class="pd-hook-cta">
+                    <a href="https://wa.me/917588447595?text=Enquiry%20for%20Blooming%20Dales" class="btn btn-whatsapp" target="_blank" rel="noopener" data-wa-source="product_blooming-dales_hook">
+                        <i class="fab fa-whatsapp"></i> Start a WhatsApp chat
+                    </a>
+                    <a href="../contact.html" class="btn btn-outline">Send a detailed enquiry</a>
+                </div>
+                <p class="pd-hook-meta"><i class="fas fa-circle-check" aria-hidden="true"></i> Made in Nagpur. Shipped PAN India. WhatsApp replies usually under 30 minutes during business hours.</p>
+            </section>
 
             <!-- Related products -->
             <section class="related-section">
