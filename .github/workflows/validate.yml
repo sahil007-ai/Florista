@@ -86,10 +86,13 @@ jobs:
         run: |
           import re, pathlib, sys
           root = pathlib.Path(".")
+          # Glob js/ and css/ so newly added asset files don't break the check.
           existing = (
               {p.name for p in root.glob("*")}
               | {f"images/{p.name}" for p in (root / "images").glob("*")}
-              | {"css/style.css", "js/main.js", "sitemap.xml", "robots.txt"}
+              | {f"js/{p.name}" for p in (root / "js").glob("*") if p.is_file()}
+              | {f"css/{p.name}" for p in (root / "css").glob("*") if p.is_file()}
+              | {"sitemap.xml", "robots.txt"}
           )
           broken = []
           for html in root.glob("*.html"):
