@@ -22,6 +22,7 @@ from __future__ import annotations
 import html
 import json
 import pathlib
+import sys
 import urllib.parse
 from typing import Any
 
@@ -29,6 +30,18 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT_DIR = ROOT / "products"
 SITE_URL = "https://www.theflorista.in"
 WHATSAPP_NUMBER = "917588447595"
+
+# Per-product expressive content (narrative, built_for, pairs_with,
+# craft_note, contact_hook) lives in tools/product_content.py so the
+# template logic in this file stays small. Sibling-file import — add
+# tools/ to sys.path so the script works from any cwd, including
+# `python3 tools/generate_product_pages.py` from the repo root.
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from product_content import (  # noqa: E402  (sys.path tweak above)
+    CONTENT_BY_SLUG,
+    FLORISTA_PROMISE,
+    HOOK_REASSURANCE,
+)
 
 # ---------------------------------------------------------------------------
 # Product database — single source of truth
@@ -541,7 +554,21 @@ def page_title(p: dict[str, Any]) -> str:
 
 
 def long_description_html(p: dict[str, Any]) -> str:
-    """Two-paragraph descriptive copy. Escapes name for HTML."""
+    """Two-paragraph descriptive copy.
+
+    Uses the per-product `narrative` from CONTENT_BY_SLUG when authored
+    (preferred &mdash; that's the Florista voice talking) and falls back to
+    the generic templated paragraphs so a newly-added product still
+    renders sensibly before its custom copy lands.
+    """
+    custom = CONTENT_BY_SLUG.get(p["slug"], {}).get("narrative")
+    if custom:
+        # Authored copy may already contain HTML entities (`&mdash;`,
+        # `&quot;` etc.) — pass through verbatim, just wrap each
+        # paragraph in <p>.
+        return "".join(f"<p>{para}</p>" for para in custom)
+
+    # Generic fallback (matches the historical generator output).
     name = html.escape(p["name"])
     size = html.escape(p["size_label"])
     meta = html.escape(p["size_meta"])
@@ -558,6 +585,115 @@ def long_description_html(p: dict[str, Any]) -> str:
         f"order, and combine with other Florista sizes for layered backdrop "
         f"installations. Volumetric shipping is calculated at the factory; "
         f"chat with us on WhatsApp for a packed quote to your city.</p>"
+    )
+
+
+def feature_list_html(p: dict[str, Any]) -> str:
+    """Render the bullet list inside the info column.
+
+    First bullet is always the Florista brand-identity anchor (same on
+    every page). The remaining 3-4 bullets come from the per-product
+    `built_for` array so each page reads with its own use-case context
+    instead of the same generic list. Falls back to the historical
+    generic bullets if a product hasn't been authored yet.
+    """
+    bullets: list[str] = []
+
+    custom = CONTENT_BY_SLUG.get(p["slug"], {}).get("built_for")
+    if custom:
+        # Brand-identity anchor first (consistent across all pages).
+        bullets.append(
+            "Direct-from-factory pricing &mdash; no middlemen, no inflated "
+            "retail markup."
+        )
+        bullets.extend(custom)
+    else:
+        # Generic fallback (matches the historical generator output).
+        bullets = [
+            "Direct-from-factory pricing &mdash; no middlemen.",
+            f"{p['shade_count']} shades available; custom bulk colours on request.",
+            "Volumetric shipping calculated PAN India from Nagpur.",
+            "Reusable across multiple events &mdash; durable wire-frame construction.",
+        ]
+
+    items = "\n".join(
+        f'                        <li><i class="fas fa-check-circle"></i> {b}</li>'
+        for b in bullets
+    )
+    return items
+
+
+def story_section_html(p: dict[str, Any]) -> str:
+    """Render the 3-column 'Behind this piece' section.
+
+    Sits between the article (gallery+info) and the related-products
+    grid. Three blocks side by side:
+      1. PAIRS WELL WITH  — product-specific layering recommendation
+      2. BEHIND THE CRAFT — tactile note about how this piece is made
+      3. THE FLORISTA PROMISE — brand-identity, identical across pages
+
+    Returns an empty string for products without authored content so the
+    section is omitted entirely (no awkward half-populated grid).
+    """
+    content = CONTENT_BY_SLUG.get(p["slug"], {})
+    pairs_with = content.get("pairs_with")
+    craft_note = content.get("craft_note")
+    if not (pairs_with and craft_note):
+        return ""
+
+    return (
+        '\n            <section class="pd-story" aria-label="Behind this piece">\n'
+        '                <div class="section-title">\n'
+        '                    <div class="section-label">Behind this piece</div>\n'
+        f'                    <h2>How buyers use the {html.escape(p["name"])}</h2>\n'
+        '                </div>\n'
+        '                <div class="pd-story-grid">\n'
+        '                    <div class="pd-story-block">\n'
+        '                        <h3><i class="fas fa-layer-group" aria-hidden="true"></i> Pairs well with</h3>\n'
+        f'                        <p>{pairs_with}</p>\n'
+        '                    </div>\n'
+        '                    <div class="pd-story-block">\n'
+        '                        <h3><i class="fas fa-hammer" aria-hidden="true"></i> Behind the craft</h3>\n'
+        f'                        <p>{craft_note}</p>\n'
+        '                    </div>\n'
+        '                    <div class="pd-story-block pd-story-promise">\n'
+        '                        <h3><i class="fas fa-seedling" aria-hidden="true"></i> The Florista promise</h3>\n'
+        f'                        <p>{FLORISTA_PROMISE}</p>\n'
+        '                    </div>\n'
+        '                </div>\n'
+        '            </section>'
+    )
+
+
+def hook_section_html(p: dict[str, Any]) -> str:
+    """Render the branded contact-hook block.
+
+    A warm, product-specific moment between the story grid and the
+    related-products carousel. The headline + paragraph are written
+    by hand for each product (in product_content.py); the WhatsApp
+    CTA below carries the same enquiry text as the in-info button so
+    GA4's `generate_lead` and the lead-capture sheet stay consistent.
+    Returns empty for products without an authored hook.
+    """
+    content = CONTENT_BY_SLUG.get(p["slug"], {})
+    headline = content.get("hook_headline")
+    hook = content.get("contact_hook")
+    if not (headline and hook):
+        return ""
+
+    wa = wa_link(f"Enquiry for {p['name']}")
+    return (
+        '\n            <section class="pd-hook" aria-label="Talk to Florista">\n'
+        f'                <h2>{headline}</h2>\n'
+        f'                <p>{hook}</p>\n'
+        '                <div class="pd-hook-cta">\n'
+        f'                    <a href="{wa}" class="btn btn-whatsapp" target="_blank" rel="noopener" data-wa-source="product_{p["slug"]}_hook">\n'
+        '                        <i class="fab fa-whatsapp"></i> Start a WhatsApp chat\n'
+        '                    </a>\n'
+        '                    <a href="../contact.html" class="btn btn-outline">Send a detailed enquiry</a>\n'
+        '                </div>\n'
+        f'                <p class="pd-hook-meta"><i class="fas fa-circle-check" aria-hidden="true"></i> {HOOK_REASSURANCE}</p>\n'
+        '            </section>'
     )
 
 
@@ -881,9 +1017,105 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
         }}
         .lightbox-close:hover {{ background: rgba(255,255,255,0.25); }}
 
+        /* ── Story section: Pairs / Behind the craft / Promise ── */
+        .pd-story {{
+            padding: 48px 0 16px;
+            border-top: 1px solid rgba(201,126,160,0.18);
+            margin-top: 30px;
+        }}
+        .pd-story .section-title {{
+            text-align: center;
+            margin-bottom: 8px;
+        }}
+        .pd-story-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            margin-top: 28px;
+        }}
+        .pd-story-block {{
+            background: var(--glass-bg);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 28px 26px;
+            box-shadow: var(--glass-shadow);
+            transition: var(--transition);
+        }}
+        .pd-story-block:hover {{
+            transform: translateY(-3px);
+            box-shadow: 0 20px 50px rgba(80,30,60,0.10);
+        }}
+        .pd-story-block h3 {{
+            font-family: var(--font-sans);
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--color-primary-dark);
+            margin: 0 0 14px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }}
+        .pd-story-block h3 i {{ font-size: 0.95rem; }}
+        .pd-story-block p {{
+            color: var(--color-dark);
+            line-height: 1.7;
+            font-size: 0.95rem;
+            margin: 0;
+        }}
+        .pd-story-promise {{
+            background: linear-gradient(135deg, rgba(201,126,160,0.08), rgba(245,213,228,0.16));
+        }}
+
+        /* ── Branded contact hook block ── */
+        .pd-hook {{
+            background: linear-gradient(135deg, rgba(201,126,160,0.12), rgba(245,213,228,0.20));
+            border: 1px solid rgba(201,126,160,0.22);
+            border-radius: 22px;
+            padding: 48px 36px;
+            margin: 40px 0 8px;
+            text-align: center;
+        }}
+        .pd-hook h2 {{
+            font-family: var(--font-serif);
+            font-size: clamp(1.4rem, 2.4vw, 1.95rem);
+            margin: 0 0 14px;
+            color: var(--color-dark);
+        }}
+        .pd-hook > p {{
+            color: var(--color-gray);
+            font-size: 1rem;
+            line-height: 1.65;
+            max-width: 640px;
+            margin: 0 auto 24px;
+        }}
+        .pd-hook-cta {{
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 18px;
+        }}
+        .pd-hook-meta {{
+            font-size: 0.82rem;
+            color: var(--color-gray);
+            margin: 0;
+        }}
+        .pd-hook-meta i {{
+            color: #1f6b3a;
+            margin-right: 6px;
+        }}
+
         @media (max-width: 900px) {{
             .product-detail {{ grid-template-columns: 1fr; gap: 28px; }}
             .pd-gallery {{ position: static; }}
+        }}
+        @media (max-width: 600px) {{
+            .pd-hook {{ padding: 36px 22px; }}
+            .pd-story-block {{ padding: 24px 20px; }}
         }}
     </style>
 </head>
@@ -966,13 +1198,11 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
                     </div>
 
                     <ul class="pd-feature-list">
-                        <li><i class="fas fa-check-circle"></i> Direct-from-factory pricing &mdash; no middlemen.</li>
-                        <li><i class="fas fa-check-circle"></i> {shade_count} shades available; custom bulk colours on request.</li>
-                        <li><i class="fas fa-check-circle"></i> Volumetric shipping calculated PAN India from Nagpur.</li>
-                        <li><i class="fas fa-check-circle"></i> Reusable across multiple events &mdash; durable wire-frame construction.</li>
+{feature_list_html}
                     </ul>
                 </div>
             </article>
+{story_section_html}{hook_section_html}
 
             <!-- Related products -->
             <section class="related-section">
@@ -1148,6 +1378,9 @@ def render_page(p: dict[str, Any]) -> str:
         shade_count=p["shade_count"],
         wa_enquire=wa_link(f"Enquiry for {p['name']}"),
         long_description=long_description_html(p),
+        feature_list_html=feature_list_html(p),
+        story_section_html=story_section_html(p),
+        hook_section_html=hook_section_html(p),
         thumbs_html=render_thumbs(p),
         related_html=render_related(p),
     )
