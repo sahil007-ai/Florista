@@ -260,6 +260,7 @@
         drawer = document.createElement('aside');
         drawer.id = 'florista-quote-drawer';
         drawer.setAttribute('role', 'dialog');
+        drawer.setAttribute('aria-modal', 'true');
         drawer.setAttribute('aria-label', 'Your quote');
         drawer.innerHTML = '' +
             '<header class="quote-drawer-head">' +
@@ -277,6 +278,28 @@
         // ESC closes when open.
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && drawer.classList.contains('open')) closeDrawer();
+        });
+
+        // Focus trap. Without this, pressing Tab inside the drawer cycles
+        // focus into the page beneath, putting screen-reader and keyboard
+        // users in a confusing state where the "modal" is silently
+        // backgrounded but visually still on top. Confine Tab to the
+        // drawer's own focusable elements while it's open.
+        drawer.addEventListener('keydown', (e) => {
+            if (e.key !== 'Tab' || !drawer.classList.contains('open')) return;
+            const focusable = drawer.querySelectorAll(
+                'button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            );
+            if (!focusable.length) return;
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (e.shiftKey && document.activeElement === first) {
+                last.focus();
+                e.preventDefault();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                first.focus();
+                e.preventDefault();
+            }
         });
     }
 
@@ -373,6 +396,16 @@
         drawerOverlay.classList.add('open');
         drawer.classList.add('open');
         document.body.style.overflow = 'hidden';
+        // Move focus into the drawer so keyboard / screen-reader users
+        // land on the modal content instead of an arbitrary spot
+        // (typically the cart button they just clicked, which is
+        // visually behind the overlay now). Use rAF so it fires after
+        // the drawer becomes visible — focusing a display:none element
+        // is a silent no-op in some browsers.
+        requestAnimationFrame(() => {
+            const closeBtn = drawer.querySelector('.quote-close');
+            if (closeBtn) closeBtn.focus();
+        });
     }
 
     function closeDrawer() {
@@ -380,6 +413,9 @@
         drawerOverlay.classList.remove('open');
         drawer.classList.remove('open');
         document.body.style.overflow = '';
+        // Return focus to the trigger so keyboard navigation continues
+        // from where it left off, instead of jumping to <body>.
+        if (cartButton) cartButton.focus();
     }
 
     // ─── Send quote ──────────────────────────────────────────────

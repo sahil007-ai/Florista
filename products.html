@@ -2138,9 +2138,9 @@
     </footer>
 
     <!-- Lightbox -->
-    <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox(event)">
-        <button class="lightbox-close" onclick="document.getElementById('lightbox').classList.remove('open')">
-            <i class="fas fa-times"></i>
+    <div class="lightbox-overlay" id="lightbox" role="dialog" aria-modal="true" aria-label="Product image zoom" onclick="closeLightbox(event)">
+        <button class="lightbox-close" aria-label="Close zoom" onclick="document.getElementById('lightbox').classList.remove('open')">
+            <i class="fas fa-times" aria-hidden="true"></i>
         </button>
         <img class="lightbox-img" id="lightbox-img" src="" alt="Product zoom">
     </div>
@@ -2164,22 +2164,45 @@
                 document.getElementById('lightbox-img').src = thumb.src;
             }
         }
+        // Track the element focused right before the lightbox opened so
+        // we can restore focus on close. Keyboard users land back on
+        // their starting point instead of jumping to <body>.
+        let lightboxOpener = null;
+
         function openLightbox(src, wrap) {
             const main = wrap.querySelector('.main-img');
             document.getElementById('lightbox-img').src = main ? main.src : src;
             document.getElementById('lightbox').classList.add('open');
             document.body.style.overflow = 'hidden';
+            // Capture trigger and move focus to the close button so
+            // screen-reader / keyboard users have a usable starting
+            // point inside the modal.
+            lightboxOpener = document.activeElement;
+            requestAnimationFrame(() => {
+                const closeBtn = document.querySelector('#lightbox .lightbox-close');
+                if (closeBtn) closeBtn.focus();
+            });
         }
         function closeLightbox(e) {
             if (e.target === document.getElementById('lightbox') || e.target.closest('.lightbox-close')) {
                 document.getElementById('lightbox').classList.remove('open');
                 document.body.style.overflow = '';
+                if (lightboxOpener && typeof lightboxOpener.focus === 'function') {
+                    lightboxOpener.focus();
+                    lightboxOpener = null;
+                }
             }
         }
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape') {
-                document.getElementById('lightbox').classList.remove('open');
+                const lb = document.getElementById('lightbox');
+                if (!lb.classList.contains('open')) return;
+                lb.classList.remove('open');
                 document.body.style.overflow = '';
+                if (lightboxOpener && typeof lightboxOpener.focus === 'function') {
+                    lightboxOpener.focus();
+                    lightboxOpener = null;
+                }
             }
         });
         function setActive(el) {
