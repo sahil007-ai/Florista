@@ -1055,6 +1055,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
     <button class="back-to-top" aria-label="Back to top"><i class="fas fa-chevron-up"></i></button>
 
     <script src="../js/main.js"></script>
+    <script src="../js/quote-cart.js"></script>
     <script>
         function pdSwitchImg(thumb) {{
             document.getElementById('pd-main-img').src = thumb.dataset.full;

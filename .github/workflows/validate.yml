@@ -5,7 +5,7 @@ name: Site Validation
 #
 # Scope: validates every *.html at the repo root AND under products/
 # (per-product SEO landing pages). Add new HTML directories to
-# `iter_html_files` below as the site grows.
+# the html_files glob below as the site grows.
 
 on:
   push:
@@ -94,20 +94,30 @@ jobs:
               sys.exit(1)
 
       # ── Internal link integrity ───────────────────────────────────
-      # Resolves every href/src relative to its source file, so that links
-      # like "products/foo.html" (from root) and "../index.html" (from
-      # products/*.html) both work.
       - name: Check internal links
         shell: python {0}
         run: |
           import re, pathlib, sys
-          root = pathlib.Path(".").resolve()
-          html_files = sorted(set(root.glob("*.html"))
-                              | set((root / "products").glob("*.html")))
-
+          root = pathlib.Path(".")
+          # Glob js/ and css/ so newly added asset files don't break the check.
+          existing = (
+              {p.name for p in root.glob("*")}
+              | {f"images/{p.name}" for p in (root / "images").glob("*")}
+              | {f"js/{p.name}" for p in (root / "js").glob("*") if p.is_file()}
+              | {f"css/{p.name}" for p in (root / "css").glob("*") if p.is_file()}
+              | {"sitemap.xml", "robots.txt"}
+          )
+          # Per-product SEO landing pages live under products/. Index them so
+          # links from products.html (e.g. "products/60-inch-giant-flora.html")
+          # validate. The pages' own ../-relative links are checked separately
+          # below using path resolution.
+          if (root / "products").is_dir():
+              existing |= {
+                  f"products/{p.name}"
+                  for p in (root / "products").glob("*.html")
+              }
           broken = []
-          for html in html_files:
-              rel = html.relative_to(root)
+          for html in root.glob("*.html"):
               s = html.read_text()
               for href in re.findall(
                   r'(?:href|src)="([^"#?]+?)(?:[?#][^"]*)?"', s
@@ -115,19 +125,34 @@ jobs:
                   if href.startswith(("http", "https", "tel:", "mailto:",
                                       "javascript:", "data:")):
                       continue
-                  # Resolve relative to the file's directory and verify the
-                  # target stays within the repo.
+                  if href in existing:
+                      continue
+                  broken.append((html.name, href))
+
+          # Per-product pages: resolve every href relative to its own
+          # directory so "../index.html", "../images/foo.webp", etc. all
+          # validate against the actual filesystem.
+          abs_root = root.resolve()
+          for html in (root / "products").glob("*.html"):
+              s = html.read_text()
+              for href in re.findall(
+                  r'(?:href|src)="([^"#?]+?)(?:[?#][^"]*)?"', s
+              ):
+                  if href.startswith(("http", "https", "tel:", "mailto:",
+                                      "javascript:", "data:")):
+                      continue
                   target = (html.parent / href).resolve()
                   try:
-                      target.relative_to(root)
+                      target.relative_to(abs_root)
                   except ValueError:
-                      broken.append((str(rel), href, "escapes repo root"))
+                      broken.append((str(html.relative_to(root)),
+                                     f"{href} (escapes repo)"))
                       continue
                   if not target.exists():
-                      broken.append((str(rel), href, "missing"))
+                      broken.append((str(html.relative_to(root)), href))
 
           for b in broken:
-              print(f"BROKEN {b[0]} -> {b[1]} ({b[2]})")
+              print(f"BROKEN {b[0]} -> {b[1]}")
           print(f"Total broken local refs: {len(broken)}")
           if broken:
               sys.exit(1)
