@@ -389,7 +389,28 @@
                       '&utm_source=' + encodeURIComponent(SOURCE) +
                       '&utm_medium=whatsapp&utm_campaign=enquiry';
 
-        // (1) Fire-and-forget anonymous capture to Google Sheets if configured.
+        // (1) GA4 conversion event. `generate_lead` is GA4's recommended
+        //     event for B2B lead capture; one-click promotable to a Key
+        //     Event in the GA4 UI. Fire BEFORE window.open below — same
+        //     reasoning as the contact form: popup-block fallback can
+        //     navigate the active tab and kill in-flight beacons. gtag()
+        //     queues into dataLayer synchronously, and Consent Mode (set
+        //     up in every page header) drops the hit for declined users.
+        //
+        //     NOTE: gtag is loaded by the page-level <script> tag, not
+        //     this file. If a host page never loaded GA, window.gtag is
+        //     undefined and this no-ops cleanly.
+        if (window.gtag) {
+            window.gtag('event', 'generate_lead', {
+                method: 'quote_cart',
+                source: SOURCE,            // mirrors utm_source for cross-system attribution
+                items_count: items.length,
+                value: estTotal,
+                currency: 'INR',
+            });
+        }
+
+        // (2) Fire-and-forget anonymous capture to Google Sheets if configured.
         //     We don't have the buyer's name/phone yet (those come back via
         //     the WhatsApp conversation), so we fill the lead-capture
         //     'company' field with a clear marker. Owner can spot these
@@ -417,7 +438,7 @@
             } catch (_) { /* never block the WhatsApp open */ }
         }
 
-        // (2) Synchronous popup so blockers treat it as a direct user gesture.
+        // (3) Synchronous popup so blockers treat it as a direct user gesture.
         const popup = window.open(waUrl, '_blank');
         if (!popup || popup.closed || typeof popup.closed === 'undefined') {
             // Popup blocked → fall back to navigating the current tab.
@@ -425,7 +446,7 @@
             return;
         }
 
-        // (3) Close the drawer but DON'T clear the cart. Buyers often want
+        // (4) Close the drawer but DON'T clear the cart. Buyers often want
         //     to tweak quantities and re-send, or reuse the list for a
         //     follow-up event.
         closeDrawer();

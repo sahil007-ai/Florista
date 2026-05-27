@@ -165,7 +165,25 @@ document.addEventListener('DOMContentLoaded', () => {
             const message = `Hi Florista! I'm enquiring from ${company} (${city}). My WhatsApp is ${phone}. I'm interested in: ${interest || 'your products'}. Please share bulk pricing details.`;
             const waUrl = `https://wa.me/917588447595?text=${encodeURIComponent(message)}`;
 
-            // (1) Fire-and-forget lead capture to Google Sheets.
+            // (1) GA4 conversion event. `generate_lead` is GA4's recommended
+            //     event for B2B lead capture and is one-click promotable to
+            //     a Key Event in the GA4 UI. Fire BEFORE window.open below,
+            //     because popup-block fallback navigates the active tab and
+            //     can kill in-flight beacons. gtag() queues into dataLayer
+            //     synchronously, and Consent Mode (default-deny in every
+            //     page header, granted on accept in the banner above) drops
+            //     the hit for declined users automatically — no extra guard
+            //     needed here.
+            if (window.gtag) {
+                window.gtag('event', 'generate_lead', {
+                    method: 'contact_form',
+                    form_id: 'b2b-enquiry-form',
+                    city: city,
+                    interest: interest || '(unspecified)',
+                });
+            }
+
+            // (2) Fire-and-forget lead capture to Google Sheets.
             //     `mode: 'no-cors'` lets the request go through without a
             //     CORS preflight (Apps Script doesn't return CORS headers
             //     by default). We can't read the response, but Apps Script
@@ -192,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } catch (_) { /* never block WhatsApp open */ }
             }
 
-            // (2) Open WhatsApp SYNCHRONOUSLY in the same click handler so
+            // (3) Open WhatsApp SYNCHRONOUSLY in the same click handler so
             //     popup blockers treat it as a direct user gesture. The old
             //     setTimeout-then-window.open pattern was being blocked.
             const popup = window.open(waUrl, '_blank');
@@ -203,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // (3) Honest button feedback. The message is NOT yet sent —
+            // (4) Honest button feedback. The message is NOT yet sent —
             //     the user must tap Send inside WhatsApp.
             const btn = enquiryForm.querySelector('button[type="submit"]');
             const originalHTML = btn.innerHTML;
@@ -559,6 +577,18 @@ document.addEventListener('DOMContentLoaded', () => {
             a.setAttribute('href', url);
 
             a.addEventListener('click', function () {
+                // GA4 click signal. Soft event (`select_content`) rather
+                // than `generate_lead` — the user has only opened WhatsApp,
+                // they haven't sent. The form submit / quote-cart send
+                // handlers fire `generate_lead` for the harder signal.
+                // `item_id: source` mirrors the utm_source slug, so GA4
+                // and the lead-capture sheet stay aligned on attribution.
+                if (window.gtag) {
+                    window.gtag('event', 'select_content', {
+                        content_type: 'whatsapp_cta',
+                        item_id: source,
+                    });
+                }
                 beaconClick(source, a);
             });
         });
