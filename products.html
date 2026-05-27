@@ -1333,8 +1333,6 @@
                         <div class="cat-toolbar-group">
                             <span class="tb-label">Filter:</span>
                             <button type="button" class="tb-chip active" data-filter="all">All</button>
-                            <button type="button" class="tb-chip" data-filter="moq-5">MOQ 5 pcs</button>
-                            <button type="button" class="tb-chip" data-filter="moq-10">MOQ 10 pcs</button>
                             <button type="button" class="tb-chip" data-filter="size-small">Up to 24"</button>
                             <button type="button" class="tb-chip" data-filter="size-medium">28&ndash;44"</button>
                             <button type="button" class="tb-chip" data-filter="size-large">48"+</button>
@@ -2139,15 +2137,13 @@
             function applyFilter() {
                 let visibleCount = 0;
                 cards.forEach(card => {
-                    const moq = parseInt(card.dataset.moq, 10);
                     const size = parseInt(card.dataset.size, 10);
                     let visible = true;
-                    if (activeFilter === 'moq-5') visible = (moq <= 5);
-                    else if (activeFilter === 'moq-10') visible = (moq <= 10 && moq > 5);
-                    else if (activeFilter === 'size-small') visible = (size <= 24);
+                    if (activeFilter === 'size-small') visible = (size <= 24);
                     else if (activeFilter === 'size-medium') visible = (size >= 28 && size <= 44);
                     else if (activeFilter === 'size-large') visible = (size >= 48);
                     else if (/^size-\d+$/.test(activeFilter)) visible = (size === parseInt(activeFilter.split('-')[1], 10));
+                    else if (activeFilter !== 'all') visible = false;
                     card.classList.toggle('is-hidden', !visible);
                     if (visible) visibleCount++;
                 });
