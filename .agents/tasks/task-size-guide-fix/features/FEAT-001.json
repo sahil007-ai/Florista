@@ -1,0 +1,30 @@
+{
+  "id": "FEAT-001",
+  "type": "fix",
+  "description": "Fix the 60-inch flower overflowing the SVG viewBox and add click-to-filter functionality so clicking a flower in the size guide filters products to that exact size, then scrolls to the product area.",
+  "status": "in_progress",
+  "steps": [
+    "Step 1 - Fix SVG overflow: In products.html around line 1163, the SVG has viewBox='0 0 720 220'. The 60-inch flower is at translate(670, 120) with petals extending ~77px to the right (cx='47' + rx='30' = 77), giving a max x of 747px which exceeds the 720px viewBox. Fix by widening the viewBox to '0 0 780 220' OR by repositioning the 60-inch flower leftward (e.g., translate(620, 120) would keep it within bounds at 620+77=697px). Choose whichever approach looks best - moving the flower left slightly is preferred since the viewBox change could affect the grid pattern background. If moving the flower, also adjust the floor line x2 value if needed (currently x2='700').",
+    "Step 2 - Add data-size attributes to SVG flower links: Change each <a href='#organza' class='sg-flower-link'> to include a data-size attribute matching the flower's size: data-size='12', data-size='24', data-size='36', data-size='48', data-size='60'. Remove the href='#organza' and replace with href='javascript:void(0)' or just use role='button' since we'll handle the click in JS.",
+    "Step 3 - Add exact-size filter chips to the toolbar: In the .cat-toolbar-group around line 1340, add new filter chips for each exact size shown in the size guide. Add buttons: <button type='button' class='tb-chip' data-filter='size-12'>12\"</button>, <button type='button' class='tb-chip' data-filter='size-24'>24\"</button>, <button type='button' class='tb-chip' data-filter='size-36'>36\"</button>, <button type='button' class='tb-chip' data-filter='size-48'>48\"</button>, <button type='button' class='tb-chip' data-filter='size-60'>60\"</button>. Place them after the existing size-large chip.",
+    "Step 4 - Update the applyFilter() function: In the IIFE at the bottom of products.html (around line 2130), extend the filter logic to handle exact-size filters. Add conditions like: else if (activeFilter === 'size-12') visible = (size === 12); else if (activeFilter === 'size-24') visible = (size === 24); etc. for sizes 12, 24, 36, 48, 60. A more elegant approach: check if activeFilter starts with 'size-' and contains only a number, then parse it and compare exactly.",
+    "Step 5 - Add click handler for SVG flowers: Add a new event listener (outside or inside the existing IIFE) that listens for clicks on '.sg-flower-link' elements. When clicked: (a) read the clicked element's data-size attribute, (b) set activeFilter to 'size-' + that value (e.g. 'size-12'), (c) update the active state on filter chips (remove 'active' from all chips, add 'active' to the matching chip if one exists), (d) call applyFilter(), (e) scroll the '.cat-toolbar' element into view with smooth scrolling so the user sees the filtered results. Since the filter IIFE is self-contained, the flower click handler needs access to the activeFilter variable and applyFilter function. The cleanest approach: move the IIFE's key variables/functions to be accessible, OR place the flower click handler inside the IIFE after the filter logic.",
+    "Step 6 - Verify HTML well-formedness: Run the HTML validation script from .github/workflows/validate.yml locally to ensure no unclosed tags or structural issues were introduced."
+  ],
+  "acceptance_criteria": [
+    "The 60-inch flower in the SVG no longer overflows or clips outside the visible box (all petals are visible within the viewBox)",
+    "Clicking any flower in the size guide activates the corresponding exact-size filter and shows only products with that data-size value",
+    "After clicking a flower, the page scrolls down to the product area so users can see the filtered results",
+    "The corresponding filter chip in the toolbar becomes active (highlighted) when a flower is clicked",
+    "The existing range-based filters (size-small, size-medium, size-large) and MOQ filters still work correctly",
+    "The HTML passes the well-formedness validation in .github/workflows/validate.yml"
+  ],
+  "verification": [
+    "Run the Python HTML well-formedness checker from .github/workflows/validate.yml against products.html and confirm it passes",
+    "Visually inspect the SVG source to confirm the 60-inch flower's rightmost point (translate_x + max_petal_cx + max_rx) is within the viewBox width",
+    "Confirm the applyFilter function handles exact size filters (e.g., 'size-12', 'size-60') by reading the updated JS code",
+    "Confirm the SVG flower links have data-size attributes and the click handler calls applyFilter with the correct filter value"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}
