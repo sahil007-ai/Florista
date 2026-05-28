@@ -5,17 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wholesale Logistics & B2B Order Process | Florista Nagpur</title>
     <meta name="description" content="Learn about Florista's wholesale order process, minimum order quantities (MOQs), and volumetric shipping policies for event decorators across India.">
-    
+    <link rel="canonical" href="https://www.theflorista.in/wholesale.html">
+
     <!-- Open Graph Tags -->
     <meta property="og:title" content="Wholesale Logistics & B2B Order Process | Florista Nagpur">
     <meta property="og:description" content="Learn about Florista's wholesale order process, minimum order quantities, and volumetric shipping policies.">
-    <meta property="og:image" content="https://www.theflorista.in/images/product_organza_60_inch_1.png">
+    <meta property="og:image" content="https://www.theflorista.in/images/product_factory_1.webp">
     <meta property="og:url" content="https://www.theflorista.in/wholesale.html">
     <meta property="og:type" content="website">
 
-    <!-- Favicon -->
+    <!-- Favicons -->
+    <link rel="icon" href="images/favicon.ico" sizes="any">
     <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
-    <link rel="icon" href="images/favicon.png" type="image/png">
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
 
     <!-- Preconnect for performance -->
@@ -32,6 +33,17 @@
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
+
+      // DPDP Act: default-deny analytics until user gives consent
+      // (banner is rendered by js/main.js which respects this state).
+      gtag('consent', 'default', {
+        analytics_storage:
+          (typeof localStorage !== 'undefined'
+            && localStorage.getItem('florista-consent') === 'accepted')
+            ? 'granted' : 'denied',
+        ad_storage: 'denied'
+      });
+
       gtag('js', new Date());
       gtag('config', 'G-T5GR1DL2G0');
     </script>
@@ -80,7 +92,7 @@
             <nav class="main-nav">
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="products.html" class="nav-link">Products</a>
-                <a href="wholesale.html" class="nav-link">Wholesale & Logistics</a>
+                <a href="wholesale.html" class="nav-link">Wholesale &amp; Logistics</a>
                 <a href="about.html" class="nav-link">About Us</a>
                 <a href="contact.html" class="nav-link">Contact</a>
             </nav>
@@ -91,7 +103,7 @@
     <main>
         <div class="page-header">
             <div class="container">
-                <h1>Wholesale & Logistics</h1>
+                <h1>Wholesale &amp; Logistics</h1>
                 <p>Transparent B2B policies designed to make bulk purchasing effortless.</p>
             </div>
         </div>
@@ -105,9 +117,9 @@
                     <ul class="policy-list">
                         <li><strong>Enquiry:</strong> Send us your requirements via WhatsApp or Contact Form.</li>
                         <li><strong>Quotation:</strong> We will provide a detailed quote including estimated lead times.</li>
-                        <li><strong>Advance Payment:</strong> A standard 50% advance is required to begin production.</li>
+                        <li><strong>Advance Payment:</strong> First-time buyers — <strong>100% advance</strong> before production begins. Repeat buyers (from the third order onward) — <strong>50% advance</strong> to start production.</li>
                         <li><strong>Production:</strong> Standard manufacturing lead time applies based on order size.</li>
-                        <li><strong>Dispatch:</strong> Balance 50% payment required prior to final dispatch.</li>
+                        <li><strong>Dispatch:</strong> For repeat buyers on the 50/50 plan, the balance 50% is required prior to final dispatch.</li>
                     </ul>
                 </div>
 
@@ -127,7 +139,7 @@
                     <h3><i class="fas fa-tags"></i> B2B Pricing Policies</h3>
                     <ul class="policy-list">
                         <li><strong>Factory Direct:</strong> All listed prices are strictly wholesale/factory-direct. No middlemen.</li>
-                        <li><strong>Tax:</strong> Prices are exclusive of GST (unless explicitly quoted).</li>
+                        <li><strong>All-Inclusive Pricing:</strong> The price quoted to you is the final product price. There are no hidden charges &mdash; only shipping is calculated separately based on your pin code.</li>
                         <li><strong>MOQ (Minimum Order Quantity):</strong> MOQs apply for standard wholesale pricing. Please enquire for specific product MOQs.</li>
                         <li><strong>Samples:</strong> Paid samples are available for large upcoming bulk orders.</li>
                     </ul>
@@ -174,6 +186,14 @@
                     <h4>Get In Touch</h4>
                     <p style="margin-bottom:10px;"><i class="fab fa-whatsapp" style="color:#25D366;margin-right:8px;"></i>+91 75884 47595</p>
                     <p><i class="fas fa-map-marker-alt" style="color:var(--color-primary);margin-right:8px;"></i>Nagpur, Maharashtra</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms &amp; Conditions</a></li>
+                        <li><a href="refund.html">Refund &amp; Cancellation</a></li>
+                    </ul>
                 </div>
             </div>
             <div class="footer-bottom">

@@ -1,0 +1,183 @@
+name: Site Validation
+
+# Catches accidental regressions before they hit production.
+# Runs on every PR and on every push to main.
+#
+# Scope: validates every *.html at the repo root, under products/ (per-
+# product SEO landing pages), and under use-cases/ (event-intent landing
+# pages). Add new HTML directories to the html_files glob below as the
+# site grows.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      # ── HTML well-formedness check (Python stdlib, no install) ────
+      - name: Validate HTML well-formedness
+        shell: python {0}
+        run: |
+          import pathlib, sys
+          from html.parser import HTMLParser
+
+          class Strict(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.errors, self.stack = [], []
+                  self.void = {"area","base","br","col","embed","hr","img","input",
+                               "link","meta","param","source","track","wbr"}
+              def handle_starttag(self, tag, attrs):
+                  if tag not in self.void:
+                      self.stack.append(tag)
+              def handle_endtag(self, tag):
+                  if tag in self.stack:
+                      while self.stack and self.stack[-1] != tag:
+                          self.errors.append(f"unclosed: </{self.stack.pop()}>")
+                      if self.stack: self.stack.pop()
+                  else:
+                      self.errors.append(f"unexpected </{tag}>")
+
+          root = pathlib.Path(".")
+          html_files = sorted(set(root.glob("*.html"))
+                              | set((root / "products").glob("*.html"))
+                              | set((root / "use-cases").glob("*.html")))
+
+          fail = False
+          for f in html_files:
+              p = Strict()
+              p.feed(f.read_text())
+              p.close()
+              issues = p.errors + ([f"unclosed: {p.stack}"] if p.stack else [])
+              rel = f.relative_to(root)
+              if issues:
+                  fail = True
+                  print(f"FAIL {rel}: {issues[:3]}")
+              else:
+                  print(f"OK   {rel}")
+          if fail:
+              sys.exit(1)
+
+      # ── JSON-LD schema validity ───────────────────────────────────
+      - name: Validate JSON-LD blocks
+        shell: python {0}
+        run: |
+          import re, json, pathlib, sys
+          root = pathlib.Path(".")
+          html_files = sorted(set(root.glob("*.html"))
+                              | set((root / "products").glob("*.html"))
+                              | set((root / "use-cases").glob("*.html")))
+          fail = False
+          for f in html_files:
+              rel = f.relative_to(root)
+              s = f.read_text()
+              for i, m in enumerate(re.finditer(
+                  r'<script type="application/ld\+json">\s*(\{[\s\S]+?\})\s*</script>',
+                  s
+              )):
+                  try:
+                      d = json.loads(m.group(1))
+                      print(f"OK   {rel} ld+json block {i+1}: @type={d.get('@type')}")
+                  except Exception as e:
+                      fail = True
+                      print(f"FAIL {rel} ld+json block {i+1}: {e}")
+          if fail:
+              sys.exit(1)
+
+      # ── Internal link integrity ───────────────────────────────────
+      - name: Check internal links
+        shell: python {0}
+        run: |
+          import re, pathlib, sys
+          root = pathlib.Path(".")
+          # Glob js/ and css/ so newly added asset files don't break the check.
+          existing = (
+              {p.name for p in root.glob("*")}
+              | {f"images/{p.name}" for p in (root / "images").glob("*")}
+              | {f"js/{p.name}" for p in (root / "js").glob("*") if p.is_file()}
+              | {f"css/{p.name}" for p in (root / "css").glob("*") if p.is_file()}
+              | {"sitemap.xml", "robots.txt"}
+          )
+          # Per-product SEO pages and use-case landing pages live in their
+          # own directories. Index them so links from products.html (e.g.
+          # "products/60-inch-giant-flora.html" or "use-cases/mehndi-decor.html")
+          # validate. Their own ../-relative links are checked separately
+          # below using path resolution.
+          if (root / "products").is_dir():
+              existing |= {
+                  f"products/{p.name}"
+                  for p in (root / "products").glob("*.html")
+              }
+          if (root / "use-cases").is_dir():
+              existing |= {
+                  f"use-cases/{p.name}"
+                  for p in (root / "use-cases").glob("*.html")
+              }
+          broken = []
+          for html in root.glob("*.html"):
+              s = html.read_text()
+              for href in re.findall(
+                  r'(?:href|src)="([^"#?]+?)(?:[?#][^"]*)?"', s
+              ):
+                  if href.startswith(("http", "https", "tel:", "mailto:",
+                                      "javascript:", "data:")):
+                      continue
+                  if href in existing:
+                      continue
+                  broken.append((html.name, href))
+
+          # Per-product and use-case pages: resolve every href relative to
+          # its own directory so "../index.html", "../images/foo.webp",
+          # "../products/foo.html", etc. all validate against the filesystem.
+          abs_root = root.resolve()
+          subdir_html = list((root / "products").glob("*.html")) + \
+                        list((root / "use-cases").glob("*.html"))
+          for html in subdir_html:
+              s = html.read_text()
+              for href in re.findall(
+                  r'(?:href|src)="([^"#?]+?)(?:[?#][^"]*)?"', s
+              ):
+                  if href.startswith(("http", "https", "tel:", "mailto:",
+                                      "javascript:", "data:")):
+                      continue
+                  target = (html.parent / href).resolve()
+                  try:
+                      target.relative_to(abs_root)
+                  except ValueError:
+                      broken.append((str(html.relative_to(root)),
+                                     f"{href} (escapes repo)"))
+                      continue
+                  if not target.exists():
+                      broken.append((str(html.relative_to(root)), href))
+
+          for b in broken:
+              print(f"BROKEN {b[0]} -> {b[1]}")
+          print(f"Total broken local refs: {len(broken)}")
+          if broken:
+              sys.exit(1)
+
+      # ── sitemap.xml well-formedness ──────────────────────────────
+      - name: Validate sitemap.xml
+        shell: python {0}
+        run: |
+          import xml.etree.ElementTree as ET, pathlib, sys
+          try:
+              tree = ET.parse(pathlib.Path("sitemap.xml"))
+              ns = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
+              urls = tree.findall(f"{ns}url")
+              print(f"OK   sitemap.xml: {len(urls)} URLs declared")
+          except Exception as e:
+              print(f"FAIL sitemap.xml: {e}")
+              sys.exit(1)

@@ -5,17 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Florista | Handcrafted Decor Flowers Manufacturer</title>
     <meta name="description" content="Florista is a direct-from-factory manufacturer of handcrafted organza and fabric flowers based in Nagpur. Quality, creativity, and massive production capacity.">
-    
+    <link rel="canonical" href="https://www.theflorista.in/about.html">
+
     <!-- Open Graph Tags -->
     <meta property="og:title" content="About Florista | Handcrafted Decor Flowers Manufacturer">
     <meta property="og:description" content="Direct-from-factory manufacturer of handcrafted organza and fabric flowers based in Nagpur.">
-    <meta property="og:image" content="https://www.theflorista.in/images/product_organza_60_inch_1.png">
+    <meta property="og:image" content="https://www.theflorista.in/images/product_organza_butterfly_1.webp">
     <meta property="og:url" content="https://www.theflorista.in/about.html">
     <meta property="og:type" content="website">
 
-    <!-- Favicon -->
+    <!-- Favicons -->
+    <link rel="icon" href="images/favicon.ico" sizes="any">
     <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
-    <link rel="icon" href="images/favicon.png" type="image/png">
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
 
     <!-- Preconnect for performance -->
@@ -32,6 +33,17 @@
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
+
+      // DPDP Act: default-deny analytics until user gives consent
+      // (banner is rendered by js/main.js which respects this state).
+      gtag('consent', 'default', {
+        analytics_storage:
+          (typeof localStorage !== 'undefined'
+            && localStorage.getItem('florista-consent') === 'accepted')
+            ? 'granted' : 'denied',
+        ad_storage: 'denied'
+      });
+
       gtag('js', new Date());
       gtag('config', 'G-T5GR1DL2G0');
     </script>
@@ -56,7 +68,7 @@
             font-size: 0.95rem;
         }
         .features-list i { color: var(--color-primary-dark); font-size: 1.1rem; width: 24px; text-align: center; }
-        .factory-photos { margin-bottom: 80px; }
+        .product-gallery { margin-bottom: 80px; }
         .photo-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -85,7 +97,7 @@
             <nav class="main-nav">
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="products.html" class="nav-link">Products</a>
-                <a href="wholesale.html" class="nav-link">Wholesale & Logistics</a>
+                <a href="wholesale.html" class="nav-link">Wholesale &amp; Logistics</a>
                 <a href="about.html" class="nav-link">About Us</a>
                 <a href="contact.html" class="nav-link">Contact</a>
             </nav>
@@ -105,9 +117,10 @@
             
             <div class="about-grid">
                 <div class="about-content">
-                    <h2>Your Story</h2>
-                    <p>We are a dedicated manufacturer based in Nagpur, specializing in handcrafted organza and fabric decor flowers. We do not resell; we innovate, design, and produce directly from our facility.</p>
-                    <p>We serve event decorators, retailers, and wholesalers across India, providing them with reliable, high-volume production without sacrificing the intricate, handmade quality that makes our flowers stand out.</p>
+                    <h2>Our Story</h2>
+                    <p>Florista was founded in Nagpur with one focused goal — to give Indian event decorators direct factory access to premium organza and fabric flowers, without the markup of resellers and middlemen.</p>
+                    <p>We are a manufacturer, not a trader. Every flower in our catalogue is designed, sampled, and handcrafted in-house by our team of skilled artisans. From the 12-inch Ornela to the 60-inch Giant Flora, each piece is built to be reused across dozens of events while holding its shape and colour.</p>
+                    <p>Today we supply wedding decorators, event-management firms, stage contractors, and retail outlets across PAN India — from our Nagpur production base. Our pricing stays wholesale-direct because we work directly with the artisans who make every piece.</p>
                     
                     <ul class="features-list">
                         <li><i class="fas fa-industry"></i> Direct from factory — no middleman pricing</li>
@@ -117,23 +130,23 @@
                     </ul>
                 </div>
                 <div class="about-image">
-                    <img src="images/product_organza_butterfly_1.png" alt="Handcrafted Organza Decor" style="border-radius: 20px; box-shadow: var(--glass-shadow); max-width: 100%; height: auto;">
+                    <img src="images/product_organza_butterfly_1.webp" alt="Handcrafted Organza Decor" loading="eager" fetchpriority="high" style="border-radius: 20px; box-shadow: var(--glass-shadow); max-width: 100%; height: auto;">
                 </div>
             </div>
 
-            <section class="factory-photos reveal">
+            <section class="product-gallery reveal">
                 <div class="section-title">
-                    <div class="section-label">Our Products</div>
+                    <div class="section-label">Product Gallery</div>
                     <h2>Made With Pride</h2>
-                    <p>A glimpse of the craftsmanship and variety that makes Florista stand out.</p>
+                    <p>A glimpse of the craftsmanship and variety that comes out of our Nagpur unit. Real factory walkthrough photos and team videos coming soon — follow us on <a href="https://www.instagram.com/thefloristaflowerss/" target="_blank" style="color:var(--color-primary-dark);font-weight:600;">Instagram</a> for behind-the-scenes updates.</p>
                 </div>
                 <div class="photo-grid">
-                    <img src="images/product_organza_24_inch_premium_1.png" alt="24 inch premium organza flower" loading="lazy">
-                    <img src="images/product_premium_fabric_1.png" alt="Premium fabric flower" loading="lazy">
-                    <img src="images/product_cinderella_flowers_1.png" alt="Cinderella flowers" loading="lazy">
-                    <img src="images/product_blooming_dales_1.png" alt="Blooming dales" loading="lazy">
-                    <img src="images/product_aura_flower_1.png" alt="Aura flower" loading="lazy">
-                    <img src="images/product_printed_fabric_1.png" alt="Printed fabric flower" loading="lazy">
+                    <img src="images/product_organza_24_inch_premium_1.webp" alt="24 inch premium organza flower" loading="lazy">
+                    <img src="images/product_premium_fabric_1.webp" alt="Premium fabric flower" loading="lazy">
+                    <img src="images/product_cinderella_flowers_1.webp" alt="Cinderella flowers" loading="lazy">
+                    <img src="images/product_blooming_dales_1.webp" alt="Blooming dales" loading="lazy">
+                    <img src="images/product_aura_flower_1.webp" alt="Aura flower" loading="lazy">
+                    <img src="images/product_printed_fabric_1.webp" alt="Printed fabric flower" loading="lazy">
                 </div>
             </section>
 
@@ -172,6 +185,14 @@
                     <h4>Get In Touch</h4>
                     <p style="margin-bottom:10px;"><i class="fab fa-whatsapp" style="color:#25D366;margin-right:8px;"></i>+91 75884 47595</p>
                     <p><i class="fas fa-map-marker-alt" style="color:var(--color-primary);margin-right:8px;"></i>Nagpur, Maharashtra</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms &amp; Conditions</a></li>
+                        <li><a href="refund.html">Refund &amp; Cancellation</a></li>
+                    </ul>
                 </div>
             </div>
             <div class="footer-bottom">

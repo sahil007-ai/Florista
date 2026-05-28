@@ -1,0 +1,12 @@
+# Python bytecode caches from running the page generators
+__pycache__/
+*.pyc
+*.pyo
+
+# Node modules from local JS smoke-testing (jsdom etc.)
+node_modules/
+package-lock.json
+
+# OS files
+.DS_Store
+Thumbs.db

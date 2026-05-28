@@ -4,18 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Florista – Wholesale Enquiries | 7588447595</title>
-    <meta name="description" content="Contact Florista for wholesale pricing and B2B orders. Download our 25MB PDF catalogue by submitting your business details.">
-    
+    <meta name="description" content="Contact Florista for wholesale pricing and B2B orders. Browse products and prices on our Products page or send a quick enquiry on WhatsApp.">
+    <link rel="canonical" href="https://www.theflorista.in/contact.html">
+
     <!-- Open Graph Tags -->
     <meta property="og:title" content="Contact Florista – Wholesale Enquiries">
     <meta property="og:description" content="Contact Florista for wholesale pricing and B2B orders.">
-    <meta property="og:image" content="https://www.theflorista.in/images/product_organza_60_inch_1.png">
+    <meta property="og:image" content="https://www.theflorista.in/images/product_glowing_flower_1.webp">
     <meta property="og:url" content="https://www.theflorista.in/contact.html">
     <meta property="og:type" content="website">
 
-    <!-- Favicon -->
+    <!-- Favicons -->
+    <link rel="icon" href="images/favicon.ico" sizes="any">
     <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
-    <link rel="icon" href="images/favicon.png" type="image/png">
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
 
     <!-- Preconnect for performance -->
@@ -32,6 +33,17 @@
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
+
+      // DPDP Act: default-deny analytics until user gives consent
+      // (banner is rendered by js/main.js which respects this state).
+      gtag('consent', 'default', {
+        analytics_storage:
+          (typeof localStorage !== 'undefined'
+            && localStorage.getItem('florista-consent') === 'accepted')
+            ? 'granted' : 'denied',
+        ad_storage: 'denied'
+      });
+
       gtag('js', new Date());
       gtag('config', 'G-T5GR1DL2G0');
     </script>
@@ -85,7 +97,7 @@
             <nav class="main-nav">
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="products.html" class="nav-link">Products</a>
-                <a href="wholesale.html" class="nav-link">Wholesale & Logistics</a>
+                <a href="wholesale.html" class="nav-link">Wholesale &amp; Logistics</a>
                 <a href="about.html" class="nav-link">About Us</a>
                 <a href="contact.html" class="nav-link">Contact</a>
             </nav>
@@ -97,7 +109,7 @@
         <div class="page-header">
             <div class="container">
                 <h1>Contact Us</h1>
-                <p>Let's talk bulk orders. Reach out directly or download our catalogue.</p>
+                <p>Let's talk bulk orders. Browse our full product range with pricing on the <a href="products.html" style="color:#fff;text-decoration:underline;">Products page</a>, or reach out directly below.</p>
             </div>
         </div>
 
@@ -109,7 +121,7 @@
                     <h2 style="font-size: 2rem; margin-bottom: 10px;">Direct Contact</h2>
                     <p style="color: var(--color-gray); margin-bottom: 20px;">We skip the emails. Our buyers prefer to talk directly. Give us a call or send a WhatsApp message.</p>
                     
-                    <a href="https://wa.me/917588447595" target="_blank" class="info-card" style="cursor: pointer; transition: transform 0.2s;">
+                    <a href="https://wa.me/917588447595" target="_blank" class="info-card" style="cursor: pointer; transition: transform 0.2s;" data-wa-source="contact_info_card">
                         <i class="fab fa-whatsapp" style="color: #25D366;"></i>
                         <div>
                             <h4>Chat on WhatsApp</h4>
@@ -134,30 +146,45 @@
                     </div>
                 </div>
 
-                <!-- Catalogue Lead Capture Form -->
+                <!-- B2B Enquiry Form -->
                 <div class="glass-card">
-                    <h2 style="font-size: 1.8rem; margin-bottom: 10px;">Download Catalogue</h2>
-                    <p style="color: var(--color-gray); margin-bottom: 25px;">Enter your details to receive our full 25MB PDF catalogue directly via WhatsApp.</p>
-                    
+                    <h2 style="font-size: 1.8rem; margin-bottom: 10px;">Send Us an Enquiry</h2>
+                    <p style="color: var(--color-gray); margin-bottom: 18px;">Share your details and we'll reply on WhatsApp with bulk pricing tailored to your event. Product range &amp; per-piece prices are already on our <a href="products.html">Products page</a>.</p>
+
+                    <a href="https://wa.me/c/917588447595" target="_blank" rel="noopener" data-wa-source="contact_whatsapp_catalog"
+                       style="display:flex; align-items:center; gap:12px; padding:14px 18px; background:linear-gradient(135deg, #25D366, #128C7E); color:white; border-radius:12px; text-decoration:none; margin-bottom:18px; box-shadow:0 4px 14px rgba(37,211,102,0.25); transition:all 0.3s ease;">
+                        <i class="fab fa-whatsapp" style="font-size:1.6rem;"></i>
+                        <div style="flex:1;">
+                            <strong style="font-size:0.95rem; display:block;">Browse on WhatsApp</strong>
+                            <span style="font-size:0.78rem; opacity:0.92;">Open our live product list inside WhatsApp</span>
+                        </div>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; color:var(--color-gray); font-size:0.78rem;">
+                        <span style="flex:1; height:1px; background:rgba(0,0,0,0.08);"></span>
+                        <span style="text-transform:uppercase; letter-spacing:0.08em; font-weight:600;">or send an enquiry</span>
+                        <span style="flex:1; height:1px; background:rgba(0,0,0,0.08);"></span>
+                    </div>
                     <form id="b2b-enquiry-form" novalidate>
                         <div class="form-group">
                             <label for="companyName">Name &amp; Company/Business Name *</label>
-                            <input type="text" id="companyName" name="companyName" class="form-control" required autocomplete="organization" placeholder="e.g. John Doe, Elite Events">
+                            <input type="text" id="companyName" name="companyName" class="form-control" required autocomplete="organization" maxlength="120" placeholder="e.g. John Doe, Elite Events">
                         </div>
                         <div class="form-group">
                             <label for="phone">WhatsApp Number *</label>
-                            <input type="tel" id="phone" name="phone" class="form-control" required autocomplete="tel" placeholder="+91 XXXXX XXXXX">
+                            <input type="tel" id="phone" name="phone" class="form-control" required autocomplete="tel" maxlength="25" placeholder="+91 XXXXX XXXXX">
                         </div>
                         <div class="form-group">
                             <label for="city">City *</label>
-                            <input type="text" id="city" name="city" class="form-control" required autocomplete="address-level2" placeholder="e.g. Mumbai">
+                            <input type="text" id="city" name="city" class="form-control" required autocomplete="address-level2" maxlength="80" placeholder="e.g. Mumbai">
                         </div>
                         <div class="form-group">
                             <label for="interest">Products you are interested in</label>
-                            <input type="text" id="interest" name="interest" class="form-control" placeholder="e.g. Giant Flora 60 inch, Theme Party Fish">
+                            <input type="text" id="interest" name="interest" class="form-control" maxlength="200" placeholder="e.g. Giant Flora 60 inch, Theme Party Fish">
                         </div>
-                        <button type="submit" class="btn btn-primary" id="catalogue-submit-btn" style="width: 100%; margin-top: 10px;">
-                            <i class="fab fa-whatsapp"></i> Get Catalogue on WhatsApp
+                        <button type="submit" class="btn btn-primary" id="enquiry-submit-btn" style="width: 100%; margin-top: 10px;">
+                            <i class="fab fa-whatsapp"></i> Send Enquiry on WhatsApp
                         </button>
                     </form>
                 </div>
@@ -198,6 +225,14 @@
                     <h4>Get In Touch</h4>
                     <p style="margin-bottom:10px;"><i class="fab fa-whatsapp" style="color:#25D366;margin-right:8px;"></i>+91 75884 47595</p>
                     <p><i class="fas fa-map-marker-alt" style="color:var(--color-primary);margin-right:8px;"></i>Nagpur, Maharashtra</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms &amp; Conditions</a></li>
+                        <li><a href="refund.html">Refund &amp; Cancellation</a></li>
+                    </ul>
                 </div>
             </div>
             <div class="footer-bottom">
