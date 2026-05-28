@@ -4,12 +4,6 @@ A practical, end-to-end guide to **what every part of the Florista website
 does, and why**. Written so a new owner, freelancer, or future agent can sit
 down with the repo and immediately understand the moving parts.
 
-> **Companion documents**
-> - [`ROADMAP.md`](ROADMAP.md) — what's pending (owner input, external
->   setup, deferred items).
-> - [`BUGS_TO_FIX.md`](BUGS_TO_FIX.md) — known bugs, severity-ranked.
-> - This file = **the manual**: how things actually work today.
-
 ---
 
 ## Table of Contents
@@ -95,8 +89,6 @@ Florista/
 ├── robots.txt              # crawler directives
 ├── florista_wa_bot_part1.json   # (legacy WA bot config — not deployed)
 │
-├── ROADMAP.md              # pending work
-├── BUGS_TO_FIX.md          # known bugs, ranked
 └── SITE_MANUAL.md          # this file
 ```
 
@@ -537,9 +529,9 @@ The site fires three event names beyond GA4's auto-collected
 
 Every page has:
 
-- `<title>` (target ≤60 chars — currently 24/36 pages exceed; tracked in `BUGS_TO_FIX.md` #10)
-- `<meta name="description">` (target ≤160 chars — currently 28/36 exceed)
-- `<link rel="canonical">` (currently missing on 9 root pages — `BUGS_TO_FIX.md` #2)
+- `<title>` (target ≤60 chars — some pages currently exceed)
+- `<meta name="description">` (target ≤160 chars — some pages currently exceed)
+- `<link rel="canonical">` (present on product/use-case pages; some root pages still missing)
 - Open Graph: `og:title`, `og:description`, `og:image`, `og:url`, `og:type`
 
 ### 8.2 Structured data (JSON-LD)
@@ -569,8 +561,8 @@ Every `<img>` has:
 - Descriptive `alt` text (B2B-keyword-aware: e.g. *"60-inch Giant Flora
   organza event flower by Florista, Nagpur"*).
 - `loading="lazy"` for below-the-fold, `loading="eager"
-  fetchpriority="high"` for the hero LCP image (currently missing on
-  `products.html` and `about.html` — `BUGS_TO_FIX.md` #9).
+  fetchpriority="high"` for the hero LCP image (set on most landing
+  pages; a couple of secondary pages still inherit the default).
 - `decoding="async"` to keep main-thread free.
 
 ---
@@ -587,7 +579,7 @@ Every `<img>` has:
 | `IntersectionObserver` reveal animations    | No expensive scroll-event listeners                             |
 | Passive scroll listener (`{ passive: true }`) | Allows browser to optimize scroll performance                |
 | Font Awesome from CDN                       | Cached across sites; no local asset weight                     |
-| WebP `srcset` (deferred — `ROADMAP.md` D4)  | Per-device image variants would shave more KB                  |
+| WebP `srcset` (deferred)                    | Per-device image variants would shave more KB                  |
 
 ---
 
@@ -598,18 +590,18 @@ Every `<img>` has:
 | Mobile menu              | `aria-label="Toggle menu"`, swaps `fa-bars` ↔ `fa-times`            |
 | FAQ accordion            | `aria-expanded` toggled per item                                    |
 | Quote drawer             | `role="dialog"`, `aria-modal="true"`, focus trap, ESC closes, focus restore |
-| Lightbox                 | ESC closes (currently missing `role="dialog"` — `BUGS_TO_FIX.md` #8) |
+| Lightbox                 | ESC closes (full `role="dialog"` semantics still pending)         |
 | Consent banner           | `role="dialog"`, `aria-label="Cookie consent"`                      |
 | Reduced-motion           | Reveal animations respect `prefers-reduced-motion` via CSS          |
 | Form errors              | Visual border + placeholder hint + auto-focus first invalid field   |
-| `:focus-visible`         | Currently browser default — global treatment pending (`BUGS_TO_FIX.md` #15) |
+| `:focus-visible`         | Currently browser default — global treatment pending              |
 | Color contrast           | Body text meets WCAG AA on cream; brand-pink-on-cream is AA-large only |
 
 **Legal compliance:**
 
 - DPDP Act 2023 — analytics consent banner, default-deny, choice persisted.
 - Privacy / Terms / Refund pages linked from footer of every page.
-- No GST claims (Florista is not GST-registered — see `ROADMAP.md`).
+- No GST claims (Florista is not GST-registered).
 
 ---
 
@@ -761,9 +753,10 @@ production.
 ### Replace placeholder testimonials
 
 `index.html` has three `<div class="testimonial-card">` blocks with
-`[REPLACE]` placeholders. The collection process is documented inline as
-an HTML comment above the testimonials section, and reproduced in
-[`ROADMAP.md`](ROADMAP.md) Appendix C.
+`[REPLACE]` placeholders. The collection process is documented inline
+as an HTML comment above the testimonials section: ask 2–3 long-running
+decorator clients for a 1–2 sentence quote + first name + city + role,
+then paste each into a card.
 
 ### Read the lead-capture sheet
 
@@ -789,5 +782,4 @@ well-formedness on push.
 ---
 
 _Last updated: 28 May 2026 — covers the codebase as of the current
-`main` branch. For pending work see [`ROADMAP.md`](ROADMAP.md); for
-known bugs see [`BUGS_TO_FIX.md`](BUGS_TO_FIX.md)._
+`main` branch._
