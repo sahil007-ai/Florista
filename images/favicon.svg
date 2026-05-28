@@ -1,14 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Florista flower mark">
+  <title>Florista</title>
   <defs>
+    <!-- Plum gradient background, top-left lighter to bottom-right deeper -->
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#fdeef5"/>
-      <stop offset="100%" stop-color="#f5d5e4"/>
+      <stop offset="0%" stop-color="#a8557a"/>
+      <stop offset="100%" stop-color="#7d3a55"/>
     </linearGradient>
+
+    <!-- Petal gradient: cream highlight at the tip, soft pink at the base -->
+    <radialGradient id="petal" cx="0.5" cy="0.25" r="0.85">
+      <stop offset="0%" stop-color="#fff8fb"/>
+      <stop offset="60%" stop-color="#fddae8"/>
+      <stop offset="100%" stop-color="#f5b8d0"/>
+    </radialGradient>
+
+    <!-- Center stamen gradient -->
+    <radialGradient id="stamen" cx="0.4" cy="0.4" r="0.6">
+      <stop offset="0%" stop-color="#fde4ef"/>
+      <stop offset="50%" stop-color="#c97ea0"/>
+      <stop offset="100%" stop-color="#7d3a55"/>
+    </radialGradient>
+
+    <!-- A single teardrop petal pointing UP from origin -->
+    <path id="petal-shape"
+          d="M 0 -22 C 8 -19, 9 -8, 0 -3 C -9 -8, -8 -19, 0 -22 Z"/>
   </defs>
+
+  <!-- Plum rounded-square background — high contrast on light AND dark browser tabs -->
   <rect width="64" height="64" rx="14" fill="url(#bg)"/>
-  <text x="50%" y="54%" text-anchor="middle" dominant-baseline="middle"
-        font-family="Playfair Display, Georgia, serif" font-weight="700"
-        font-size="46" fill="#c97ea0" font-style="italic">F</text>
-  <circle cx="50" cy="50" r="3" fill="#c97ea0"/>
+
+  <!-- 5 organza petals, each rotated 72° around the center (32, 32) -->
+  <g transform="translate(32 32)"
+     fill="url(#petal)"
+     stroke="#7d3a55"
+     stroke-width="0.6"
+     stroke-opacity="0.35">
+    <use href="#petal-shape"/>
+    <use href="#petal-shape" transform="rotate(72)"/>
+    <use href="#petal-shape" transform="rotate(144)"/>
+    <use href="#petal-shape" transform="rotate(216)"/>
+    <use href="#petal-shape" transform="rotate(288)"/>
+  </g>
+
+  <!-- Center stamen: plum disc with cream highlight -->
+  <circle cx="32" cy="32" r="5" fill="url(#stamen)"/>
+  <circle cx="30.5" cy="30.5" r="1.6" fill="#fff8fb" opacity="0.85"/>
 </svg>

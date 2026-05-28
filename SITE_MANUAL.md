@@ -652,7 +652,31 @@ to that event type, and writes them into a recommended-grid section.
 python3 tools/generate_use_case_pages.py
 ```
 
-### 11.3 `tools/product_content.py`
+### 11.3 `tools/generate_favicon.py`
+
+Renders the brand favicon (a stylized 5-petal organza flower) at multiple
+pixel sizes and emits the three favicon assets that the HTML pages
+reference:
+
+- `images/favicon.ico` — multi-resolution (16, 32, 48 px) for legacy browsers.
+- `images/apple-touch-icon.png` — 180 px, RGB-flattened for iOS home screens.
+- `images/favicon-512.png` — high-res spare for future PWA manifest use.
+
+The hand-authored `images/favicon.svg` matches the same design pixel-for-
+pixel and is what modern browsers actually use. Run the script whenever
+the SVG is updated, so the rasterized fallbacks stay in sync:
+
+```bash
+pip install Pillow
+python3 tools/generate_favicon.py
+```
+
+The renderer draws geometric shapes directly via Pillow (no SVG renderer
+required) — petals are sampled cubic-bezier polygons, then rotated and
+composited five times around the centre. A 4× supersample-then-LANCZOS-
+downscale gives clean edges even at 16 px.
+
+### 11.4 `tools/product_content.py`
 
 Pure data module — a single dict `CONTENT_BY_SLUG` keyed by product
 slug. Each entry has six fields:
