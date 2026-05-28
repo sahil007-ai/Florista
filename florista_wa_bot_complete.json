@@ -1,0 +1,1692 @@
+{
+  "name": "Florista \u2013 Complete WhatsApp Wholesale Bot",
+  "nodes": [
+    {
+      "id": "89366eee-0e1a-4109-b749-21c58eb1b47a",
+      "name": "\ud83d\udccb ENV VARS REQUIRED",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        -300
+      ],
+      "parameters": {
+        "content": "## \ud83c\udf38 Florista WhatsApp Bot \u2014 Environment Variables\n\nSet these in **n8n Settings \u2192 Variables** before activating:\n\n| Variable | Description |\n|---|---|\n| `WA_PHONE_NUMBER_ID` | Meta WhatsApp Phone Number ID |\n| `WA_ACCESS_TOKEN` | Meta permanent access token |\n| `CATALOGUE_PDF_URL` | Public URL of the catalogue PDF |\n| `SALES_WEBHOOK_URL` | Sales team alert endpoint |\n| `OPT_IN_WEBHOOK_URL` | Broadcast list storage endpoint |\n| `CALLBACK_WEBHOOK_URL` | Call scheduling endpoint |\n| `REVIEW_WEBHOOK_URL` | Post-event review tag endpoint |\n| `SESSION_API_URL` | Session store GET/POST endpoint |\n| `TIER1_TEXT` | Tier 1 pricing message (100\u2013499 pcs) |\n| `TIER2_TEXT` | Tier 2 pricing message (500\u2013999 pcs) |\n| `TIER3_TEXT` | Tier 3 pricing message (1000+ pcs) |\n\n**WA Webhook URL:** `POST /webhook/florista-wa-bot`\n**Order Confirm URL:** `POST /webhook/florista-order-confirm`",
+        "height": 400,
+        "width": 600,
+        "color": 5
+      }
+    },
+    {
+      "id": "ba7a8dfe-d669-4dd5-beab-361b392a418c",
+      "name": "UC1 \u2013 Lead Qualification",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        300,
+        -300
+      ],
+      "parameters": {
+        "content": "## UC1 \u2013 Lead Qualification\nSends two buttons on first contact.\nRoutes Decorator \u2192 opt-in \u2192 main menu.\nRoutes Personal Use \u2192 rejection + tag.",
+        "height": 150,
+        "width": 400,
+        "color": 3
+      }
+    },
+    {
+      "id": "d04c73da-50a0-4a22-b563-3ae11082b748",
+      "name": "UC4 \u2013 Main Menu",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        -300
+      ],
+      "parameters": {
+        "content": "## UC4 \u2013 Main Menu\n5-option list message:\n- Get a Quote \u2192 UC8+2\n- Download Catalogue \u2192 UC3\n- Shipping Info \u2192 static reply\n- Color Options \u2192 static reply\n- Talk to a Human \u2192 UC9",
+        "height": 150,
+        "width": 400,
+        "color": 3
+      }
+    },
+    {
+      "id": "3bae12a1-acba-4bda-a50c-ce9f6ea9274c",
+      "name": "Receive WA Message",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -100,
+        0
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "florista-wa-bot",
+        "responseMode": "onReceived",
+        "responseData": "allEntries"
+      },
+      "webhookId": "florista-wa-bot"
+    },
+    {
+      "id": "2226c47b-b2f1-43b0-bee6-8e1309da15ef",
+      "name": "Extract Message Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        140,
+        0
+      ],
+      "parameters": {
+        "keepOnlySet": false,
+        "values": {
+          "string": [
+            {
+              "name": "from",
+              "value": "={{ $json.entry[0].changes[0].value.messages[0].from }}"
+            },
+            {
+              "name": "msgType",
+              "value": "={{ $json.entry[0].changes[0].value.messages[0].type }}"
+            },
+            {
+              "name": "buttonId",
+              "value": "={{ $json.entry[0].changes[0].value.messages[0]?.interactive?.button_reply?.id ?? $json.entry[0].changes[0].value.messages[0]?.interactive?.list_reply?.id ?? '' }}"
+            },
+            {
+              "name": "textBody",
+              "value": "={{ ($json.entry[0].changes[0].value.messages[0]?.text?.body ?? '').toUpperCase() }}"
+            },
+            {
+              "name": "userName",
+              "value": "={{ $json.entry[0].changes[0].value.contacts?.[0]?.profile?.name ?? 'Valued Customer' }}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "b2aa35d1-6d23-4ec0-8376-ced55314d07a",
+      "name": "Check Active Session",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        380,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $vars.SESSION_API_URL }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "phone",
+              "value": "={{ $json.from }}"
+            }
+          ]
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "7449f625-1ac8-4573-912a-5b6db3e5df08",
+      "name": "Has Active Session?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        620,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ .resumeUrl ?? '' }}",
+              "value2": "",
+              "operation": "notEqual"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "8985c654-33aa-4017-aef1-e5eee7bd8ef2",
+      "name": "Resume Paused Execution",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        860,
+        -120
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.resumeUrl }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { from: $('Extract Message Fields').item.json.from, textBody: $('Extract Message Fields').item.json.textBody, buttonId: $('Extract Message Fields').item.json.buttonId, msgType: $('Extract Message Fields').item.json.msgType, userName: $('Extract Message Fields').item.json.userName } }}"
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "65db47b8-567e-48b8-bf46-000bd461ffd9",
+      "name": "Route By Button ID",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        860,
+        120
+      ],
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.buttonId }}",
+        "rules": {
+          "values": [
+            {
+              "value2": "lead_decorator"
+            },
+            {
+              "value2": "lead_personal"
+            },
+            {
+              "value2": "opt_yes"
+            },
+            {
+              "value2": "opt_no"
+            },
+            {
+              "value2": "menu_quote"
+            },
+            {
+              "value2": "menu_catalogue"
+            },
+            {
+              "value2": "menu_shipping"
+            },
+            {
+              "value2": "menu_colors"
+            },
+            {
+              "value2": "menu_human"
+            },
+            {
+              "value2": "tier_100"
+            },
+            {
+              "value2": "tier_500"
+            },
+            {
+              "value2": "tier_1000"
+            },
+            {
+              "value2": "followup_yes"
+            },
+            {
+              "value2": "followup_no"
+            },
+            {
+              "value2": "callback_morn"
+            },
+            {
+              "value2": "callback_aft"
+            },
+            {
+              "value2": "callback_eve"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "7d610419-5f19-47ef-bf0f-9dd27e616dc8",
+      "name": "WA \u2013 Send Lead Qualification",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1100,
+        380
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $('Extract Message Fields').item.json.from, type: 'interactive', interactive: { type: 'button', body: { text: 'Welcome to *Florista Flowers* \ud83c\udf38\\n\\nWe manufacture premium organza flowers wholesale from Nagpur.\\n\\nBefore we proceed, how do you plan to use our products?' }, action: { buttons: [ { type: 'reply', reply: { id: 'lead_decorator', title: 'Decorator / Wholesaler' } }, { type: 'reply', reply: { id: 'lead_personal', title: 'Personal Use' } } ] } } } }}"
+      }
+    },
+    {
+      "id": "f8d3d8cd-846a-48b9-bd13-156165090e8d",
+      "name": "WA \u2013 Personal Use Rejection",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1100,
+        -200
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $('Extract Message Fields').item.json.from, type: 'text', text: { body: 'Thank you for reaching out to Florista! \ud83c\udf38\\n\\nWe are a *wholesale-only manufacturer* with a minimum order quantity (MOQ) requirement. Unfortunately, we do not cater to individual or personal purchases.\\n\\nFor retail purchases, we recommend visiting a local event decor store near you.\\n\\nThank you for your understanding, and best of luck with your event! \ud83d\ude0a' } } }}"
+      }
+    },
+    {
+      "id": "af07dbdd-b6b6-4c67-aba6-67c243de0a2f",
+      "name": "Sales \u2013 Tag retail_rejected",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1340,
+        -200
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $vars.SALES_WEBHOOK_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { event: 'retail_rejected', phone: $('Extract Message Fields').item.json.from, name: $('Extract Message Fields').item.json.userName, timestamp: new Date().toISOString() } }}"
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "d454b003-3de6-4157-ae13-ad508af8ef5f",
+      "name": "WA \u2013 Ask Broadcast Opt-In",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1100,
+        80
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $('Extract Message Fields').item.json.from, type: 'interactive', interactive: { type: 'button', body: { text: 'Great to have you here, ' + $('Extract Message Fields').item.json.userName + '! \ud83c\udf38\\n\\nWould you like to receive updates on *new stock arrivals and seasonal collections*?' }, action: { buttons: [ { type: 'reply', reply: { id: 'opt_yes', title: 'Yes, keep me posted' } }, { type: 'reply', reply: { id: 'opt_no', title: 'No thanks' } } ] } } } }}"
+      }
+    },
+    {
+      "id": "d93230c2-1fb4-4a5b-a078-9691ab6b1b6d",
+      "name": "Opt-In \u2013 Store Phone Number",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1100,
+        220
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $vars.OPT_IN_WEBHOOK_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { event: 'broadcast_opt_in', phone: $('Extract Message Fields').item.json.from, name: $('Extract Message Fields').item.json.userName, timestamp: new Date().toISOString() } }}"
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "7a6a9240-adbe-4884-aa5a-f6f114a421f7",
+      "name": "WA \u2013 Send Main Menu",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1340,
+        140
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $('Extract Message Fields').item.json.from, type: 'interactive', interactive: { type: 'list', body: { text: '\ud83c\udf38 *Florista Wholesale Menu*\\n\\nHow can we help you today? Please select an option below:' }, action: { button: 'View Options', sections: [ { title: 'What would you like to do?', rows: [ { id: 'menu_quote', title: '\ud83d\udccb Get a Quote', description: 'Request bulk pricing for your event' }, { id: 'menu_catalogue', title: '\ud83d\udcc4 Download Catalogue', description: 'Receive our full product PDF on WhatsApp' }, { id: 'menu_shipping', title: '\ud83d\ude9a Shipping Info', description: 'Delivery coverage and timelines' }, { id: 'menu_colors', title: '\ud83c\udfa8 Color Options', description: 'Available shades and custom colors' }, { id: 'menu_human', title: '\ud83d\udcde Talk to a Human', description: 'Schedule a callback with our team' } ] } ] } } } }}"
+      }
+    },
+    {
+      "id": "9fadb972-6602-4f27-b2f7-c96284a6c403",
+      "name": "WA \u2013 Shipping Info (Static)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1100,
+        520
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $('Extract Message Fields').item.json.from, type: 'text', text: { body: '\ud83d\ude9a *Florista Shipping Information*\\n\\n\ud83d\udce6 *Coverage:* PAN India delivery available\\n\\n\u23f1 *Timelines:*\\n\u2022 Standard stock items: Dispatched in 1\u20133 working days\\n\u2022 Custom / large bulk orders: 7\u201314 working days\\n\u2022 Delivery after dispatch: 4\u20137 working days (varies by location)\\n\\n\ud83d\udcd0 *Shipping Calculation:* Volumetric weight is used (our flowers are large but lightweight). Exact shipping cost is shared before order confirmation.\\n\\n\ud83c\udfed *Origin:* All orders ship from our Nagpur factory.\\n\\nReply *MENU* or tap the menu again to continue.' } } }}"
+      }
+    },
+    {
+      "id": "97b278d1-4e66-4f59-9228-683aef8a22b2",
+      "name": "WA \u2013 Color Options (Static)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1100,
+        660
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $('Extract Message Fields').item.json.from, type: 'text', text: { body: '\ud83c\udfa8 *Florista Color & Customization Options*\\n\\n\u2705 *Standard Stock Colors (12 Pastel Shades):*\\nWhite \u2022 Ivory \u2022 Blush Pink \u2022 Baby Pink \u2022 Rose \u2022 Peach \u2022 Lavender \u2022 Lilac \u2022 Sky Blue \u2022 Mint Green \u2022 Lemon Yellow \u2022 Coral\\n\\n\ud83c\udfa8 *Custom Colors:* Available for bulk orders above MOQ. Additional lead time of 7\u201314 days applies.\\n\\n\ud83d\udccf *Custom Sizes:* Available for select products on request. Please share your requirements for a custom quote.\\n\\n\ud83d\udca1 For 1000+ pieces, we offer custom color matching to your event theme!\\n\\nReply *MENU* or tap the menu again to continue.' } } }}"
+      }
+    },
+    {
+      "id": "1ea9d9a3-7d52-4acf-b3e7-ca95d74b728b",
+      "name": "UC8 \u2013 Price-Tier Reveal",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        -300
+      ],
+      "parameters": {
+        "content": "## UC8 \u2013 Price Tiers\nAsk quantity first.\nShow tier pricing based on selection.\nProceed to UC2.",
+        "height": 150,
+        "width": 300,
+        "color": 4
+      }
+    },
+    {
+      "id": "c05c3dad-3b20-4868-90d0-294781001a1f",
+      "name": "UC2 \u2013 Upfront Data Collection",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        -300
+      ],
+      "parameters": {
+        "content": "## UC2 \u2013 Data Collection\nCollect Item, Qty, City, Date via text.\nAlert Sales team.\nSet event date for post-event flow.",
+        "height": 150,
+        "width": 300,
+        "color": 4
+      }
+    },
+    {
+      "id": "9dc21bb5-0569-4a6c-971d-9d24377a4164",
+      "name": "UC3 \u2013 Catalogue Distribution",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        -500
+      ],
+      "parameters": {
+        "content": "## UC3 \u2013 Catalogue\nSend PDF from ENV variable.",
+        "height": 100,
+        "width": 300,
+        "color": 6
+      }
+    },
+    {
+      "id": "d39ad3b8-61e6-475c-ad24-febd8b0928ab",
+      "name": "UC9 \u2013 Callback Scheduler",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        300
+      ],
+      "parameters": {
+        "content": "## UC9 \u2013 Callback Scheduler\nAsk for time slot.\nConfirm and alert Sales team.",
+        "height": 150,
+        "width": 300,
+        "color": 2
+      }
+    },
+    {
+      "id": "5ba53640-3cf5-42bd-b9be-522161a82018",
+      "name": "WA \u2013 Ask Quantity (UC8)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1600,
+        -100
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $('Extract Message Fields').item.json.from, type: 'interactive', interactive: { type: 'button', body: { text: 'To give you the best quote, how many pieces are you looking at approximately?' }, action: { buttons: [ { type: 'reply', reply: { id: 'tier_100', title: '100 \u2013 499 pieces' } }, { type: 'reply', reply: { id: 'tier_500', title: '500 \u2013 999 pieces' } }, { type: 'reply', reply: { id: 'tier_1000', title: '1000+ pieces' } } ] } } } }}"
+      }
+    },
+    {
+      "id": "d230baae-14d1-4af4-a6c5-b87d3e87ef3b",
+      "name": "WA \u2013 Tier 1 Msg",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1800,
+        -200
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $('Extract Message Fields').item.json.from, type: 'text', text: { body: $vars.TIER1_TEXT } } }}"
+      }
+    },
+    {
+      "id": "c9fdaaaa-16cf-4872-baad-ab562b0238dd",
+      "name": "WA \u2013 Tier 2 Msg",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1800,
+        -60
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $('Extract Message Fields').item.json.from, type: 'text', text: { body: $vars.TIER2_TEXT } } }}"
+      }
+    },
+    {
+      "id": "a458e9aa-811e-44b9-be26-a7b315f3c59e",
+      "name": "WA \u2013 Tier 3 Msg",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1800,
+        80
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $('Extract Message Fields').item.json.from, type: 'text', text: { body: $vars.TIER3_TEXT + '\\n\\nAt this volume, ask us about custom color matching.' } } }}"
+      }
+    },
+    {
+      "id": "a27c62e8-8f10-48ae-b2ca-a74de237a800",
+      "name": "WA \u2013 Ask Requirements (UC2)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        2040,
+        -60
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $('Extract Message Fields').item.json.from, type: 'text', text: { body: 'Please reply with the following details in one message:\\n\\n1. Item name / type needed\\n2. Quantity required\\n3. Delivery city\\n4. Event date' } } }}"
+      }
+    },
+    {
+      "id": "b3351e2e-7d6c-4818-9edc-5637f4eb600c",
+      "name": "Start Session (Expect Text)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        2260,
+        -60
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $vars.SESSION_API_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { phone: $('Extract Message Fields').item.json.from, expected_input: 'quote_requirements', resume_url: $execution.resumeUrl } }}"
+      }
+    },
+    {
+      "id": "aaedb811-1dc7-4b36-8790-923a8105290c",
+      "name": "Wait For Requirements",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        2460,
+        -60
+      ],
+      "parameters": {
+        "resume": "webhook"
+      },
+      "webhookId": "wait-for-requirements"
+    },
+    {
+      "id": "20de4ea2-9de8-4200-9464-4cfdbe58978b",
+      "name": "WA \u2013 Confirm Receipt",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        2660,
+        -60
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $json.body.from, type: 'text', text: { body: 'Thank you! Our team will review your requirement and get back to you shortly.' } } }}"
+      }
+    },
+    {
+      "id": "ff275524-102e-45f2-b527-23ba3f8cd301",
+      "name": "Sales \u2013 Alert Quote Req",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        2860,
+        -60
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $vars.SALES_WEBHOOK_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { event: 'new_quote_request', phone: $json.body.from, name: $json.body.userName, requirement: $json.body.textBody, timestamp: new Date().toISOString() } }}"
+      }
+    },
+    {
+      "id": "43878938-935a-4ad0-937e-22c80fd307e7",
+      "name": "WA \u2013 Send Catalogue (UC3)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1600,
+        -420
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $('Extract Message Fields').item.json.from, type: 'document', document: { link: $vars.CATALOGUE_PDF_URL, caption: 'Here is our latest Florista product catalogue! \ud83c\udf38' } } }}"
+      }
+    },
+    {
+      "id": "c4de3a56-b8ae-4c3e-ace1-811933b42762",
+      "name": "WA \u2013 Ask Callback Slot (UC9)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1600,
+        380
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $('Extract Message Fields').item.json.from, type: 'interactive', interactive: { type: 'button', body: { text: 'When would you like our team to call you?' }, action: { buttons: [ { type: 'reply', reply: { id: 'callback_morn', title: 'Morning (10\u201312)' } }, { type: 'reply', reply: { id: 'callback_aft', title: 'Afternoon (2\u20135)' } }, { type: 'reply', reply: { id: 'callback_eve', title: 'Evening (6\u20138)' } } ] } } } }}"
+      }
+    },
+    {
+      "id": "82ea253a-dc9e-4899-a123-57282eb53bbf",
+      "name": "WA \u2013 Confirm Callback",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1820,
+        380
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $('Extract Message Fields').item.json.from, type: 'text', text: { body: 'Noted! Our team will call you during your preferred slot. Have your event details ready.' } } }}"
+      }
+    },
+    {
+      "id": "1a25ce1a-4363-491c-84fc-8151100333e0",
+      "name": "Sales \u2013 Callback Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        2040,
+        380
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $vars.CALLBACK_WEBHOOK_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { event: 'callback_requested', phone: $('Extract Message Fields').item.json.from, name: $('Extract Message Fields').item.json.userName, time_slot: $('Extract Message Fields').item.json.buttonId, timestamp: new Date().toISOString() } }}"
+      }
+    },
+    {
+      "id": "2a688ccb-e76f-4c60-8192-9cda36572773",
+      "name": "UC5 \u2013 Quote Follow-Up Reminder",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3200,
+        -300
+      ],
+      "parameters": {
+        "content": "## UC5 \u2013 Quote Follow-Up\nWait 24 hours.\nAsk YES/NO.\nHandle confirmation or gentle close.",
+        "height": 200,
+        "width": 400,
+        "color": 4
+      }
+    },
+    {
+      "id": "b6d22d93-eafa-412f-8609-c80323610d6a",
+      "name": "UC10 \u2013 Post-Event Review",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4200,
+        -300
+      ],
+      "parameters": {
+        "content": "## UC10 \u2013 Post-Event Review\nCalculate event_date + 7 days.\nWait until that date.\nSend review request & listen for reply.",
+        "height": 200,
+        "width": 400,
+        "color": 4
+      }
+    },
+    {
+      "id": "b6dddd47-0980-486e-8782-a54023662486",
+      "name": "UC6 \u2013 Order Confirmation",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        600
+      ],
+      "parameters": {
+        "content": "## UC6 \u2013 Order Confirmation\nTriggered by internal system webhook.\nSends structured confirmation to customer.",
+        "height": 150,
+        "width": 300,
+        "color": 6
+      }
+    },
+    {
+      "id": "d543ee54-d699-4a09-8256-bbaa7585c72c",
+      "name": "UC7 \u2013 Stock Broadcast",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        300,
+        600
+      ],
+      "parameters": {
+        "content": "## UC7 \u2013 Stock Broadcast\nTriggered manually or via webhook.\nLoops through array of opted-in numbers.\nWaits 1 second per message.",
+        "height": 200,
+        "width": 400,
+        "color": 6
+      }
+    },
+    {
+      "id": "fda6a652-074a-4de4-8e3d-52cbafb84b0f",
+      "name": "Wait 24 Hours",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        3200,
+        -60
+      ],
+      "parameters": {
+        "amount": 24,
+        "unit": "hours"
+      }
+    },
+    {
+      "id": "e4f3a8be-e26f-479d-b12a-38b6d4a25ceb",
+      "name": "WA \u2013 Send Follow-Up",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        3400,
+        -60
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $('Sales \u2013 Alert Quote Req').item.json.body.phone, type: 'interactive', interactive: { type: 'button', body: { text: 'Hi! Just following up \u2014 did you get a chance to review our quote?\\n\\nWe\\'d love to help with your event.' }, action: { buttons: [ { type: 'reply', reply: { id: 'followup_yes', title: 'YES, proceed' } }, { type: 'reply', reply: { id: 'followup_no', title: 'NO, sorted it' } } ] } } } }}"
+      }
+    },
+    {
+      "id": "5d64a385-15b6-497c-a8fd-ce0c2f76118f",
+      "name": "Start Session (Follow-Up)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        3600,
+        -60
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $vars.SESSION_API_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { phone: $('Sales \u2013 Alert Quote Req').item.json.body.phone, expected_input: 'followup_reply', resume_url: $execution.resumeUrl } }}"
+      }
+    },
+    {
+      "id": "2ea5bc23-4a03-46df-80f3-8bd99586ca55",
+      "name": "Wait For Follow-Up Reply",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        3800,
+        -60
+      ],
+      "parameters": {
+        "resume": "webhook",
+        "limitWaitTime": true,
+        "maxWaitTime": 24,
+        "maxWaitTimeUnit": "hours"
+      },
+      "webhookId": "wait-for-followup"
+    },
+    {
+      "id": "f7aeafb0-a622-49f1-ab51-534d6521c6a8",
+      "name": "Route Follow-Up",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        4000,
+        -60
+      ],
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.body.buttonId }}",
+        "rules": {
+          "values": [
+            {
+              "value2": "followup_yes"
+            },
+            {
+              "value2": "followup_no"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "41dcc828-5658-4e29-a006-e3e145f9377a",
+      "name": "WA \u2013 Follow-Up YES",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        4200,
+        -180
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $json.body.from, type: 'text', text: { body: 'Wonderful! Our team will reach out to confirm your order shortly.' } } }}"
+      }
+    },
+    {
+      "id": "83073a89-5556-4510-9472-26aea6553789",
+      "name": "Sales \u2013 Alert hot_lead",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        4400,
+        -180
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $vars.SALES_WEBHOOK_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { event: 'hot_lead_confirmed', phone: $json.body.from, timestamp: new Date().toISOString() } }}"
+      }
+    },
+    {
+      "id": "dccd2687-63cd-4d8d-be01-8ee54d46b855",
+      "name": "WA \u2013 Follow-Up NO/Timeout",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        4200,
+        60
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $('Start Session (Follow-Up)').item.json.body.phone, type: 'text', text: { body: 'No problem at all! Feel free to reach out whenever you need us.' } } }}"
+      }
+    },
+    {
+      "id": "1cc193b4-0af7-49fd-ab37-0da437405880",
+      "name": "Webhook \u2013 Order Confirmation",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -100,
+        800
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "florista-order-confirm",
+        "responseMode": "onReceived"
+      },
+      "webhookId": "florista-order-confirm"
+    },
+    {
+      "id": "1a4e4854-85e4-47d7-a573-9cc072489d02",
+      "name": "WA \u2013 Send Order Confirm",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        100,
+        800
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $json.body.phone, type: 'text', text: { body: '\ud83c\udf89 *Order Confirmed!*\\n\\nItem: ' + $json.body.item + '\\nQty: ' + $json.body.quantity + '\\nDelivery City: ' + $json.body.city + '\\nEvent Date: ' + $json.body.event_date + '\\n\\n*Ref:* #' + $json.body.ref_number + '\\n\\nYour order is confirmed and will be dispatched on time. For any changes, reply here directly.' } } }}"
+      }
+    },
+    {
+      "id": "faa429f2-8bd4-4e60-85e9-b572dd7f6512",
+      "name": "Webhook \u2013 Broadcast Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        300,
+        800
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "florista-broadcast",
+        "responseMode": "onReceived"
+      },
+      "webhookId": "florista-broadcast"
+    },
+    {
+      "id": "a5a55c13-c144-4019-9b12-682b9dceea72",
+      "name": "Split In Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        540,
+        800
+      ],
+      "parameters": {
+        "batchSize": 1
+      }
+    },
+    {
+      "id": "c0f8fb3c-f763-4316-8c91-4da7fefed44f",
+      "name": "WA \u2013 Send Broadcast",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        780,
+        800
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $json.phone, type: 'text', text: { body: $('Webhook \u2013 Broadcast Trigger').item.json.body.message_text } } }}"
+      }
+    },
+    {
+      "id": "e8f25242-d8d2-4c57-8327-11f0aecbfcff",
+      "name": "Wait 1 Second",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        800
+      ],
+      "parameters": {
+        "amount": 1,
+        "unit": "seconds"
+      }
+    },
+    {
+      "id": "b667c265-5bfd-43da-9c8a-34eb963dc321",
+      "name": "Set Post-Event Date (UC10)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        4400,
+        -300
+      ],
+      "parameters": {
+        "keepOnlySet": false,
+        "values": {
+          "string": [
+            {
+              "name": "review_date",
+              "value": "={{ new Date(new Date($('Sales \u2013 Alert Quote Req').item.json.body.event_date).getTime() + 7*24*60*60*1000).toISOString() }}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "645b06bf-7351-436f-b2d1-23391dda3b09",
+      "name": "Wait Until Review Date",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        4600,
+        -300
+      ],
+      "parameters": {
+        "resume": "webhook",
+        "limitWaitTime": true,
+        "maxWaitTime": 30,
+        "maxWaitTimeUnit": "days"
+      },
+      "webhookId": "wait-for-review-date"
+    },
+    {
+      "id": "900a9331-e915-4ea9-ac77-659f9cf703bd",
+      "name": "WA \u2013 Send Review Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        4800,
+        -300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $vars.WA_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.WA_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { messaging_product: 'whatsapp', to: $('Start Session (Follow-Up)').item.json.body.phone, type: 'text', text: { body: 'Hi! We hope your event was a success and that our flowers added to the magic.\\n\\nWe\\'d love to see how it turned out \u2014 feel free to share a photo or a quick review. It means the world to us! \ud83c\udf38' } } }}"
+      }
+    },
+    {
+      "id": "7a0996f0-3d05-4a19-bb84-110ef5e660bf",
+      "name": "Start Session (Review)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        5000,
+        -300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $vars.SESSION_API_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { phone: $('Start Session (Follow-Up)').item.json.body.phone, expected_input: 'review_text_photo', resume_url: $execution.resumeUrl } }}"
+      }
+    },
+    {
+      "id": "451e26c5-d53a-40f5-8238-828418c134e8",
+      "name": "Wait 48h For Review",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        5200,
+        -300
+      ],
+      "parameters": {
+        "resume": "webhook",
+        "limitWaitTime": true,
+        "maxWaitTime": 48,
+        "maxWaitTimeUnit": "hours"
+      },
+      "webhookId": "wait-for-review-reply"
+    },
+    {
+      "id": "e100806a-5eac-4016-a8f6-11be8b79d40b",
+      "name": "Sales \u2013 Tag review_received",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        5400,
+        -300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $vars.REVIEW_WEBHOOK_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { event: 'review_received', phone: $json.body.from, text: $json.body.textBody, timestamp: new Date().toISOString() } }}"
+      }
+    }
+  ],
+  "connections": {
+    "Receive WA Message": {
+      "main": [
+        [
+          {
+            "node": "Extract Message Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Message Fields": {
+      "main": [
+        [
+          {
+            "node": "Check Active Session",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Active Session": {
+      "main": [
+        [
+          {
+            "node": "Has Active Session?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Active Session?": {
+      "main": [
+        [
+          {
+            "node": "Resume Paused Execution",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Route By Button ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route By Button ID": {
+      "main": [
+        [
+          {
+            "node": "WA \u2013 Ask Broadcast Opt-In",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "WA \u2013 Personal Use Rejection",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Opt-In \u2013 Store Phone Number",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "WA \u2013 Send Main Menu",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "node": "WA \u2013 Shipping Info (Static)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "WA \u2013 Color Options (Static)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [
+          {
+            "node": "WA \u2013 Send Lead Qualification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WA \u2013 Personal Use Rejection": {
+      "main": [
+        [
+          {
+            "node": "Sales \u2013 Tag retail_rejected",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Opt-In \u2013 Store Phone Number": {
+      "main": [
+        [
+          {
+            "node": "WA \u2013 Send Main Menu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WA \u2013 Tier 1 Msg": {
+      "main": [
+        [
+          {
+            "node": "WA \u2013 Ask Requirements (UC2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WA \u2013 Tier 2 Msg": {
+      "main": [
+        [
+          {
+            "node": "WA \u2013 Ask Requirements (UC2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WA \u2013 Tier 3 Msg": {
+      "main": [
+        [
+          {
+            "node": "WA \u2013 Ask Requirements (UC2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WA \u2013 Ask Requirements (UC2)": {
+      "main": [
+        [
+          {
+            "node": "Start Session (Expect Text)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start Session (Expect Text)": {
+      "main": [
+        [
+          {
+            "node": "Wait For Requirements",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait For Requirements": {
+      "main": [
+        [
+          {
+            "node": "WA \u2013 Confirm Receipt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WA \u2013 Confirm Receipt": {
+      "main": [
+        [
+          {
+            "node": "Sales \u2013 Alert Quote Req",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WA \u2013 Ask Callback Slot (UC9)": {
+      "main": [
+        [
+          {
+            "node": "WA \u2013 Confirm Callback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WA \u2013 Confirm Callback": {
+      "main": [
+        [
+          {
+            "node": "Sales \u2013 Callback Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 24 Hours": {
+      "main": [
+        [
+          {
+            "node": "WA \u2013 Send Follow-Up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WA \u2013 Send Follow-Up": {
+      "main": [
+        [
+          {
+            "node": "Start Session (Follow-Up)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start Session (Follow-Up)": {
+      "main": [
+        [
+          {
+            "node": "Wait For Follow-Up Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait For Follow-Up Reply": {
+      "main": [
+        [
+          {
+            "node": "Route Follow-Up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Follow-Up": {
+      "main": [
+        [
+          {
+            "node": "WA \u2013 Follow-Up YES",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "WA \u2013 Follow-Up NO/Timeout",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WA \u2013 Follow-Up YES": {
+      "main": [
+        [
+          {
+            "node": "Sales \u2013 Alert hot_lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set Post-Event Date (UC10)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook \u2013 Order Confirmation": {
+      "main": [
+        [
+          {
+            "node": "WA \u2013 Send Order Confirm",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook \u2013 Broadcast Trigger": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split In Batches": {
+      "main": [
+        [
+          {
+            "node": "WA \u2013 Send Broadcast",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WA \u2013 Send Broadcast": {
+      "main": [
+        [
+          {
+            "node": "Wait 1 Second",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 1 Second": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Post-Event Date (UC10)": {
+      "main": [
+        [
+          {
+            "node": "Wait Until Review Date",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Until Review Date": {
+      "main": [
+        [
+          {
+            "node": "WA \u2013 Send Review Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WA \u2013 Send Review Request": {
+      "main": [
+        [
+          {
+            "node": "Start Session (Review)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start Session (Review)": {
+      "main": [
+        [
+          {
+            "node": "Wait 48h For Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 48h For Review": {
+      "main": [
+        [
+          {
+            "node": "Sales \u2013 Tag review_received",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "Florista"
+    },
+    {
+      "name": "WhatsApp Bot"
+    }
+  ],
+  "id": "367cffcd-45f2-4ece-9351-18209b1559ab"
+}
