@@ -851,6 +851,9 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
                         <a href="{wa_enquire}" class="btn btn-whatsapp" target="_blank" rel="noopener">
                             <i class="fab fa-whatsapp"></i> Enquire on WhatsApp
                         </a>
+                        <button type="button" class="btn btn-primary pd-add-to-quote-btn" data-product-id="{slug}" data-product-name="{name_e}">
+                            <i class="fas fa-plus" aria-hidden="true"></i> <span class="pd-aq-label">Add to Quote</span>
+                        </button>
                         <a href="../wholesale.html" class="btn btn-outline">Wholesale Policy</a>
                     </div>
 
@@ -861,6 +864,20 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
                     <ul class="pd-feature-list">
 {feature_list_html}
                     </ul>
+                </div>
+
+                <!--
+                  Hidden product-card consumed by js/quote-cart.js's DOM
+                  indexer (it scans .product-card[data-price] at init).
+                  Without this the cart script can't resolve this SKU
+                  via FloristaCart.add('{slug}'). Kept invisible so it
+                  doesn't disturb the detail layout; the visible CTA is
+                  the .pd-add-to-quote-btn above.
+                -->
+                <div class="product-card pd-cart-source" data-id="{slug}" data-price="{price_min}" data-moq="{moq}"
+                     hidden aria-hidden="true" style="display:none">
+                    <h3>{name_e}</h3>
+                    <img class="main-img" src="{main_image}" alt="">
                 </div>
             </article>
 {story_section_html}{hook_section_html}
@@ -1014,6 +1031,71 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
             }});
         }})();
     </script>
+
+    <script>
+        // Wire the explicit "Add to Quote" CTA in .pd-cta to FloristaCart.
+        // The cart's auto-injected floating "+" button still works for the
+        // (hidden) indexer card, but on detail pages we want a real,
+        // visible button next to "Enquire on WhatsApp".
+        //
+        // Behaviour:
+        //   - First click: add to quote and open the drawer.
+        //   - Subsequent click while in cart: just open the drawer
+        //     (no accidental remove — the drawer has its own remove UI).
+        //   - Button label/icon reflects current cart state, including
+        //     state changes made elsewhere (e.g. removing from drawer).
+        (function () {{
+            function inCart(slug) {{
+                return !!(window.FloristaCart
+                    && window.FloristaCart.getItems().some(function (i) {{ return i.id === slug; }}));
+            }}
+
+            function syncBtn(btn) {{
+                var slug = btn.dataset.productId;
+                var label = btn.querySelector('.pd-aq-label');
+                var icon = btn.querySelector('i');
+                if (inCart(slug)) {{
+                    btn.classList.add('is-added');
+                    if (label) label.textContent = 'Added \u00b7 view quote';
+                    if (icon) {{ icon.classList.remove('fa-plus'); icon.classList.add('fa-check'); }}
+                }} else {{
+                    btn.classList.remove('is-added');
+                    if (label) label.textContent = 'Add to Quote';
+                    if (icon) {{ icon.classList.remove('fa-check'); icon.classList.add('fa-plus'); }}
+                }}
+            }}
+
+            function init() {{
+                var btns = document.querySelectorAll('.pd-add-to-quote-btn');
+                btns.forEach(function (btn) {{
+                    btn.addEventListener('click', function () {{
+                        if (!window.FloristaCart) return;
+                        var slug = btn.dataset.productId;
+                        if (!inCart(slug)) {{
+                            window.FloristaCart.add(slug);
+                        }}
+                        window.FloristaCart.openDrawer();
+                        syncBtn(btn);
+                    }});
+                    syncBtn(btn);
+                }});
+
+                // Re-sync if other UI (drawer remove, floating "+" toggle)
+                // mutates localStorage — the cart's own writes don't fire
+                // a 'storage' event, so we also poll on focus.
+                window.addEventListener('storage', function (e) {{
+                    if (e.key === 'florista-quote-cart') btns.forEach(syncBtn);
+                }});
+                window.addEventListener('focus', function () {{ btns.forEach(syncBtn); }});
+            }}
+
+            if (document.readyState === 'loading') {{
+                document.addEventListener('DOMContentLoaded', init);
+            }} else {{
+                init();
+            }}
+        }})();
+    </script>
 </body>
 </html>
 """
@@ -1094,6 +1176,8 @@ def render_page(p: dict[str, Any]) -> str:
         category_name_e=html.escape(CATEGORY_NAMES[p["category"]]),
         main_image=main_image,
         name_e=html.escape(p["name"]),
+        slug=p["slug"],
+        price_min=p["price_min"],
         size_label_e=html.escape(p["size_label"]),
         tagline_e=html.escape(p["tagline"]),
         price_display_e=html.escape(p["price_display"]),
