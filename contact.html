@@ -87,6 +87,15 @@
             box-shadow: 0 0 0 3px rgba(201, 126, 160, 0.18);
         }
         @media (max-width: 768px) { .contact-grid { grid-template-columns: 1fr; } }
+        .header-products-link {
+            color: #000;
+            text-decoration: none;
+            border-bottom: 2px solid #C97EA0;
+            transition: border-bottom 200ms ease, border-color 200ms ease;
+        }
+        .header-products-link:hover {
+            border-bottom: 3px solid #A15D7A;
+        }
     </style>
 </head>
 <body>
@@ -109,7 +118,7 @@
         <div class="page-header">
             <div class="container">
                 <h1>Contact Us</h1>
-                <p>Let's talk bulk orders. Browse our full product range with pricing on the <a href="products.html" style="color:#fff;text-decoration:underline;">Products page</a>, or reach out directly below.</p>
+                <p>Let's talk bulk orders. Browse our full product range with pricing on the <a href="products.html" class="header-products-link">Products page</a>, or reach out directly below.</p>
             </div>
         </div>
 
@@ -151,21 +160,7 @@
                     <h2 style="font-size: 1.8rem; margin-bottom: 10px;">Send Us an Enquiry</h2>
                     <p style="color: var(--color-gray); margin-bottom: 18px;">Share your details and we'll reply on WhatsApp with bulk pricing tailored to your event. Product range &amp; per-piece prices are already on our <a href="products.html">Products page</a>.</p>
 
-                    <a href="https://wa.me/c/917588447595" target="_blank" rel="noopener" data-wa-source="contact_whatsapp_catalog"
-                       style="display:flex; align-items:center; gap:12px; padding:14px 18px; background:linear-gradient(135deg, #25D366, #128C7E); color:white; border-radius:12px; text-decoration:none; margin-bottom:18px; box-shadow:0 4px 14px rgba(37,211,102,0.25); transition:all 0.3s ease;">
-                        <i class="fab fa-whatsapp" style="font-size:1.6rem;"></i>
-                        <div style="flex:1;">
-                            <strong style="font-size:0.95rem; display:block;">Browse on WhatsApp</strong>
-                            <span style="font-size:0.78rem; opacity:0.92;">Open our live product list inside WhatsApp</span>
-                        </div>
-                        <i class="fas fa-arrow-right"></i>
-                    </a>
 
-                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; color:var(--color-gray); font-size:0.78rem;">
-                        <span style="flex:1; height:1px; background:rgba(0,0,0,0.08);"></span>
-                        <span style="text-transform:uppercase; letter-spacing:0.08em; font-weight:600;">or send an enquiry</span>
-                        <span style="flex:1; height:1px; background:rgba(0,0,0,0.08);"></span>
-                    </div>
                     <form id="b2b-enquiry-form" novalidate>
                         <div class="form-group">
                             <label for="companyName">Name &amp; Company/Business Name *</label>
