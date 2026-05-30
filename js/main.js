@@ -236,7 +236,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             const digits = toAsciiDigits(phone).replace(/\D/g, '');
-            if (digits.length < 10) {
+            // Strip leading country code (91) if user typed +91 or 91 prefix
+            const normalizedDigits = digits.length === 12 && digits.startsWith('91') ? digits.slice(2) : digits;
+            if (normalizedDigits.length < 10) {
                 flagInvalid(phoneField, 'Please enter a valid 10-digit number');
                 return;
             }
@@ -296,8 +298,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // (4) Honest button feedback. The message is NOT yet sent —
-            //     the user must tap Send inside WhatsApp.
+            // (4) Show success confirmation message above the form.
+            let successMsg = enquiryForm.parentElement.querySelector('.form-success-msg');
+            if (!successMsg) {
+                successMsg = document.createElement('div');
+                successMsg.className = 'form-success-msg';
+                successMsg.style.cssText = 'background:#d4edda;color:#155724;border:1px solid #c3e6cb;border-radius:10px;padding:14px 18px;margin-bottom:16px;font-size:0.92rem;display:none;';
+                enquiryForm.parentElement.insertBefore(successMsg, enquiryForm);
+            }
+            successMsg.innerHTML = '<i class="fas fa-check-circle" style="margin-right:8px;"></i>Enquiry sent! WhatsApp has been opened — please tap <strong>Send</strong> in WhatsApp to complete.';
+            successMsg.style.display = 'block';
+
+            // (5) Button feedback.
             const btn = enquiryForm.querySelector('button[type="submit"]');
             const originalHTML = btn.innerHTML;
             btn.innerHTML = '<i class="fab fa-whatsapp"></i> WhatsApp opened — tap Send to finish';
@@ -308,7 +320,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.disabled = false;
                 btn.style.background = '';
                 enquiryForm.reset();
-            }, 5000);
+                successMsg.style.display = 'none';
+            }, 8000);
         });
     }
 });

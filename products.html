@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -496,16 +496,7 @@
         .product-card.is-hidden { display: none !important; }
         /* Empty-section placeholder */
         .category-section.is-empty {
-            opacity: 0.45;
-        }
-        .category-section.is-empty .products-grid::after {
-            content: "No products match the current filter in this category.";
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 32px 16px;
-            color: var(--color-gray);
-            font-size: 0.9rem;
-            font-style: italic;
+            display: none;
         }
         @media (max-width: 768px) {
             .cat-toolbar { position: static; gap: 12px; padding: 12px 14px; }
@@ -519,9 +510,10 @@
         /* ── Responsive ── */
         @media (max-width: 900px) {
             .catalogue-layout { grid-template-columns: 1fr; }
-            .cat-sidebar { position: static; display: flex; flex-wrap: wrap; gap: 8px; padding: 16px; }
-            .cat-sidebar h3 { width: 100%; }
+            .cat-sidebar { position: static; display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; }
+            .cat-sidebar h3 { width: 100%; margin-bottom: 4px; padding-bottom: 8px; }
             .cat-nav-link { padding: 8px 14px; font-size: 0.85rem; }
+            .sidebar-cta { display: none; }
         }
         @media (max-width: 560px) {
             .products-grid { grid-template-columns: 1fr; }
@@ -1359,15 +1351,15 @@
                 <!-- Sticky Sidebar -->
                 <aside class="cat-sidebar">
                     <h3>Browse By Category</h3>
-                    <a href="#organza" class="cat-nav-link" onclick="setActive(this)">
+                    <a href="#organza" class="cat-nav-link" onclick="event.preventDefault();setActive(this)">
                         <i class="fas fa-seedling"></i> Organza Flowers
                         <span class="count">11</span>
                     </a>
-                    <a href="#premium" class="cat-nav-link" onclick="setActive(this)">
+                    <a href="#premium" class="cat-nav-link" onclick="event.preventDefault();setActive(this)">
                         <i class="fas fa-star"></i> Premium & Specialty
                         <span class="count">8</span>
                     </a>
-                    <a href="#theme" class="cat-nav-link" onclick="setActive(this)">
+                    <a href="#theme" class="cat-nav-link" onclick="event.preventDefault();setActive(this)">
                         <i class="fas fa-party-horn"></i> Theme & Events
                         <span class="count">3</span>
                     </a>
@@ -2068,9 +2060,9 @@
                     <a href="index.html" class="logo" style="margin-bottom:14px;display:block;">Florista<span>.</span></a>
                     <p>Bulk Decor Manufacturer.<br>Premium Quality at Factory Prices.<br>Nagpur, Maharashtra.</p>
                     <div class="footer-social">
-                        <a href="https://wa.me/917588447595" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                        <a href="https://www.instagram.com/thefloristaflowerss/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="tel:+917588447595" aria-label="Call"><i class="fas fa-phone"></i></a>
+                        <a href="https://wa.me/917588447595" target="_blank" aria-label="WhatsApp" title="Chat on WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.instagram.com/thefloristaflowerss/" target="_blank" aria-label="Instagram" title="Follow on Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="tel:+917588447595" aria-label="Call" title="Call +91 75884 47595"><i class="fas fa-phone"></i></a>
                     </div>
                 </div>
                 <div class="footer-col">
@@ -2104,7 +2096,6 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 The Florista Flowers. All rights reserved. Handcrafted in Nagpur.</p>
             </div>
         </div>
     </footer>
@@ -2180,6 +2171,11 @@
         function setActive(el) {
             document.querySelectorAll('.cat-nav-link').forEach(l => l.classList.remove('active'));
             el.classList.add('active');
+            // Smooth scroll to the target section
+            const target = document.querySelector(el.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
         }
         // Highlight active sidebar item on scroll
         const sections = document.querySelectorAll('.category-section');
@@ -2210,6 +2206,16 @@
             const sections = document.querySelectorAll('.category-section');
             let activeFilter = 'all';
 
+            // Restore filter from URL hash (e.g. #filter=size-48)
+            (function() {
+                const hash = window.location.hash;
+                const m = hash.match(/filter=([^&]+)/);
+                if (m) {
+                    activeFilter = decodeURIComponent(m[1]);
+                    filterChips.forEach(c => c.classList.toggle('active', c.dataset.filter === activeFilter));
+                }
+            })();
+
             function applyFilter() {
                 let visibleCount = 0;
                 cards.forEach(card => {
@@ -2221,13 +2227,8 @@
                     else if (/^size-\d+$/.test(activeFilter)) visible = (size === parseInt(activeFilter.split('-')[1], 10));
                     else if (activeFilter !== 'all') visible = false;
                     card.classList.toggle('is-hidden', !visible);
-                    // Cards have the `.reveal` class which keeps them at opacity:0 until the
-                    // IntersectionObserver in main.js promotes them to `.visible`. When a filter
-                    // hides surrounding cards, the matching card may never have entered the
-                    // viewport yet (e.g. clicking the 60" flower jumps to a card far below).
-                    // Force-add `.visible` here so any card that should be shown is actually
-                    // rendered, regardless of scroll history.
-                    if (visible) card.classList.add('visible');
+                    // Force visible so reveal animation doesn't hide cards
+                    card.classList.add('visible');
                     if (visible) visibleCount++;
                 });
                 resultCount.textContent = visibleCount;
@@ -2264,6 +2265,7 @@
                     filterChips.forEach(c => c.classList.remove('active'));
                     chip.classList.add('active');
                     activeFilter = chip.dataset.filter;
+                    history.replaceState(null, '', activeFilter === 'all' ? location.pathname : '#filter=' + activeFilter);
                     applyFilter();
                 });
             });
@@ -2273,6 +2275,18 @@
             });
 
             applyFilter();
+            // Force sections and toolbar visible immediately (no reveal delay)
+            document.querySelectorAll('.category-section, .cat-toolbar').forEach(el => el.classList.add('visible'));
+
+            // Confirm before WhatsApp redirect on enquire buttons
+            document.querySelectorAll('.enquire-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const productName = this.closest('.product-card').querySelector('h3').textContent.trim();
+                    if (!confirm('Open WhatsApp to enquire about "' + productName + '"?')) {
+                        e.preventDefault();
+                    }
+                });
+            });
 
             // SVG size-guide flower click-to-filter
             document.querySelectorAll('.sg-flower-link[data-size]').forEach(function(link) {
@@ -2282,6 +2296,7 @@
                     filterChips.forEach(function(c) { c.classList.remove('active'); });
                     var matchingChip = document.querySelector('.tb-chip[data-filter="size-' + size + '"]');
                     if (matchingChip) matchingChip.classList.add('active');
+                    history.replaceState(null, '', '#filter=' + activeFilter);
                     applyFilter();
                     var toolbar = document.querySelector('.cat-toolbar');
                     if (toolbar) toolbar.scrollIntoView({ behavior: 'smooth' });
