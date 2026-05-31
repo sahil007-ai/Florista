@@ -11,7 +11,7 @@
         -300
       ],
       "parameters": {
-        "content": "## \ud83c\udf38 Florista WhatsApp Bot \u2014 Environment Variables\n\nSet these in **n8n Settings \u2192 Variables** before activating:\n\n| Variable | Description |\n|---|---|\n| `WA_PHONE_NUMBER_ID` | Meta WhatsApp Phone Number ID |\n| `WA_ACCESS_TOKEN` | Meta permanent access token |\n| `CATALOGUE_PDF_URL` | Public URL of the catalogue PDF |\n| `SALES_WEBHOOK_URL` | Sales team alert endpoint |\n| `OPT_IN_WEBHOOK_URL` | Broadcast list storage endpoint |\n| `CALLBACK_WEBHOOK_URL` | Call scheduling endpoint |\n| `REVIEW_WEBHOOK_URL` | Post-event review tag endpoint |\n| `SESSION_API_URL` | Session store GET/POST endpoint |\n| `TIER1_TEXT` | Tier 1 pricing message (100\u2013499 pcs) |\n| `TIER2_TEXT` | Tier 2 pricing message (500\u2013999 pcs) |\n| `TIER3_TEXT` | Tier 3 pricing message (1000+ pcs) |\n\n**WA Webhook URL:** `POST /webhook/florista-wa-bot`\n**Order Confirm URL:** `POST /webhook/florista-order-confirm`",
+        "content": "## \ud83c\udf38 Florista WhatsApp Bot \u2014 Environment Variables\n\nSet these in **n8n Settings \u2192 Variables** before activating:\n\n| Variable | Description |\n|---|---|\n| `WA_PHONE_NUMBER_ID` | Meta WhatsApp Phone Number ID |\n| `WA_ACCESS_TOKEN` | Meta permanent access token |\n| `CATALOGUE_PDF_URL` | Public URL of the catalogue PDF |\n| `GSHEET_SALES_ID` | Google Sheet URL for sales leads |\n| `GSHEET_OPTIN_ID` | Google Sheet URL for broadcast opt-ins |\n| `CALLBACK_WEBHOOK_URL` | Call scheduling endpoint |\n| `REVIEW_WEBHOOK_URL` | Post-event review tag endpoint |\n| `SESSION_API_URL` | Session store GET/POST endpoint |\n| `TIER1_TEXT` | Tier 1 pricing message (100\u2013499 pcs) |\n| `TIER2_TEXT` | Tier 2 pricing message (500\u2013999 pcs) |\n| `TIER3_TEXT` | Tier 3 pricing message (1000+ pcs) |\n\n**Credentials:** Connect a Google Sheets OAuth2 credential.\n**Sales Sheet columns:** event | phone | name | requirement | timestamp\n**Opt-In Sheet columns:** event | phone | name | timestamp\n\n**WA Webhook URL:** `POST /webhook/florista-wa-bot`\n**Order Confirm URL:** `POST /webhook/florista-order-confirm`",
         "height": 400,
         "width": 600,
         "color": 5
@@ -290,19 +290,29 @@
     {
       "id": "af07dbdd-b6b6-4c67-aba6-67c243de0a2f",
       "name": "Sales \u2013 Tag retail_rejected",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4,
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
       "position": [
         1340,
         -200
       ],
       "parameters": {
-        "method": "POST",
-        "url": "={{ $vars.SALES_WEBHOOK_URL }}",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ { event: 'retail_rejected', phone: $('Extract Message Fields').item.json.from, name: $('Extract Message Fields').item.json.userName, timestamp: new Date().toISOString() } }}"
+        "operation": "appendOrUpdate",
+        "documentId": { "__rl": true, "mode": "url", "value": "={{ $vars.GSHEET_SALES_ID }}" },
+        "sheetName": { "__rl": true, "mode": "byName", "value": "Sales" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "event": "retail_rejected",
+            "phone": "={{ $('Extract Message Fields').item.json.from }}",
+            "name": "={{ $('Extract Message Fields').item.json.userName }}",
+            "requirement": "",
+            "timestamp": "={{ new Date().toISOString() }}"
+          }
+        },
+        "options": {}
       },
+      "credentials": { "googleSheetsOAuth2Api": { "id": "GOOGLE_SHEETS_CREDENTIAL_ID", "name": "Google Sheets account" } },
       "continueOnFail": true
     },
     {
@@ -334,19 +344,28 @@
     {
       "id": "d93230c2-1fb4-4a5b-a078-9691ab6b1b6d",
       "name": "Opt-In \u2013 Store Phone Number",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4,
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
       "position": [
         1100,
         220
       ],
       "parameters": {
-        "method": "POST",
-        "url": "={{ $vars.OPT_IN_WEBHOOK_URL }}",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ { event: 'broadcast_opt_in', phone: $('Extract Message Fields').item.json.from, name: $('Extract Message Fields').item.json.userName, timestamp: new Date().toISOString() } }}"
+        "operation": "appendOrUpdate",
+        "documentId": { "__rl": true, "mode": "url", "value": "={{ $vars.GSHEET_OPTIN_ID }}" },
+        "sheetName": { "__rl": true, "mode": "byName", "value": "Opt-Ins" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "event": "broadcast_opt_in",
+            "phone": "={{ $('Extract Message Fields').item.json.from }}",
+            "name": "={{ $('Extract Message Fields').item.json.userName }}",
+            "timestamp": "={{ new Date().toISOString() }}"
+          }
+        },
+        "options": {}
       },
+      "credentials": { "googleSheetsOAuth2Api": { "id": "GOOGLE_SHEETS_CREDENTIAL_ID", "name": "Google Sheets account" } },
       "continueOnFail": true
     },
     {
@@ -681,19 +700,30 @@
     {
       "id": "ff275524-102e-45f2-b527-23ba3f8cd301",
       "name": "Sales \u2013 Alert Quote Req",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4,
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
       "position": [
         2860,
         -60
       ],
       "parameters": {
-        "method": "POST",
-        "url": "={{ $vars.SALES_WEBHOOK_URL }}",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ { event: 'new_quote_request', phone: $json.body.from, name: $json.body.userName, requirement: $json.body.textBody, timestamp: new Date().toISOString() } }}"
-      }
+        "operation": "appendOrUpdate",
+        "documentId": { "__rl": true, "mode": "url", "value": "={{ $vars.GSHEET_SALES_ID }}" },
+        "sheetName": { "__rl": true, "mode": "byName", "value": "Sales" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "event": "new_quote_request",
+            "phone": "={{ $json.body.from }}",
+            "name": "={{ $json.body.userName }}",
+            "requirement": "={{ $json.body.textBody }}",
+            "timestamp": "={{ new Date().toISOString() }}"
+          }
+        },
+        "options": {}
+      },
+      "credentials": { "googleSheetsOAuth2Api": { "id": "GOOGLE_SHEETS_CREDENTIAL_ID", "name": "Google Sheets account" } },
+      "continueOnFail": true
     },
     {
       "id": "43878938-935a-4ad0-937e-22c80fd307e7",
@@ -981,19 +1011,30 @@
     {
       "id": "83073a89-5556-4510-9472-26aea6553789",
       "name": "Sales \u2013 Alert hot_lead",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4,
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
       "position": [
         4400,
         -180
       ],
       "parameters": {
-        "method": "POST",
-        "url": "={{ $vars.SALES_WEBHOOK_URL }}",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ { event: 'hot_lead_confirmed', phone: $json.body.from, timestamp: new Date().toISOString() } }}"
-      }
+        "operation": "appendOrUpdate",
+        "documentId": { "__rl": true, "mode": "url", "value": "={{ $vars.GSHEET_SALES_ID }}" },
+        "sheetName": { "__rl": true, "mode": "byName", "value": "Sales" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "event": "hot_lead_confirmed",
+            "phone": "={{ $json.body.from }}",
+            "name": "",
+            "requirement": "",
+            "timestamp": "={{ new Date().toISOString() }}"
+          }
+        },
+        "options": {}
+      },
+      "credentials": { "googleSheetsOAuth2Api": { "id": "GOOGLE_SHEETS_CREDENTIAL_ID", "name": "Google Sheets account" } },
+      "continueOnFail": true
     },
     {
       "id": "dccd2687-63cd-4d8d-be01-8ee54d46b855",
