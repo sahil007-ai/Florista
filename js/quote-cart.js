@@ -46,7 +46,7 @@
     //
     // Both this constant and the one in main.js need the same URL.
     // Paste it in both places when you wire up Apps Script.
-    const FORM_ENDPOINT_URL = 'https://script.google.com/macros/s/AKfycbw_XnGnars1ZMsZ6JOiuXEhZgNOyAwtWpPBxlrNmLn2ce-kGt43aGnUshhtx5Upq1_wLw/exec';
+    const FORM_ENDPOINT_URL = 'https://script.google.com/macros/s/AKfycbzV-2duWBboVUMK5TNoBLTt3y-cCBp8Igcj7bYsC2TK4a3pFkbhlvDWstsA0TpqTZm_Wg/exec';
 
     // ─── Slugify ──────────────────────────────────────────────────
     // Same rules used to generate hardcoded anchors on the home page
