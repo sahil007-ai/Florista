@@ -1,0 +1,38 @@
+{
+  "_comment": [
+    "Product catalog the LangGraph agent uses for slug recognition.",
+    "PRICES DO NOT LIVE HERE. They live in the Apps Script-bound 'Pricing'",
+    "sheet and are only ever returned via the lookup_pricing tool. Keeping",
+    "this file price-free is the single most important safety property of",
+    "the bot — see .kiro/steering/whatsapp-bot.md > 'Why prices live in",
+    "Apps Script, not the prompt'.",
+    "",
+    "When you add or rename a product page on the site, update this file",
+    "AND add a corresponding row to the Pricing sheet (slug column must",
+    "match exactly)."
+  ],
+  "products": [
+    {"slug": "12-inch-regular-ornela",   "name": "12-inch Regular Ornela",       "size_inches": 12, "category": "small"},
+    {"slug": "18-inch-lumora",           "name": "18-inch Lumora",                "size_inches": 18, "category": "small"},
+    {"slug": "24-inch-premium-collection","name": "24-inch Premium Collection",   "size_inches": 24, "category": "medium"},
+    {"slug": "24-inch-wedding-touch",    "name": "24-inch Wedding Touch",         "size_inches": 24, "category": "medium"},
+    {"slug": "28-inch-wedding-bloom",    "name": "28-inch Wedding Bloom",         "size_inches": 28, "category": "medium"},
+    {"slug": "32-inch-pure-bliss",       "name": "32-inch Pure Bliss",            "size_inches": 32, "category": "medium"},
+    {"slug": "36-inch-premium-blooms",   "name": "36-inch Premium Blooms",        "size_inches": 36, "category": "large"},
+    {"slug": "40-inch-decor-blooms",     "name": "40-inch Decor Blooms",          "size_inches": 40, "category": "large"},
+    {"slug": "44-inch-majestic",         "name": "44-inch Majestic",              "size_inches": 44, "category": "large"},
+    {"slug": "48-inch-big-flora",        "name": "48-inch Big Flora",             "size_inches": 48, "category": "large"},
+    {"slug": "60-inch-giant-flora",      "name": "60-inch Giant Flora",           "size_inches": 60, "category": "giant"},
+    {"slug": "aura-flower-3ft",          "name": "Aura Flower (3 ft)",            "size_inches": 36, "category": "specialty"},
+    {"slug": "blooming-dales",           "name": "Blooming Dales",                "size_inches": null, "category": "specialty"},
+    {"slug": "cinderella-flowers",       "name": "Cinderella Flowers",            "size_inches": null, "category": "specialty"},
+    {"slug": "dream-wings-90-inch",      "name": "Dream Wings (90 inch)",         "size_inches": 90, "category": "giant"},
+    {"slug": "fluffy-bloom",             "name": "Fluffy Bloom",                  "size_inches": null, "category": "specialty"},
+    {"slug": "glowing-flower-3ft",       "name": "Glowing Flower (3 ft)",         "size_inches": 36, "category": "specialty"},
+    {"slug": "organza-butterfly",        "name": "Organza Butterfly",             "size_inches": null, "category": "specialty"},
+    {"slug": "premium-fabric-flowers",   "name": "Premium Fabric Flowers",        "size_inches": null, "category": "specialty"},
+    {"slug": "printed-fabric-flower",    "name": "Printed Fabric Flower",         "size_inches": null, "category": "specialty"},
+    {"slug": "theme-party-fish",         "name": "Theme Party Fish",              "size_inches": null, "category": "specialty"},
+    {"slug": "tri-petal-flower-2-5ft",   "name": "Tri-Petal Flower (2.5 ft)",     "size_inches": 30, "category": "specialty"}
+  ]
+}

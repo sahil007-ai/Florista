@@ -1,0 +1,33 @@
+[project]
+name = "florista-wa-bot"
+version = "0.1.0"
+description = "Florista WhatsApp wholesale sales bot — LangGraph agent on FastAPI."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    # Web framework + ASGI server.
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+
+    # LangGraph + checkpointer for conversation state.
+    "langgraph>=0.2.50",
+    "langgraph-checkpoint-sqlite>=2.0.0",
+
+    # OpenRouter speaks the OpenAI API; we use langchain-openai with a
+    # custom base_url. To swap to native Anthropic later, change this
+    # to langchain-anthropic — the rest of the code is unchanged.
+    "langchain-openai>=0.2.0",
+
+    # 12-factor env loading.
+    "pydantic-settings>=2.5.0",
+
+    # Outbound HTTP (Apps Script tools + Meta Cloud API).
+    "httpx>=0.27.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/florista_bot"]
