@@ -20,7 +20,8 @@ down with the repo and immediately understand the moving parts.
 4. [Core user journeys (use cases)](#4-core-user-journeys-use-cases)
 5. [Lead capture — the conversion engine](#5-lead-capture--the-conversion-engine)
 6. [Quote Cart system](#6-quote-cart-system)
-7. [Analytics & Consent Mode](#7-analytics--consent-mode)
+7. [WhatsApp Sales Bot](#65-whatsapp-sales-bot)
+8. [Analytics & Consent Mode](#7-analytics--consent-mode)
 8. [SEO infrastructure](#8-seo-infrastructure)
 9. [Performance optimizations](#9-performance-optimizations)
 10. [Accessibility & compliance](#10-accessibility--compliance)
@@ -93,7 +94,13 @@ Florista/
 │
 ├── sitemap.xml             # search-engine sitemap
 ├── robots.txt              # crawler directives
-├── florista_wa_bot_part1.json   # (legacy WA bot config — not deployed)
+├── florista_wa_bot_complete.json   # (legacy n8n WA bot — superseded by wa-bot/, kept for reference)
+├── wa-bot/                 # ★ WhatsApp sales bot — separate Python service (LangGraph agent)
+│   ├── src/florista_bot/   #   FastAPI + LangGraph agent + tools + prompt
+│   ├── apps_script/Code.gs #   tool-layer Web App (reads Pricing sheet, writes leads)
+│   ├── data/products.json  #   product catalog the bot recognizes (NO prices)
+│   ├── Dockerfile          #   runs on Railway / Fly.io / any container host
+│   └── pyproject.toml      #   Python deps (managed by uv)
 │
 ├── ROADMAP.md              # pending work
 ├── BUGS_TO_FIX.md          # known bugs, ranked
@@ -478,6 +485,144 @@ FloristaCart.getItems()
 ```
 
 All exposed on `window.FloristaCart` for console testing.
+
+---
+
+## 6.5. WhatsApp Sales Bot
+
+**Folder**: `wa-bot/` (separate Python service, not part of the static site).
+
+The conversion engine documented in §5 captures *intent* — leads that the
+team must then follow up manually on WhatsApp. The bot handles that
+follow-up automatically: a wholesale buyer who messages Florista's
+WhatsApp number gets a real-time, salesperson-style conversation that
+qualifies them, quotes them from the live Pricing sheet, and logs the
+lead.
+
+> **For owner-facing operations** (change a price, edit tone, swap
+> models), see [`docs/11-whatsapp-bot.md`](docs/11-whatsapp-bot.md).
+> **For deployment from scratch**, see
+> [`.kiro/steering/whatsapp-bot.md`](.kiro/steering/whatsapp-bot.md).
+> This section is the architectural overview — what's wired to what,
+> and why.
+
+### 6.5.1 Architecture
+
+```
+WhatsApp customer
+       │
+       ▼
+Meta WhatsApp Cloud API ──── outbound (POST /messages)
+       │
+       ▼ inbound webhook
+FastAPI POST /webhook  (wa-bot/src/florista_bot/main.py)
+       │
+       ▼
+LangGraph agent  (wa-bot/src/florista_bot/agent.py)
+   model: openai/gpt-4o-mini via OpenRouter (swappable via MODEL env var)
+   tools: lookup_pricing | log_lead | qualify_buyer | escalate_to_human
+       │
+       │ tool_calls (httpx)
+       ▼
+Apps Script /exec  (wa-bot/apps_script/Code.gs)
+       │
+       ▼
+Google Sheet "Florista Sales"
+   ├── Pricing       — single source of truth for prices + lead times
+   ├── Leads         — every qualified lead the bot logged
+   ├── Qualified     — decorator vs personal records
+   └── Escalations   — every hand-off to a human
+```
+
+State persistence: `langgraph-checkpoint-sqlite` keyed on `thread_id`
+= customer phone. One SQLite file at `data/checkpoints.sqlite`, mounted
+as a volume in production.
+
+### 6.5.2 Why prices live in Apps Script, not the prompt
+
+The single most important design decision in the bot.
+
+If pricing is embedded in the system prompt (or in `products.json`), an
+LLM will misquote ~1–3% of conversations: wrong tier matched from messy
+phrasing, wrong SKU picked, wrong arithmetic on per-piece × quantity,
+wrong number on Hinglish transcription. Each misquote is a real ₹
+commitment over WhatsApp.
+
+The fix is architectural: the LLM owns the *conversation*, but it does
+NOT own the *numbers*. To answer any pricing question it must call
+`lookup_pricing(product_slug, quantity)` which reads the Pricing sheet
+fresh on every call. The prompt is fact-free; the sheet is the single
+source of truth. To change pricing → edit the sheet, no redeploy.
+
+### 6.5.3 Files
+
+| Path | Purpose |
+|------|---------|
+| `wa-bot/src/florista_bot/main.py` | FastAPI app — Meta webhook routes (`GET /webhook` verify, `POST /webhook` inbound) |
+| `wa-bot/src/florista_bot/agent.py` | LangGraph build (agent ↔ tools loop, SQLite checkpointer) |
+| `wa-bot/src/florista_bot/tools.py` | `@tool` wrappers — thin httpx calls to Apps Script `/exec` |
+| `wa-bot/src/florista_bot/whatsapp.py` | Meta Cloud API client (parse webhook + send_message) |
+| `wa-bot/src/florista_bot/prompts.py` | System prompt — brand voice, qualifier rule, hard rules, product slug list. **NO prices.** |
+| `wa-bot/src/florista_bot/state.py` | LangGraph `AgentState` TypedDict (`messages` + `phone`) |
+| `wa-bot/src/florista_bot/config.py` | pydantic-settings env loader (single source of all env vars) |
+| `wa-bot/data/products.json` | Product catalog the LLM uses for slug recognition (NO prices) |
+| `wa-bot/apps_script/Code.gs` | Tool-layer Web App — single `/exec` endpoint, dispatches by `action` |
+| `wa-bot/Dockerfile` | Container definition; works on Railway / Fly / Render / any host |
+| `wa-bot/.env.example` | All env vars the bot needs (OpenRouter key, Meta token, Apps Script URL) |
+
+### 6.5.4 Tools shipped (v1)
+
+The agent can call exactly four tools. Each is a thin wrapper over a
+single `action` in `Code.gs`:
+
+| Tool | Purpose | Sheet written |
+|------|---------|---------------|
+| `lookup_pricing(slug, qty)` | Pricing tier match → price/pc, total, lead time | (read-only) |
+| `log_lead(phone, name, requirement, items, tier)` | Persist a qualified lead | Leads |
+| `qualify_buyer(phone, buyer_type)` | Record decorator vs personal | Qualified |
+| `escalate_to_human(phone, reason, context)` | Hand-off trigger | Escalations |
+
+To add a new tool: add a `case` in `Code.gs`, add a `@tool` function in
+`tools.py`, append to `TOOLS`. No other wiring needed.
+
+### 6.5.5 Why two separate Sheets exist
+
+The static site's lead-capture (§5) writes to a sheet typically called
+"Florista Leads". The bot writes to a separate sheet called "Florista
+Sales". This is intentional:
+
+- Site captures *pre-conversation* intent (form submission, WA click,
+  quote-cart send) — anonymous tags + free-text intent.
+- Bot captures *during/after-conversation* outcomes — qualified leads
+  with structured fields (tier, items, qualification status).
+
+Two pipelines, two sheets, no schema collision. The owner cross-references
+phone numbers across the two when investigating a specific lead.
+
+### 6.5.6 What is deliberately NOT in v1
+
+The original n8n workflow (`florista_wa_bot_complete.json`, kept in repo
+for reference) had ten use-cases. Five of them are NOT in the v1 Python
+bot, and are tracked as follow-ups in
+[`.kiro/steering/whatsapp-bot.md`](.kiro/steering/whatsapp-bot.md):
+
+1. Catalogue PDF send (UC3) — `send_catalogue_pdf` tool.
+2. 24h quote follow-up (UC5) — APScheduler + Meta-approved template.
+3. Stock broadcast (UC7) — fan-out webhook.
+4. Post-event review request (UC10) — scheduled, template-gated.
+5. Inbound from website (UC-bridge) — contact form / quote cart fires
+   webhook into the bot for proactive outreach.
+
+### 6.5.7 Hosting
+
+The Python service requires a host with a persistent disk (for
+SQLite-based conversation state) and always-on container execution.
+Compatible: Railway, Fly.io, Render, self-hosted VPS. **Not compatible:**
+Vercel (no persistent disk → conversation state lost between invocations).
+
+The static site (`theflorista.in`) is independent — it can stay on
+Vercel / GitHub Pages. The bot lives at a different host (e.g.
+`bot.theflorista.in` proxied to Railway).
 
 ---
 
