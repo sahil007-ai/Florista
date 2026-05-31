@@ -39,9 +39,11 @@ Florista/
 ├── sitemap.xml              # Lists all 8 customer-facing pages for SEO.
 ├── robots.txt               # Tells crawlers which paths are allowed.
 │
-├── ROADMAP.md               # Identified-but-not-shipped work backlog.
-├── BUGS_TO_FIX.md           # Known issues from the last audit.
-└── florista_wa_bot_part1.json   # WhatsApp bot config (separate side-project).
+├── ROADMAP.md                       # Identified-but-not-shipped work backlog.
+├── BUGS_TO_FIX.md                   # Known minor defects + cleanup tracker.
+├── SITE_MANUAL.md                   # Architectural manual (technical reference).
+└── florista_wa_bot_complete.json    # Legacy n8n WhatsApp-bot export.
+                                     # Superseded by wa-bot/ — kept as reference.
 ```
 
 ---

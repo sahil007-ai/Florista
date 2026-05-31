@@ -63,7 +63,7 @@ to have) and a **trigger** describing what unlocks it.
 | #   | Pri | Item                                                                 | Why deferred                                                                                                                                                                                                                                                                          |
 | --- | --- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | D1  | P2  | **Pin-code shipping cost estimator**                                 | Indian couriers (Delhivery, DTDC, VRL, TCI) do not expose public iframe / JS widgets. A useful estimator would need Florista's actual zone-wise rate card. Manual quotes via WhatsApp are working at current order volume. **Trigger:** owner publishes a zone rate card.             |
-| D2  | P3  | **WhatsApp Business API order tracker** ("Your order has been dispatched, AWB: XXXXX") | WA Business API is paid (≈₹0.005–0.05 per conversation in India) and requires Meta Business verification. Not worth the cost or onboarding until volume justifies. **Trigger:** ≥100 orders/month sustained.                                                                          |
+| D2  | P3  | **WhatsApp Business API order tracker** ("Your order has been dispatched, AWB: XXXXX") | WA Business API is paid (≈₹0.005–0.05 per conversation in India) and requires Meta Business verification. Not worth the cost or onboarding until volume justifies. **Trigger:** ≥100 orders/month sustained. **Update (May 2026):** Florista now has a *general* WhatsApp sales-bot scaffold in `wa-bot/` (LangGraph + OpenRouter + Apps Script, [PR #30](https://github.com/sahil007-ai/Florista/pull/30)). The order-tracker on this row is a *specific* outbound use-case the scaffold doesn't yet implement; it would require a Meta-approved message template and a webhook from the order management system. See `docs/11-whatsapp-bot.md` (lands with PR #30). |
 | D3  | P3  | **Login / reorder portal** with saved carts and order history        | Needs a backend, database, and authentication. Out of scope for a static HTML site. **Trigger:** migration to a CMS (Shopify / WordPress / custom Node or Django) when volume justifies.                                                                                              |
 | D4  | P2  | **Multi-size responsive `srcset` image variants** for product photos | Current WebPs already gave a 93% size reduction (88 MB → 5.8 MB). The remaining win is small relative to the work, and would need to be redone once real product photography arrives. **Trigger:** real factory photos land (item O5). Then generate 3 sizes per image in one pass. |
 
@@ -203,4 +203,7 @@ redoing**:
 
 ---
 
-_Last updated: 26 May 2026._
+_Last updated: 31 May 2026 — added BUGS_TO_FIX.md tracker; noted that the
+`wa-bot/` LangGraph bot scaffold is in active development on
+[PR #30](https://github.com/sahil007-ai/Florista/pull/30) (deployment
+pending Meta WA Business credentials + Pricing-sheet population)._
