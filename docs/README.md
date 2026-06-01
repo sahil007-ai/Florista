@@ -30,6 +30,7 @@ you need.
 | 08 | [Analytics & Lead Capture](./08-analytics-and-leads.md) | Google Analytics, WhatsApp click attribution, the Apps Script lead sheet. |
 | 09 | [Deployment & CI](./09-deployment.md) | How changes go live. What the GitHub Actions checks do and how to fix them. |
 | 10 | [Cookbook (Quick Recipes)](./10-cookbook.md) | One-page recipes for the most common tasks. Bookmark this. |
+| 11 | [The WhatsApp Bot](./11-whatsapp-bot.md) | **Run the WhatsApp sales bot.** Change prices, edit tone, swap models, troubleshoot. |
 
 There are also two living documents at the **repo root** that complement
 this manual:
@@ -44,6 +45,10 @@ And one team rule of record:
 - [`.kiro/steering/lead-capture.md`](../.kiro/steering/lead-capture.md) —
   the Google Apps Script setup steps for the lead-capture sheet. Chapter 08
   links to this; you don't need to find it on your own.
+- [`.kiro/steering/whatsapp-bot.md`](../.kiro/steering/whatsapp-bot.md) —
+  the click-by-click deployment runbook for the WhatsApp sales bot
+  (Meta + OpenRouter + Google Sheets). Chapter 11 links to this; it's
+  the deeper companion to that chapter.
 
 ---
 
@@ -64,10 +69,20 @@ Florista is just HTML files. Editing the site = editing those files.
   tools/generate_product_pages.py   <- regenerates /products/<slug>.html
   tools/generate_use_case_pages.py  <- regenerates /use-cases/<slug>.html
   tools/product_content.py          <- per-product narrative copy
+
+  wa-bot/                           <- the WhatsApp sales bot (separate
+                                       Python service hosted on Railway).
+                                       Independent of the website. See
+                                       Chapter 11.
 ```
 
 The two Python scripts in `tools/` are the only "build step" the site has.
 Everything else is direct HTML/CSS/JS editing.
+
+The `wa-bot/` folder is a separate Python program that runs 24/7 on a
+host like Railway. It receives WhatsApp messages and replies on behalf
+of Florista. It does NOT need to run for the website to work — they're
+two independent things in the same Git repo. See [Chapter 11](./11-whatsapp-bot.md).
 
 ---
 
@@ -96,6 +111,13 @@ If you remember nothing else from this manual, remember these.
    `js/main.js` *and* `js/quote-cart.js`. Both have a `FORM_ENDPOINT_URL`
    constant near the top.
 
+6. **The WhatsApp bot's prices live in the Google Sheet, never in code.**
+   To change a price, edit the **Pricing** tab of the "Florista Sales"
+   Google Sheet. Don't put prices in `prompts.py`, `products.json`, or
+   anywhere else — the bot is designed to look them up fresh from the
+   Sheet on every quote so it can never invent a number. See
+   [Chapter 11](./11-whatsapp-bot.md).
+
 ---
 
 ## Who maintains what
@@ -112,6 +134,9 @@ If you remember nothing else from this manual, remember these.
 | `js/main.js`, `js/quote-cart.js` | Dev | When behaviour changes |
 | `images/` | Owner / dev | Every product change |
 | `sitemap.xml`, `robots.txt` | Dev | When pages added/removed |
+| `wa-bot/` (the WhatsApp sales bot) | Dev | When bot capabilities change |
+| Florista Sales sheet → Pricing tab (bot prices) | Owner | Whenever pricing changes |
+| `wa-bot/src/florista_bot/prompts.py` (bot tone & rules) | Owner / dev | When tone or escalation policy changes |
 
 ---
 

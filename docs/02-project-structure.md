@@ -26,6 +26,14 @@ Florista/
 │   ├── generate_product_pages.py
 │   └── generate_use_case_pages.py
 │
+├── wa-bot/                  # The WhatsApp sales bot (separate Python service).
+│   ├── src/florista_bot/    #   Python package (LangGraph agent on FastAPI)
+│   ├── apps_script/Code.gs  #   Tool layer that reads/writes the Sales Sheet
+│   ├── data/products.json   #   Product catalog the bot recognizes (no prices)
+│   ├── Dockerfile           #   Container for Railway / Fly.io / etc
+│   ├── pyproject.toml       #   Python dependencies (managed by uv)
+│   └── README.md            #   60-second orientation. Full guide: Ch 11.
+│
 ├── index.html               # Home page.
 ├── products.html            # The catalogue (hand-maintained — see Ch 03).
 ├── about.html               # About / our story.
@@ -203,11 +211,36 @@ If any check fails, the PR is blocked from merging until you fix it. See
 
 ## What's in `.kiro/`
 
-Persistent project rules. Currently one file:
+Persistent project rules. Currently two files:
 
 - `steering/lead-capture.md` — the full Apps Script setup walkthrough for
-  the lead-capture sheet. Chapter 08 of this manual links to it; you
-  shouldn't need to find it on your own.
+  the lead-capture sheet on the website. Chapter 08 of this manual links
+  to it; you shouldn't need to find it on your own.
+- `steering/whatsapp-bot.md` — the click-by-click deployment runbook for
+  the WhatsApp sales bot in `wa-bot/`. Chapter 11 of this manual links
+  to it.
+
+## What's in `wa-bot/`
+
+The WhatsApp sales bot. Independent of the website — it's a separate
+Python program that runs on a hosting platform like Railway and replies
+to WhatsApp messages on behalf of Florista.
+
+| Path | Purpose |
+|------|---------|
+| `wa-bot/src/florista_bot/main.py` | FastAPI app + Meta webhook routes |
+| `wa-bot/src/florista_bot/agent.py` | LangGraph build (the AI conversation engine) |
+| `wa-bot/src/florista_bot/tools.py` | What the bot can DO (look up prices, log leads, escalate) |
+| `wa-bot/src/florista_bot/prompts.py` | What the bot SAYS (tone, rules, escalation policy) |
+| `wa-bot/src/florista_bot/whatsapp.py` | Meta WhatsApp Cloud API client |
+| `wa-bot/data/products.json` | Product catalog the bot recognizes (slugs + names, **NO prices**) |
+| `wa-bot/apps_script/Code.gs` | Tool-layer Google Apps Script — reads the Pricing sheet, writes leads |
+| `wa-bot/Dockerfile` | Container definition; works on Railway / Fly / Render |
+| `wa-bot/.env.example` | Template for the env vars the bot needs |
+
+The bot's **prices** live in the "Florista Sales" Google Sheet (Pricing
+tab), NOT in this folder. That's intentional — see
+[Chapter 11](./11-whatsapp-bot.md) for the why and the how.
 
 ---
 

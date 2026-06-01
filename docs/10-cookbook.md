@@ -336,7 +336,75 @@ top of this page.
 
 ---
 
-## Where things live (one-line reference)
+## WhatsApp bot — change a price
+
+(See [Ch 11 Recipe 1](./11-whatsapp-bot.md#recipe-1--change-a-price) for full version.)
+
+1. Open the **Florista Sales** Google Sheet → **Pricing** tab.
+2. Edit the `price_per_piece` cell for the product/tier row.
+3. Done. No deploy. The next quote uses the new price.
+
+---
+
+## WhatsApp bot — add a new product so the bot can quote it
+
+(See [Ch 11 Recipe 4](./11-whatsapp-bot.md#recipe-4--add-a-brand-new-product-to-the-bot).)
+
+1. Add the product to the website first (Ch 03).
+2. Add a row to `wa-bot/data/products.json` with the matching slug.
+3. Add Pricing rows in the Sheet for the new slug, one per quantity tier.
+4. Commit + push. Railway redeploys automatically.
+
+---
+
+## WhatsApp bot — change the bot's tone
+
+(See [Ch 11 Recipe 6](./11-whatsapp-bot.md#recipe-6--change-the-bots-tone).)
+
+1. Edit `wa-bot/src/florista_bot/prompts.py`.
+2. Find the `SYSTEM_PROMPT` block. Add or change a sentence in plain English.
+3. Commit + push. Next conversation uses the new tone.
+
+---
+
+## WhatsApp bot — switch the AI model
+
+(See [Ch 11 Recipe 8](./11-whatsapp-bot.md#recipe-8--upgrade-the-ai-brain-better-quality-more-cost).)
+
+1. Railway → your project → **Variables** → `MODEL`.
+2. Change to one of: `openai/gpt-4o-mini` (cheap), `openai/gpt-4o` (better),
+   `anthropic/claude-sonnet-4` (best for Hinglish).
+3. Save. Railway redeploys automatically (~30 s). No code change.
+
+---
+
+## WhatsApp bot — pause the bot
+
+1. Railway → your project → **Settings** → **Pause Service**.
+2. Inbound WhatsApp messages queue at Meta. Resume to deliver them.
+
+---
+
+## WhatsApp bot — see recent conversations
+
+1. Railway → your project → **Deployments** → latest → **View Logs**.
+2. Search by phone number — every inbound + outbound is logged.
+3. For lead outcomes specifically: Florista Sales sheet → **Leads** tab.
+
+---
+
+## WhatsApp bot — investigate "wrong price was quoted"
+
+(See [Ch 11 Recipe 12](./11-whatsapp-bot.md#recipe-12--a-customer-says-the-bot-quoted-them-the-wrong-price).)
+
+1. Get the customer's phone + rough time.
+2. Railway logs → search by phone → find the `lookup_pricing` tool call.
+3. Compare what it asked for vs what the Pricing sheet returned.
+4. Most likely cause: a Sheet edit you (or someone) made between the
+   conversation and now. The Apps Script Executions log preserves the
+   exact value at the time of the call.
+
+---
 
 ```
 Hero / FAQ / testimonials  → index.html
@@ -356,6 +424,15 @@ CI workflow                → .github/workflows/validate.yml
 Backlog                    → ROADMAP.md
 Known bugs                 → BUGS_TO_FIX.md
 This manual                → docs/
+
+WhatsApp bot — brain (model)            → Railway env var: MODEL
+WhatsApp bot — tone & hard rules        → wa-bot/src/florista_bot/prompts.py
+WhatsApp bot — product catalog          → wa-bot/data/products.json
+WhatsApp bot — prices, lead times       → Florista Sales sheet → Pricing tab
+WhatsApp bot — leads logged             → Florista Sales sheet → Leads tab
+WhatsApp bot — conversation logs        → Railway → Deployments → View Logs
+WhatsApp bot — pause / resume           → Railway → Settings
+WhatsApp bot — full operations guide    → docs/11-whatsapp-bot.md
 ```
 
 ---
